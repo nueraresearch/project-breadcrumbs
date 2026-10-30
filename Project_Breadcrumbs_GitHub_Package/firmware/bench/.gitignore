@@ -1,0 +1,5 @@
+# Compiled Python must never be committed.
+__pycache__/
+*.pyc
+# Bench logs contain device identifiers; keep them local unless deliberately shared.
+bench_log.csv
