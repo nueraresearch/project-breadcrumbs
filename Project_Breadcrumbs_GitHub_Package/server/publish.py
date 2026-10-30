@@ -40,7 +40,7 @@ import hmac
 import json
 import math
 import os
-import shutil
+import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
 
@@ -100,6 +100,11 @@ CAPTIONS = {
     "DEPLOYMENT_CLOSED": "A deployment was closed.",
 }
 
+FALSE_TRIGGER_CAPTION = (
+    "A sensor trigger was recorded that review did not classify as an "
+    "opening."
+)
+
 # Checked against every caption before it is written. This is a guard against a
 # future edit reintroducing accusatory language, not a substitute for review.
 BANNED_TERMS = (
@@ -108,8 +113,8 @@ BANNED_TERMS = (
     "do you know", "identify this", "reward for information",
 )
 
-# Adjudication outcomes that suppress an image (D-52).
-WITHHELD_PREFIX = "withheld_"
+# Adjudication decisions that suppress an image (D-52).
+IMAGE_DECISIONS = ("publish", "withhold")
 
 
 class PublishError(Exception):
@@ -120,7 +125,11 @@ class PublishError(Exception):
 # Captions
 # ---------------------------------------------------------------------------
 
-def caption_for(event_type: str) -> str:
+def caption_for(event_type: str, validation_status: str | None = None) -> str:
+    if (validation_status or "") == "false_trigger":
+        # Adjudication concluded this was not an opening. Using the normal
+        # caption would publish a claim the review directly contradicts.
+        return FALSE_TRIGGER_CAPTION
     text = CAPTIONS.get(event_type)
     if text is None:
         # Fail closed: an unclassified event does not get an invented caption.
@@ -252,8 +261,6 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
             delay_days: int = DEFAULT_DELAY_DAYS,
             release_images: bool = False,
             now: datetime | None = None) -> dict:
-    import sqlite3
-
     db_path = os.path.join(data_dir, "records.db")
     if not os.path.exists(db_path):
         raise PublishError(f"no database at {db_path}")
@@ -291,7 +298,7 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
                 counts["records_withheld_delay"] += 1
                 continue
 
-            caption = caption_for(row["event_type"])
+            caption = caption_for(row["event_type"], row["validation_status"])
             check_caption(caption)
 
             distance, bucket = deployment_displacement(
@@ -345,19 +352,37 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
     return manifest
 
 
+def _image_decision(conn, record_id):
+    """The latest image adjudication for a record, or None.
+
+    This module does not judge whether a frame is safe. It asks whether
+    somebody with the authority to look has already said so. If the table does
+    not exist nobody has, which is the fail-closed answer.
+    """
+    try:
+        return conn.execute(
+            "SELECT decision, category FROM adjudications"
+            " WHERE record_id=? AND kind='image'"
+            " ORDER BY decided_at DESC, id DESC LIMIT 1",
+            (record_id,)).fetchone()
+    except sqlite3.OperationalError:
+        return None
+
+
 def _publish_images(conn, row, data_dir, image_out, counts):
-    status = (row["validation_status"] or "").strip()
+    decision = _image_decision(conn, row["record_id"])
 
-    if status.startswith(WITHHELD_PREFIX):
-        category = status[len(WITHHELD_PREFIX):] or "unspecified"
-        counts["images_withheld_by_category"][category] = (
-            counts["images_withheld_by_category"].get(category, 0) + 1)
-        return
-
-    if status != "reviewed":
+    if decision is None:
         # D-52 cannot be honoured without a human decision, so an unadjudicated
         # image is never published. This is the fail-closed branch.
         counts["images_withheld_unadjudicated"] += 1
+        return
+
+    if decision["decision"] == "withhold":
+        # D-52 wants the count by category, and never the image.
+        category = decision["category"] or "unspecified"
+        counts["images_withheld_by_category"][category] = (
+            counts["images_withheld_by_category"].get(category, 0) + 1)
         return
 
     images = conn.execute(

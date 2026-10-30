@@ -8,8 +8,11 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 
+import adjudicate
 import ingest
 import publish
+
+REVIEWERS = {"alice", "bob"}
 
 SALT = bytes.fromhex("00112233445566778899aabbccddeeff")
 JPEG = b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00" \
@@ -64,6 +67,11 @@ def add_image(store, record_id, frame=1, blob=JPEG):
     store.store_image(record_id, frame, blob)
 
 
+def adjudicate_image(data, record_id, decision, category=None):
+    adjudicate.Adjudicator(data, REVIEWERS).decide_image(
+        record_id, "alice", decision, category=category)
+
+
 class CaptionTests(unittest.TestCase):
     def test_every_event_type_has_a_caption(self):
         for et in ingest.EVENT_TYPES:
@@ -78,6 +86,11 @@ class CaptionTests(unittest.TestCase):
 
     def test_opening_caption_says_opened(self):
         self.assertIn("opened", publish.caption_for("LIGHT_TRIGGER").lower())
+
+    def test_false_trigger_caption_does_not_claim_an_opening(self):
+        text = publish.caption_for("LIGHT_TRIGGER", "false_trigger").lower()
+        self.assertNotIn("opened", text)
+        publish.check_caption(text)
 
     def test_unknown_type_fails_closed(self):
         with self.assertRaises(publish.PublishError):
@@ -190,6 +203,17 @@ class PublishTests(unittest.TestCase):
         self._run(delay_days=30)
         self.assertIsNone(self._output()[0]["displacement_km"])
 
+    def test_false_trigger_record_gets_amended_caption(self):
+        rid = "MOD000-aa-000011"
+        insert(self.store, rid,
+               received=datetime.now(timezone.utc) - timedelta(days=60))
+        adj = adjudicate.Adjudicator(self.data, REVIEWERS)
+        adj.vote_event(rid, "alice", "false_trigger")
+        adj.vote_event(rid, "bob", "false_trigger")
+        self._run(delay_days=30)
+        rec = self._output()[0]
+        self.assertNotIn("opened", rec["caption"].lower())
+
     def test_output_fields_are_whitelisted(self):
         insert(self.store, "MOD000-aa-000010",
                received=datetime.now(timezone.utc) - timedelta(days=60))
@@ -216,8 +240,8 @@ class ImageReleaseTests(unittest.TestCase):
         self.assertEqual(m["counts"]["images_withheld_unadjudicated"], 1)
 
     def test_reviewed_image_is_released_and_stripped(self):
-        insert(self.store, "MOD000-bb-000002", received=self.old,
-               status="reviewed")
+        insert(self.store, "MOD000-bb-000002", received=self.old)
+        adjudicate_image(self.data, "MOD000-bb-000002", "publish")
         add_image(self.store, "MOD000-bb-000002", blob=JPEG_WITH_EXIF)
         m = publish.publish(self.data, self.out, SALT, release_images=True)
         self.assertEqual(m["counts"]["images_published"], 1)
@@ -228,9 +252,9 @@ class ImageReleaseTests(unittest.TestCase):
         self.assertTrue(blob.startswith(b"\xff\xd8"))
 
     def test_withheld_category_is_counted(self):
-        insert(self.store, "MOD000-bb-000003", received=self.old,
-               status="withheld_minor")
+        insert(self.store, "MOD000-bb-000003", received=self.old)
         add_image(self.store, "MOD000-bb-000003")
+        adjudicate_image(self.data, "MOD000-bb-000003", "withhold", "minor")
         m = publish.publish(self.data, self.out, SALT, release_images=True)
         self.assertEqual(m["counts"]["images_published"], 0)
         self.assertEqual(m["counts"]["images_withheld_by_category"]["minor"], 1)
