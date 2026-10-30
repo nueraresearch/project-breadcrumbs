@@ -126,8 +126,68 @@ It only works when the box is opened by someone willing to return it, and reward
 
 **Recommendation: three initial modules, six spares, four recovery fees at $40 — nine modules, $968, with $32 held against the cap.** Three times cover on the three fielded units, and enough fees to learn whether returns happen at all. Four is not a large number; it is enough to distinguish "returns do not happen here" from "returns happen sometimes".
 
+*This split is superseded by §10. Once the run stops on a budget floor rather than a target sample size, holding a reserve matters more than the last two spares, and the build becomes seven modules with five fees and a $120 reserve.*
+
 ### 9.4 What nine spares would actually buy
 
 With three modules fielded at a time, nine spares covers the loss of the entire fleet three times over. That is not over-insurance if the pilot is meant to keep running through losses — but each replacement needs a new household (D-53), so the constraint on using the ninth spare is recruitment, not money. Buying nine before the first deployment spends on a scenario the pilot may never reach.
 
 Two of the assumptions above are provisional: the $40 fee (B-11, documented replacement cost, is still open) and the $60 shipping line, which was priced for repeat visits to a few addresses and will be higher across many host households.
+
+## 10. Stopping rule: money or time, whichever comes first (D-72)
+
+**Status:** Owner constraint, 2026-10-30. Amends the module split in D-71; the $1,000 cap is unchanged.
+
+### 10.1 The rule
+
+There is no target sample size. Placements continue while both conditions hold:
+
+1. money remains above the reserve floor, and
+2. the 90-day window has not closed.
+
+Whichever fails first ends recruitment of new placements. Modules already in the field are retrieved or censored.
+
+### 10.2 Why the floor is not optional
+
+A pure spend-down rule has a failure mode. The last dollars go out as a module goes out, and there is then nothing left to pay the fee that would bring it back. The pilot ends with an instrument in the field and no budget to recover it — the worst place to stop, because it turns a recoverable module into a loss and a censorable observation into a missing one.
+
+So the rule needs a floor: **stop opening new placements when the remaining budget drops below one box, one fee, and one spare — about $114.**
+
+That floor changes the build from D-71. Holding a $120 reserve costs two spares:
+
+| Line | Amount |
+|---|---:|
+| Modules, 3 initial + 4 spares, at ~$72 | 504 |
+| Extra boxes for redeployments | 10 |
+| Shipping and insurance | 60 |
+| Materials and ops kit | 40 |
+| Hosting and tooling | 50 |
+| Recovery fees, 5 at $40 | 200 |
+| Reserve floor | 120 |
+| **Total** | **984** |
+
+### 10.3 What the stop does to the analysis
+
+The stop is **administrative censoring**, and it has to be recorded as such: the date recruitment closed, and for every module still in the field at that instant, an observation censored there.
+
+That is admissible, but only under two conditions.
+
+- **The stop must be a rule, not a judgement.** "Budget fell below the floor on 12 January" is censorable. "We had seen enough" is not, and no analysis repairs it afterwards.
+- **It must be recorded to the day.** A stop date reconstructed later from memory will silently truncate the highest-risk placements, because those are the ones that end earliest.
+
+The harder point: **the stop is not independent of the outcome.** Money runs out faster when modules are lost and fees are paid, so the run ends sooner exactly when the removal rate is high. That would normally be informative censoring, which breaks survival estimates. It is tolerable here for one reason — the stop depends only on *observed* history: placements made, modules lost, fees paid. It never waits on an event that has not yet happened. A stopping time predictable from the observed past is admissible censoring; one that waits for a future event is not. The pre-registration plan should say so, and the analysis should report the stop date alongside the number of placements still open at that moment.
+
+### 10.4 What the design produces instead of a sample size
+
+With no fixed n, the useful outputs are the ones a spend-down plan generates naturally:
+
+- **cost per completed placement** — the figure a funder actually asks for;
+- **days per placement**, from deployment to reset;
+- **placements achieved per module** over the window;
+- **spend rate** in dollars per module-month, which is what prices a ten-module pilot.
+
+At $984, nine placements works out at about $109 each; fifteen placements at about $66. Finding out which it is, is a real result rather than a placeholder for one.
+
+### 10.5 The honest limitation
+
+A run that stops when money runs out cannot promise a fixed number of events. If removals are rare, it ends with placements still open and no events at all — a clean feasibility result and no survival estimate. That is an acceptable outcome only if it is stated in advance, which this section does.
