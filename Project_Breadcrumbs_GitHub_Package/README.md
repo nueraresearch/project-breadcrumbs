@@ -23,6 +23,7 @@ This repository contains the current concept definition, preliminary hardware re
 - [`docs/pilot/PILOT_PROTOCOL_DRAFT.md`](docs/pilot/PILOT_PROTOCOL_DRAFT.md) — proposed 90-day pilot framework built from 30-day deployment cycles
 - [`docs/pilot/PRE_REGISTRATION_ANALYSIS_PLAN.md`](docs/pilot/PRE_REGISTRATION_ANALYSIS_PLAN.md) — primary outcome, event definitions, exclusion rules, and analysis fixed before data collection
 - [`docs/pilot/POST_OFFICE_DATA_REQUEST.md`](docs/pilot/POST_OFFICE_DATA_REQUEST.md) — request letter and agreement terms for aggregate route volume
+- [`docs/pilot/PILOT_SCALE_OPTIONS.md`](docs/pilot/PILOT_SCALE_OPTIONS.md) — cost and evidence at three, six, and ten modules
 - [`docs/pilot/DEPLOYMENT_AND_OPERATIONS.md`](docs/pilot/DEPLOYMENT_AND_OPERATIONS.md) — voluntary homeowner deployment and operating cycle
 - [`docs/pilot/TEST_AND_VALIDATION_PLAN.md`](docs/pilot/TEST_AND_VALIDATION_PLAN.md) — bench and field validation plan
 - [`docs/data/DATA_MODEL.md`](docs/data/DATA_MODEL.md) — event and deployment data definitions
@@ -73,6 +74,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.11 | 2026-10-30 | Added a comparison of cellular and no-radio recover-to-collect designs, with a staged recommendation |
 | 1.12 | 2026-10-30 | Cellular retained for the main pilot (D-68); community Wi-Fi alternative evaluated and rejected |
 | 1.13 | 2026-10-30 | Added the radio, spectrum, and SIM analysis; pilot SIM moved to Hologram (D-69) |
+| 1.14 | 2026-10-30 | Added pilot scale options: what three modules cost and what they can prove |
 
 ## Contribution and revision policy
 

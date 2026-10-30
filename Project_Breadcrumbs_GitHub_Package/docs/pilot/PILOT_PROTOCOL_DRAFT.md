@@ -21,6 +21,7 @@ Several substantive hypotheses may be pre-registered alongside it in a dated fil
 
 - **Duration:** 90 days.
 - **Hardware:** 10 reusable modules.
+- **Staged entry:** a three-module field trial may precede the full pilot; see [`PILOT_SCALE_OPTIONS.md`](PILOT_SCALE_OPTIONS.md). Not yet decided (D-04).
 - **Volunteer hosts:** 30, one deployment each (D-53).
 - **Collection point:** the project's operating base in Monte Vista, by appointment (D-55). The address is held privately.
 - **Cycle length:** 30 days per deployment cycle (D-34).
