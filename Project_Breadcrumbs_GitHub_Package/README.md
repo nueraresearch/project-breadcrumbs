@@ -32,6 +32,7 @@ This repository contains the current concept definition, preliminary hardware re
 - [`docs/design/HARDENING_PLAN.md`](docs/design/HARDENING_PLAN.md) — proposed engineering and methods changes, acceptance thresholds, cost realism
 - [`docs/design/OPEN_ITEMS.md`](docs/design/OPEN_ITEMS.md) — consolidated register of everything still undefined, by what it blocks
 - [`docs/design/CONNECTIVITY_OPTIONS.md`](docs/design/CONNECTIVITY_OPTIONS.md) — cellular versus no-radio recover-to-collect, with costs and what each can measure
+- [`docs/design/RADIO_AND_SIM_OPTIONS.md`](docs/design/RADIO_AND_SIM_OPTIONS.md) — what the town decides, spectrum and certification, and SIM provider comparison
 - [`docs/review/DESIGN_REVIEW_R1.md`](docs/review/DESIGN_REVIEW_R1.md) — independent desk review of this package, with findings and readiness criteria
 - [`DECISION_LOG.md`](DECISION_LOG.md) — confirmed decisions, proposals, and unresolved questions
 
@@ -71,6 +72,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.10 | 2026-10-30 | Further trims adopted (D-66, D-67); per-module cost now ~$86, with the cost floor documented |
 | 1.11 | 2026-10-30 | Added a comparison of cellular and no-radio recover-to-collect designs, with a staged recommendation |
 | 1.12 | 2026-10-30 | Cellular retained for the main pilot (D-68); community Wi-Fi alternative evaluated and rejected |
+| 1.13 | 2026-10-30 | Added the radio, spectrum, and SIM analysis; pilot SIM moved to Hologram (D-69) |
 
 ## Contribution and revision policy
 

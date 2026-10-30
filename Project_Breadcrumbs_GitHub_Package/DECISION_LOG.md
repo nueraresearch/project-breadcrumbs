@@ -131,6 +131,7 @@ Recorded from the owner's answers to the open-question list. These supersede the
 | D-66 | Storage is 16 MB of flash on the MCU board. No microSD card and no card slot | Saves $6, removes a connector and an opening in the sealed unit, and holds roughly twenty events. Trade-off: if uploads fail for a long stretch the buffer fills, so an eviction rule must be written rather than left to overflow |
 | D-67 | One combined LTE and GNSS antenna, and foam cutouts instead of a machined tray | Saves $6 with no loss of required function. The retail box already provides structure and weather protection; a tray only adds cost |
 | D-68 | Cellular is retained for the main pilot. The no-radio model stays available only as an optional Phase 0 validation build | The radio is the only way to observe removals that are never recovered. A community Wi-Fi scheme was considered and rejected: it would require storing volunteers' Wi-Fi credentials on a device designed to be stolen, and Wi-Fi cannot associate reliably from a moving vehicle |
+| D-69 | Pilot SIM provider is Hologram, not 1NCE: about $63 for ten devices over three months against $140 for a ten-year 1NCE term. 1NCE remains the option if the study runs beyond a year | Amends D-59. Both work with the BG95-M3; the difference is commitment length, not capability. Per-megabyte pricing also removes the 4 MB/month ceiling risk |
 
 ### Resolution of the section E proposals
 
