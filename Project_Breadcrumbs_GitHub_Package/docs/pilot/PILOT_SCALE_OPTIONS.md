@@ -262,6 +262,8 @@ Unpaid. Nothing in the $2,298 is a wage, and the pilot cannot pay one: three mon
 
 **Why the rate is low.** Across 350–700 hours over six months the implied rate is $8.57–$17.14 an hour — at about the state minimum wage at the bottom of the range, and well below market for embedded work. That is a choice, not an error. An in-kind figure that looks generous invites scepticism; a conservative one is harder to argue with.
 
+**Firmware is inside this figure, not a separate cost.** The 150–300 hours of embedded work — camera pipeline, modem commands, power management, buffered upload — are written in-house by the project lead and sit within the $6,000. That is why the cash budget carries no contractor or software line, and it is worth stating in any proposal: at roughly 40% of the in-kind value, about $2,600, the firmware contribution on its own is about half the size of the cash request.
+
 ### 11.6 Full project cost, as a funder would price it
 
 The $2,298 is the parts-and-operations bill and assumes legal and ethics review cost nothing. A funder will price them anyway, so a proposal should too.

@@ -82,6 +82,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.19 | 2026-10-30 | Recovery payment set at a flat $20, no questions asked (D-74); pilot build falls to $2,298 |
 | 1.20 | 2026-10-30 | Labour valued in-kind at $6,000 over six months (D-75); fully loaded pilot cost $8,298 |
 | 1.21 | 2026-10-30 | Added the full project cost as a funder would price it, including paid reviews and insurance |
+| 1.22 | 2026-10-30 | Firmware stated as written in-house and inside the in-kind valuation, not a separate cost |
 
 ## Contribution and revision policy
 
