@@ -28,7 +28,7 @@ Several substantive hypotheses may be pre-registered alongside it in a dated fil
 - **Cycles per module:** three or more, run rolling. A recovered module is reset and redeployed as soon as it is ready, not at a fixed calendar boundary (D-70).
 - **Minimum placements:** three per module if recruitment or recovery falls short.
 - **Total deployment cycles:** 30 as the planning figure (10 modules × three), each at a different host. Rolling redeployment can exceed it when modules are recovered early, but cannot be relied on: a module that is not returned leaves the pool (D-70).
-- **Preliminary budget target:** $600–$900, retained as a target rather than a budget (D-51). The three-module run is capped at a hard $1,000 (D-71).
+- **Preliminary budget target:** $600–$900, retained as a target rather than a budget (D-51). The pilot target is $2,500 for ten modules and thirty placements (D-73), superseding the $1,000 three-module cap (D-71).
 - **Stopping rule:** no target sample size. Placements continue until the budget reserve or the 90-day window runs out, whichever comes first; the stop is recorded as administrative censoring (D-72).
 - **Setting:** Monte Vista, Colorado, subject to town-meeting approval (D-43).
 

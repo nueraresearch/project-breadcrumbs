@@ -78,6 +78,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.15 | 2026-10-30 | Deployment is rolling: all modules out on day one, recovered modules reset and redeployed at a new address (D-70) |
 | 1.16 | 2026-10-30 | Three-module run capped at a hard $1,000 (D-71); costed at nine modules with four recovery fees |
 | 1.17 | 2026-10-30 | Run ends when money or time runs out; no fixed sample size, with a reserve floor and censoring rule (D-72) |
+| 1.18 | 2026-10-30 | Pilot target raised to $2,500 for ten modules and thirty placements (D-73) |
 
 ## Contribution and revision policy
 

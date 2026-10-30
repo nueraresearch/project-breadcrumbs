@@ -88,9 +88,9 @@ The absolute floor, if recruitment or recovery stalls, is one placement per modu
 
 The full pilot remains ten modules, 30 hosts, 90 days, and the primary outcome stays where D-47 put it. A three-unit trial is a gate, not a substitute — and no result from it should be pooled into the main analysis, because the hardware and procedures will have changed between the two.
 
-## 9. The $1,000 cap (D-71)
+## 9. The $1,000 cap (D-71) — superseded by §11
 
-**Status:** Owner constraint, 2026-10-30. Hard ceiling for the three-module run.
+**Status:** Superseded, 2026-10-30. The cap was raised to $2,500 and the build to ten modules. Retained for the record and for the arithmetic behind the original three-plus-nine question.
 
 ### 9.1 The arithmetic problem
 
@@ -135,6 +135,8 @@ With three modules fielded at a time, nine spares covers the loss of the entire 
 Two of the assumptions above are provisional: the $40 fee (B-11, documented replacement cost, is still open) and the $60 shipping line, which was priced for repeat visits to a few addresses and will be higher across many host households.
 
 ## 10. Stopping rule: money or time, whichever comes first (D-72)
+
+**Note:** the rule stands at any budget. The build table in §10.2 is priced at the $1,000 level and is superseded by §11.1.
 
 **Status:** Owner constraint, 2026-10-30. Amends the module split in D-71; the $1,000 cap is unchanged.
 
@@ -191,3 +193,48 @@ At $984, nine placements works out at about $109 each; fifteen placements at abo
 ### 10.5 The honest limitation
 
 A run that stops when money runs out cannot promise a fixed number of events. If removals are rare, it ends with placements still open and no events at all — a clean feasibility result and no survival estimate. That is an acceptable outcome only if it is stated in advance, which this section does.
+
+## 11. The $2,500 target (D-73)
+
+**Status:** Owner direction, 2026-10-30. Supersedes the $1,000 cap in D-71 and the build in §10.2; the stopping rule in §10 stands.
+
+### 11.1 Why ten modules rather than three
+
+At $1,000, three modules was the right shape because the money barely covered the fixed costs. At $2,500 that reverses. **Module-months generate the observations, and they are the cheapest line in the budget** — $72 buys a module that produces thirty porch-days, about $2.40 per porch-day.
+
+Three modules at this cap would leave most of $2,500 unspent on the only input that produces data.
+
+| Line | Amount |
+|---|---:|
+| Ten modules at ~$72 | 720 |
+| Boxes for thirty placements | 60 |
+| Shipping and insurance | 200 |
+| Materials and ops kit | 120 |
+| Hosting and tooling | 150 |
+| Reserve floor | 200 |
+| **Committed** | **1,450** |
+| Replacements, up to nine at $72 | 648 |
+| Recovery fees, up to ten at $40 | 400 |
+| **Contingent** | **1,050** |
+| **Total** | **2,498** |
+
+Committed spend is $1,450. The other $1,050 is spent only if modules are lost or boxes come back — the logic of §9.3 at ten times the scale.
+
+### 11.2 What $2,500 does not change
+
+Thirty placements is still thirty porch-months, and expected removals are still **0.25 to 0.5**. The chance of observing at least one is **22–39%**. The chance of observing enough to draw a survival curve is negligible.
+
+The honest description of this budget is **a properly run feasibility study**, not a measurement of theft.
+
+If the goal is a rate rather than a study, $2,500 is year one of a multi-year programme. At the same base rate, about 1,000 porch-months are needed for roughly eight events: ten modules running continuously for eight years, recruiting 1,000 households in a town of 1,600. That is not a pilot, it is a standing survey, and it should be described as one before anyone funds the first year.
+
+### 11.3 Where extra money should go
+
+1. **Replacements** — protects the thirty-placement target through losses.
+2. **A second wave of placements** — if recruitment holds and nothing is lost, the same money buys more porch-months, the only thing that improves the estimate.
+3. **Recovery fees** — contingent by nature, paid only on return.
+4. **Nothing else.** Paid legal or ethics review belongs outside this figure. It is a programme cost, not a pilot cost, and folding it in distorts comparison with any future run.
+
+### 11.4 The condition
+
+The same one as before, and it gets sharper as the budget grows, because the temptation does too: **legal and ethics review must be $0.** A $2,000 ethics review would consume 80% of $2,500 and leave a five-hundred-dollar field programme. If either has to be paid, the honest move is to say the pilot costs $4,000–5,500 and fund it at that level, rather than squeeze the field work to protect a headline figure.
