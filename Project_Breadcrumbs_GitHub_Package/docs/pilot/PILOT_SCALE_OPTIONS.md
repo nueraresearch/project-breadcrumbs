@@ -261,3 +261,23 @@ Unpaid. Nothing in the $2,298 is a wage, and the pilot cannot pay one: three mon
 **Why six months and not three.** Firmware is written before the first deployment, recruitment overlaps it, and analysis follows the last retrieval. Counting only the ninety field days would understate the work by roughly half.
 
 **Why the rate is low.** Across 350–700 hours over six months the implied rate is $8.57–$17.14 an hour — at about the state minimum wage at the bottom of the range, and well below market for embedded work. That is a choice, not an error. An in-kind figure that looks generous invites scepticism; a conservative one is harder to argue with.
+
+### 11.6 Full project cost, as a funder would price it
+
+The $2,298 is the parts-and-operations bill and assumes legal and ethics review cost nothing. A funder will price them anyway, so a proposal should too.
+
+| Scenario | Cash | In-kind | Total |
+|---|---:|---:|---:|
+| Reviews pro bono or waived | 2,298 | 6,000 | **8,298** |
+| One review paid | 3,798–4,298 | 6,000 | **9,798–10,298** |
+| Both reviews paid | 5,798 | 6,000 | **11,798** |
+| Both paid at the top of their range | 7,298 | 6,000 | **13,298** |
+
+Insurance is not priced in any row. It has to be quoted before submission, and it is the line most likely to appear late and quietly exceed the rest of the contingency.
+
+**Recommended request: $5,000 cash against $6,000 in-kind, an $11,000 project.** That covers the pilot, one review at the top of its range, and a small buffer, and it is a round figure that can be approved without a second round of arithmetic. It sits comfortably inside the $1,000–$25,000 project band small rural foundations typically work in, which matters: an ask of $2,298 is liable to look like a rounding error rather than a project.
+
+Two things to state plainly in the proposal, because a final report will have to state them anyway:
+
+- **The deliverable is a feasibility finding, not a theft rate.** Thirty porch-months is a case series. If the proposal implies a town-wide measurement, the grant ends on a report that says the measurement was never possible.
+- **The in-kind contribution is the larger half of the project.** $6,000 against a $5,000 request is roughly 55% of the total cost, which is a genuine leverage story rather than a formality.
