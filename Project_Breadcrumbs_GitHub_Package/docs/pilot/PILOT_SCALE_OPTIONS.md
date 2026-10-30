@@ -70,12 +70,19 @@ A small trial is evidence. A proposal is a promise. In a town of 4,000, the diff
 
 Use the cellular build rather than the no-radio build, because the point is to test the real pipeline — upload, ingest, publication — not just the camera.
 
-Two ways to run it:
+**Deploy all three on day one, each to a different household with its own volunteer.** Then run it rolling: when a module comes back — sealed, opened, stolen-and-returned, or failed — reset it and redeploy it at a **new** address as soon as it is ready, rather than waiting for a calendar boundary (D-70). Thirty days is the **maximum observation per placement and the point at which a survivor is censored**; it is not a wave that holds a working module in the workshop.
 
-- **Fast:** three modules, one 90-day cycle each, three hosts. Cheapest and simplest; tests everything once.
-- **Thorough:** three modules, three 30-day cycles each, nine hosts. Tests the handoff, the cell swap, and the reset as well as the hardware.
+Turnaround budget: **three days** — inspection, record reconciliation, cell swap, fresh seal, wipe, rebox, host briefing. Faster is not credible; slower wastes exposure.
 
-The fast version answers "does it work". The thorough version answers "does it work repeatedly, and does the volunteer logistics hold". Given that the logistics are the part most likely to fail quietly, the thorough version is worth the extra $18 in boxes.
+What rolling does and does not buy:
+
+- **More placements, not more exposure.** Three modules in the field for ninety days is 270 module-days whether they are redeployed on recovery or on a fixed schedule. No cycling manufactures more instrument-time than the modules provide.
+- **Placements are gated by recovery, and recovery is the event.** A module removed and never returned is gone and cannot be redeployed. At n=3, two unrecovered removals leave one module, and no schedule compensates. This is the strongest argument for ten modules over three, and for keeping the cellular build.
+- **The sample grows fastest exactly when the pilot is going badly.** Because only disturbed-and-returned modules generate new placements, observation count tracks the removal rate. That is a property of the phenomenon rather than a defect, but it means rolling redeployment cannot be relied on to produce placements.
+- **Recruitment becomes the rate-limiting step.** Every placement needs a new household (D-53), so fast cycling can exhaust the volunteer roster before day ninety. Budget the roster against placements, not against ninety days.
+- **Calendar time is no longer balanced.** Rolling compresses later observations into later dates, and porch risk is seasonal. Record placement date and carry it as a covariate in the pre-registered analysis instead of assuming exchangeability across the trial.
+
+The absolute floor, if recruitment or recovery stalls, is one placement per module for ninety days. Rolling is the recommendation because it costs $18 more in boxes and tests resets, handoffs, and cell swaps as a matter of course — the parts most likely to fail quietly.
 
 ## 8. What this does not change
 

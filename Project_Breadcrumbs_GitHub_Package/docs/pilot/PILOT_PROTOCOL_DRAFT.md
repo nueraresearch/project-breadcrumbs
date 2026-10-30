@@ -25,12 +25,13 @@ Several substantive hypotheses may be pre-registered alongside it in a dated fil
 - **Volunteer hosts:** 30, one deployment each (D-53).
 - **Collection point:** the project's operating base in Monte Vista, by appointment (D-55). The address is held privately.
 - **Cycle length:** 30 days per deployment cycle (D-34).
-- **Cycles per module:** three, run back to back. The 90-day pilot is therefore three consecutive 30-day cycles per module, not one long deployment.
-- **Total deployment cycles:** 30, being 10 modules × three cycles, each at a different host.
+- **Cycles per module:** three or more, run rolling. A recovered module is reset and redeployed as soon as it is ready, not at a fixed calendar boundary (D-70).
+- **Minimum placements:** three per module if recruitment or recovery falls short.
+- **Total deployment cycles:** 30 as the planning figure (10 modules × three), each at a different host. Rolling redeployment can exceed it when modules are recovered early, but cannot be relied on: a module that is not returned leaves the pool (D-70).
 - **Preliminary budget target:** $600–$900, retained as a target rather than a budget (D-51).
 - **Setting:** Monte Vista, Colorado, subject to town-meeting approval (D-43).
 
-**Why 30-day cycles.** Each cycle boundary is a natural point to retrieve the module, swap the cell, offload stored records, and inspect the enclosure. It also bounds the period any single site is exposed, and it makes "one deployment" a unit that means the same thing for every module.
+**Why 30-day cycles.** Each cycle boundary is a natural point to retrieve the module, swap the cell, offload stored records, and inspect the enclosure. It also bounds the period any single site is exposed, and it makes "one deployment" a unit that means the same thing for every module. It is not a scheduling wave: a module recovered on day nine is cleared and redeployed as soon as it is ready, and thirty days only decides when a module still in place is retrieved and censored (D-70).
 
 **Correction to earlier figures.** Previous concept documents cited approximately 120 deployment cycles. That figure was computed against 90-day cycles. At three 30-day cycles per module across 10 modules the total is 30. The 120 figure should not be used in planning; D-34 records the correction.
 
@@ -61,7 +62,7 @@ Each cycle should record:
 8. Outcome classification and device inspection.
 9. Reset and redeployment, if appropriate.
 
-A cycle ends when the module is retrieved, its records are reconciled, and it is cleared for redeployment or retired. It then moves to a different host for the next cycle; it does not return to the same address (D-53). The protocol must define the check-in schedule, the recovery window, and the lost-device procedure before field use.
+A cycle ends when the module is retrieved, its records are reconciled, and it is cleared for redeployment or retired. It then moves to a different host for the next cycle; it does not return to the same address (D-53). Turnaround — inspection, record reconciliation, cell swap, fresh seal, wipe, rebox, host briefing — is budgeted at three days, and the module returns to the field at the first available address rather than at a fixed boundary (D-70). The protocol must define the check-in schedule, the recovery window, and the lost-device procedure before field use.
 
 ## 6. Data collected
 
