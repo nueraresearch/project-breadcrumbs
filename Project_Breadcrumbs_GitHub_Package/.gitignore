@@ -1,0 +1,19 @@
+# Local development and build artifacts
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Never commit research participant data or device secrets
+private-data/
+participant-data/
+raw-images/
+exports/
+secrets/
+credentials/
+*.pem
+*.key
