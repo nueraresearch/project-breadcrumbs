@@ -25,6 +25,7 @@ This repository contains the current concept definition, preliminary hardware re
 - [`docs/pilot/POST_OFFICE_DATA_REQUEST.md`](docs/pilot/POST_OFFICE_DATA_REQUEST.md) — request letter and agreement terms for aggregate route volume
 - [`firmware/README.md`](firmware/README.md) — ESP32-S3 firmware foundation: wake handling, capture, storage, modem, arming
 - [`server/README.md`](server/README.md) — ingest endpoint: validated record and image storage, standard library only
+- [`firmware/bench/README.md`](firmware/bench/README.md) — bench harness for measuring the RTC oscillator and setting the drift constants
 - [`docs/pilot/PILOT_SCALE_OPTIONS.md`](docs/pilot/PILOT_SCALE_OPTIONS.md) — cost and evidence at three, six, and ten modules
 - [`docs/pilot/DEPLOYMENT_AND_OPERATIONS.md`](docs/pilot/DEPLOYMENT_AND_OPERATIONS.md) — voluntary homeowner deployment and operating cycle
 - [`docs/pilot/TEST_AND_VALIDATION_PLAN.md`](docs/pilot/TEST_AND_VALIDATION_PLAN.md) — bench and field validation plan
@@ -88,6 +89,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.23 | 2026-10-30 | Added the firmware foundation: 1,300 lines, uncompiled and unverified on hardware |
 | 1.24 | 2026-10-30 | Firmware timebase replaced: monotonic RTC clock with drift discipline and per-record uncertainty |
 | 1.25 | 2026-10-30 | Added the ingest endpoint, with 20 passing tests against the data model |
+| 1.26 | 2026-10-30 | Added the bench harness and drift analyzer, so the clock constants can be measured |
 
 ## Contribution and revision policy
 
