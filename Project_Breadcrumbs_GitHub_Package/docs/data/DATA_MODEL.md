@@ -116,6 +116,8 @@ A `LIGHT_TRIGGER` is a sensor observation, not proof of opening or theft. A `MOV
 
 Store timestamps in UTC in machine-readable records and retain the device's clock-synchronization status. For analysis, convert to local time using the deployment site's time zone. Record clock drift and missing timestamps.
 
+**Clock uncertainty is carried explicitly.** Each record also carries `clock_uncertainty_s`, the estimated error bound at the moment of capture. The device sleeps between events, so its clock is a free-running oscillator disciplined only when the modem syncs; the bound grows with time since the last sync and shrinks once the drift rate has been measured. A record with a wide bound is still usable for ordering events, and is not usable as a precise event time. Carrying the bound is what lets the analysis decide which is which, rather than assuming every timestamp is equally good.
+
 ## 5. Data quality flags
 
 Use explicit flags for:

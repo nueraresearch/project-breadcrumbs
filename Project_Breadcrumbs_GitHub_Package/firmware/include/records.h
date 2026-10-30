@@ -55,6 +55,11 @@ struct Record {
     int64_t     sensor_ts;      // UTC seconds from the device clock
     bool        clock_synced;   // DATA_MODEL §4 — flagged, never discarded
 
+    // Error bound on sensor_ts, in seconds, from the timebase's drift model.
+    // A record with a wide bound is still usable for ordering; it is not usable
+    // as a precise event time, and the analysis needs to know which is which.
+    uint32_t    clock_uncertainty_s;
+
     uint16_t    battery_mv;
     float       lux;            // meaningful on LightTrigger only
     uint8_t     frame_count;    // 0..3

@@ -86,11 +86,12 @@ size_t record_to_json(const Record& r, char* out, size_t cap) {
 
     n += snprintf(out + n, cap - n,
                   "\",\"event_type\":\"%s\",\"sensor_ts\":%lld,"
-                  "\"clock_synced\":%s,\"battery_mv\":%u,"
-                  "\"frame_count\":%u,\"flags\":%u",
+                  "\"clock_synced\":%s,\"clock_uncertainty_s\":%u,"
+                  "\"battery_mv\":%u,\"frame_count\":%u,\"flags\":%u",
                   event_type_name(r.type),
                   (long long)r.sensor_ts,
                   r.clock_synced ? "true" : "false",
+                  (unsigned)r.clock_uncertainty_s,
                   (unsigned)r.battery_mv,
                   (unsigned)r.frame_count,
                   (unsigned)r.flags);

@@ -85,6 +85,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.21 | 2026-10-30 | Added the full project cost as a funder would price it, including paid reviews and insurance |
 | 1.22 | 2026-10-30 | Firmware stated as written in-house and inside the in-kind valuation, not a separate cost |
 | 1.23 | 2026-10-30 | Added the firmware foundation: 1,300 lines, uncompiled and unverified on hardware |
+| 1.24 | 2026-10-30 | Firmware timebase replaced: monotonic RTC clock with drift discipline and per-record uncertainty |
 
 ## Contribution and revision policy
 

@@ -31,6 +31,7 @@ It implements the decision set as code rather than prose:
 - Modem attach time, and whether the BG95 AT sequences below match the module's actual firmware revision.
 - GNSS fix time and accuracy on a porch, indoors, and in a moving vehicle.
 - Energy per fix and per upload, and the resulting 30-day projection.
+- RTC oscillator drift, and therefore how often the device must sync to keep timestamps inside the analysis tolerance. The residual ppm in `config.h` is an assumption, not a measurement.
 
 ## 3. Structure
 
@@ -42,11 +43,13 @@ firmware/
 │   ├── config.h            pins, thresholds, timings — all tunables in one place
 │   ├── records.h           record schema and event taxonomy
 │   ├── store.h             flash queue and eviction
+│   ├── timebase.h          monotonic clock that survives deep sleep
 │   └── modem.h             BG95 driver interface
 └── src/
     ├── main.cpp            wake handling, state machine, capture, arming
     ├── records.cpp         JSON serialisation and record IDs
     ├── store.cpp           LittleFS queue with the eviction rule
+    ├── timebase.cpp        drift measurement and uncertainty bounds
     └── modem.cpp           AT command driver, time, GNSS, HTTP upload
 ```
 
@@ -58,7 +61,7 @@ firmware/
 
 **Eviction is logged, not silent.** When the buffer fills, `store_evict_if_needed()` deletes oldest-uploaded first. If nothing has been uploaded it deletes the oldest unsent record and increments a counter that is itself transmitted as a record. A silent drop would corrupt the denominator, which the analysis plan forbids.
 
-**Time is untrusted until the modem says otherwise.** `clock_synced` travels with every record, per DATA_MODEL §4. A record with an unsynced clock is still stored; it is flagged rather than discarded.
+**Time survives sleep, and carries its own error bar.** `millis()` and the ESP timer both restart on every wake, so neither can timestamp an event that happened while the CPU was asleep. The RTC timer keeps counting, so it is the monotonic base. It is also inaccurate, so `timebase.cpp` measures its rate at every network sync, smooths it, and applies the correction. Every record carries `clock_synced` and `clock_uncertainty_s` together; a record is flagged rather than discarded, and a wide bound tells the analysis it is ordering-only.
 
 ## 5. Building
 

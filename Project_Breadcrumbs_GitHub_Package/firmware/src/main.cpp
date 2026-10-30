@@ -14,13 +14,13 @@
 #include <esp_sleep.h>
 #include <Wire.h>
 #include <Adafruit_VEML7700.h>
-#include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
 
 #include "config.h"
 #include "modem.h"
 #include "records.h"
 #include "store.h"
+#include "timebase.h"
 
 // ---------------------------------------------------------------------------
 // State that survives deep sleep
@@ -29,11 +29,10 @@
 RTC_DATA_ATTR static bool     s_armed = false;
 RTC_DATA_ATTR static uint32_t s_last_trigger_ms = 0;
 RTC_DATA_ATTR static uint32_t s_last_motion_ms = 0;
-RTC_DATA_ATTR static int64_t  s_clock_offset_s = 0;   // device -> UTC correction
-RTC_DATA_ATTR static bool     s_clock_synced = false;
 RTC_DATA_ATTR static uint32_t s_boot_count = 0;
 
 static Adafruit_VEML7700 s_lux = Adafruit_VEML7700();
+
 // The accelerometer is used through its interrupt pin only. Motion magnitude is
 // not read yet, so kMotionThresholdMg is a placeholder until the part is
 // configured (README §2).
@@ -44,10 +43,12 @@ enum class WakeCause { Light, Motion, Timer, ColdBoot };
 // Helpers
 // ---------------------------------------------------------------------------
 
-static int64_t now_utc() {
-    // Time since boot is not wall time; the offset is applied when the modem
-    // syncs. Until then records carry clock_synced=false (DATA_MODEL §4).
-    return s_clock_offset_s;
+// Stamps a record with the current time and the bound on its accuracy. Every
+// record site goes through here so the two can never disagree.
+static void stamp_now(Record& r) {
+    r.sensor_ts           = timebase_utc_now();
+    r.clock_synced        = timebase_is_synced();
+    r.clock_uncertainty_s = timebase_uncertainty_s();
 }
 
 static uint16_t battery_mv() {
@@ -87,10 +88,8 @@ static void check_arming() {
     if (now && !s_armed) {
         // Magnet removed: the operator has finished sealing and placing.
         Record r;
-        record_init(r, EventType::LightTrigger);   // placeholder replaced below
-        r.type = EventType::DeploymentClosed;
-        r.sensor_ts = now_utc();
-        r.clock_synced = s_clock_synced;
+        record_init(r, EventType::DeploymentClosed);
+        stamp_now(r);
         r.battery_mv = battery_mv();
         persist(r);
         s_armed = true;
@@ -186,10 +185,9 @@ static void handle_light_trigger() {
 
     Record r;
     record_init(r, EventType::LightTrigger);
-    r.sensor_ts   = now_utc();
-    r.clock_synced = s_clock_synced;
-    r.battery_mv  = battery_mv();
-    r.lux         = lux;
+    stamp_now(r);
+    r.battery_mv = battery_mv();
+    r.lux        = lux;
 
     // The camera is powered and read here and nowhere else.
     uint8_t frames = capture_burst(r.record_id);
@@ -208,7 +206,7 @@ static void handle_light_trigger() {
     persist_and_flush(r);
 }
 
-static void handle_motion(int64_t fixed_utc) {
+static void handle_motion() {
     // Movement is logged and never images (HW-23, HW-24). There is no camera
     // call in this function and there must never be one.
     uint32_t now = millis();
@@ -217,8 +215,7 @@ static void handle_motion(int64_t fixed_utc) {
 
     Record r;
     record_init(r, EventType::MovementEvent);
-    r.sensor_ts = fixed_utc;
-    r.clock_synced = s_clock_synced;
+    stamp_now(r);
     r.battery_mv = battery_mv();
     persist(r);
 }
@@ -227,17 +224,16 @@ static void handle_timer() {
     // Periodic health: battery, a location fix, and a flush of the queue.
     Record r;
     record_init(r, EventType::LocationFix);
-    r.sensor_ts = now_utc();
-    r.clock_synced = s_clock_synced;
+    stamp_now(r);
     r.battery_mv = battery_mv();
 
     if (modem_power_on()) {
         int64_t utc = 0;
         if (modem_sync_time(&utc)) {
-            s_clock_offset_s = utc;
-            s_clock_synced = true;
-            r.clock_synced = true;
-            r.sensor_ts = utc;
+            // Disciplines the RTC as a side effect: the drift estimate is
+            // updated from the gap since the last sync, not from a fixed value.
+            timebase_sync(utc);
+            stamp_now(r);   // now reflects the corrected base
         }
 
         double lat = 0, lon = 0;
@@ -260,9 +256,8 @@ static void handle_timer() {
     if (r.battery_mv < kLowBatteryMv) {
         Record lb;
         record_init(lb, EventType::LowBattery);
-        lb.sensor_ts = r.sensor_ts;
+        stamp_now(lb);
         lb.battery_mv = r.battery_mv;
-        lb.clock_synced = s_clock_synced;
         persist(lb);
     }
 
@@ -277,8 +272,6 @@ static void upload_pending() {
     if (n == 0) return;
 
     if (!modem_power_on()) return;
-    int rssi = modem_rssi();
-    (void)rssi;
 
     for (size_t i = 0; i < n; ++i) {
         char body[512];
@@ -330,6 +323,7 @@ void setup() {
     // The sensors hang off a shared I2C bus; without this the light read in the
     // wake path returns nothing and every opening looks like a flicker.
     Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
+
     pinMode(PIN_REED_SWITCH, INPUT_PULLDOWN);
     pinMode(PIN_LIGHT_INT, INPUT);
     pinMode(PIN_ACCEL_INT, INPUT);
@@ -347,6 +341,7 @@ void setup() {
         wake = WakeCause::ColdBoot;
         Record r;
         record_init(r, EventType::PowerReset);
+        stamp_now(r);
         r.battery_mv = battery_mv();
         persist(r);
     } else if (cause == ESP_SLEEP_WAKEUP_EXT1) {
@@ -360,7 +355,7 @@ void setup() {
     if (wake == WakeCause::Light) {
         handle_light_trigger();
     } else if (wake == WakeCause::Motion) {
-        handle_motion(now_utc());
+        handle_motion();
     } else {
         handle_timer();
         upload_pending();

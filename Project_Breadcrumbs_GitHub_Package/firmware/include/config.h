@@ -102,6 +102,22 @@ static const int kBurstExposures[3][2] = {
 #define kUploadPath         "/v1/records"
 
 // ---------------------------------------------------------------------------
+// Timebase — see timebase.h
+// ---------------------------------------------------------------------------
+
+// Shorter gaps cannot measure the oscillator: the network's own resolution
+// swamps the drift.
+#define kMinIntervalForDriftS   600
+// A disagreement larger than this means something jumped, not that the
+// oscillator drifted. Rebase without touching the estimate.
+#define kMaxPlausibleDriftS     86400
+// Plausible range for a slow RC or crystal oscillator.
+#define kMaxDriftPpm            200000
+// Error bound before the drift has been measured, and after.
+#define kResidualPpmCold        50000
+#define kResidualPpmSteady      2000
+
+// ---------------------------------------------------------------------------
 // Power
 // ---------------------------------------------------------------------------
 
