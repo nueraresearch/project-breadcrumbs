@@ -1,0 +1,7 @@
+# Ingest data must never be committed: this repository is public and these
+# files contain full-precision volunteer location.
+data/
+*.db
+*.db-wal
+*.db-shm
+__pycache__/
