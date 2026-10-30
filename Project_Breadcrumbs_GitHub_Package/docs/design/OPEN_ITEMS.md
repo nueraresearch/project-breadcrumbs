@@ -54,7 +54,7 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 | C-02 | Adjudication reviewers named, rubric written | Two reviewers plus a tiebreak are required by the analysis plan | Open |
 | C-03 | Pre-registration dated, signed, committed | Must precede the first deployment | Open |
 | C-04 | Publication venue and format | Determines captions, tables, and what can be shown | Open |
-| C-05 | Caption templates implementing D-42 | "Package opened", no names, no identification requests | Open |
+| C-05 | Caption templates implementing D-42 | "Package opened", no names, no identification requests | **Implemented 2026-10-30** in `server/publish.py` |
 | C-06 | Retention and deletion implementation | The schedule exists; the mechanism does not | Open |
 | C-07 | Postal data agreement | Context only; the study proceeds without it (D-56) | Open |
 

@@ -61,3 +61,26 @@ python3 -m unittest test_ingest.py -v
 - **No recovery records.** The recovery entity in the data model has no ingest path yet.
 - **No TLS.** Put it behind a reverse proxy that terminates TLS; the firmware's `QHTTPPOST` assumes HTTPS.
 - **No rate limiting.** A misbehaving device can fill the disk.
+
+## Publication
+
+`publish.py` produces the publishable copy. It is a separate step rather than part of ingest, because release is a decision rather than a consequence of receipt.
+
+```
+PUBLISH_SALT=$(python3 -c 'import os;print(os.urandom(16).hex())') \
+  python3 publish.py --data-dir data --out published
+```
+
+**Nothing is published unless it is on the whitelist.** `OUTPUT_FIELDS` in `publish.py` is the complete set of fields that may leave the building. A column added to the database later cannot leak, because it is never copied.
+
+- **No coordinates, at any setting.** Displacement is published as a coarse bucket (`under 250 m` through `over 5 km`) plus a distance rounded to 100 m. That answers the displacement question without saying where a volunteer lives (D-41).
+- **Delay.** Records newer than `--delay-days` are held and publish on a later run (D-41). The figure is a placeholder: D-41 requires a delay but does not set one, so the manifest records whichever value produced a bundle.
+- **Deployment keys.** `deployment_id` is replaced by a keyed hash, so events can be grouped by deployment without naming a household. The salt is never written to the output. Losing it means published keys can no longer be linked back, so keep it with the project records and not with the data.
+- **Captions** come from a fixed table keyed by event type, and each is checked against `BANNED_TERMS` before writing (D-42). An event type with no approved caption fails the run rather than receiving an invented one.
+- **Images are released only when adjudicated** (D-52). A record that has not been reviewed publishes its metadata but not its frames, and the count is reported. Withheld images are counted by category and never described.
+
+Every released frame has its metadata stripped by walking the JPEG markers and dropping APP1 to APP15 and comments; the result is re-checked for the JFIF start and EOI end markers. A frame that does not parse is refused rather than published as-is.
+
+The run writes `records.jsonl`, `images/` and a `manifest.json` recording the policy version, delay and counts, so a published bundle always states the rules that produced it.
+
+Note that `validation_status` is the adjudication signal, and no adjudication workflow exists yet. Until one does, the default output is event metadata with no images, which is the intended fail-closed behaviour rather than a bug.

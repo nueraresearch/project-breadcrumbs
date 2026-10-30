@@ -91,6 +91,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.25 | 2026-10-30 | Added the ingest endpoint, with 20 passing tests against the data model |
 | 1.26 | 2026-10-30 | Added the bench harness and drift analyzer, so the clock constants can be measured |
 | 1.27 | 2026-10-30 | Firmware now uploads captured frames by streaming from flash, in order, with per-frame confirmation |
+| 1.28 | 2026-10-30 | Added the publication step, so records are coarsened, delayed and captioned before release |
 
 ## Contribution and revision policy
 
