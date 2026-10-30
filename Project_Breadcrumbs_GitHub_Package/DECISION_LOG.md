@@ -130,6 +130,7 @@ Recorded from the owner's answers to the open-question list. These supersede the
 | D-65 | Build cost target is ~$66 in parts and ~$86 per deployable module, against the previous ~$156 | Achieved by the choices above and below; all figures small-quantity estimates pending supplier quotes |
 | D-66 | Storage is 16 MB of flash on the MCU board. No microSD card and no card slot | Saves $6, removes a connector and an opening in the sealed unit, and holds roughly twenty events. Trade-off: if uploads fail for a long stretch the buffer fills, so an eviction rule must be written rather than left to overflow |
 | D-67 | One combined LTE and GNSS antenna, and foam cutouts instead of a machined tray | Saves $6 with no loss of required function. The retail box already provides structure and weather protection; a tray only adds cost |
+| D-68 | Cellular is retained for the main pilot. The no-radio model stays available only as an optional Phase 0 validation build | The radio is the only way to observe removals that are never recovered. A community Wi-Fi scheme was considered and rejected: it would require storing volunteers' Wi-Fi credentials on a device designed to be stolen, and Wi-Fi cannot associate reliably from a moving vehicle |
 
 ### Resolution of the section E proposals
 

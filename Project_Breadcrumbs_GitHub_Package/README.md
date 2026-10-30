@@ -70,6 +70,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.9 | 2026-10-30 | Technical build items decided (D-57 to D-65); per-module cost reduced from ~$156 to ~$99 |
 | 1.10 | 2026-10-30 | Further trims adopted (D-66, D-67); per-module cost now ~$86, with the cost floor documented |
 | 1.11 | 2026-10-30 | Added a comparison of cellular and no-radio recover-to-collect designs, with a staged recommendation |
+| 1.12 | 2026-10-30 | Cellular retained for the main pilot (D-68); community Wi-Fi alternative evaluated and rejected |
 
 ## Contribution and revision policy
 

@@ -1,6 +1,6 @@
 # Connectivity Options — Cellular, Recover-to-Collect, or Both
 
-**Status:** Options analysis. Not a decision. Choosing the no-radio model would change D-33, D-47, D-53 and HW-25/26.
+**Status:** Options analysis. The cellular design is retained for the main pilot (D-68); the no-radio build remains available as an optional Phase 0 validation unit.
 **Related:** [`../hardware/COST_REDUCTION_PLAN.md`](../hardware/COST_REDUCTION_PLAN.md), [`../../DECISION_LOG.md`](../../DECISION_LOG.md)
 
 ## 1. The question worth asking
@@ -104,3 +104,21 @@ The primary outcome would become something like: *among packages that were opene
 Buying ten cellular units before validating the camera risks $860 on unproven optics. Buying ten no-radio units for the main study risks a dataset that cannot answer the primary question at all.
 
 The staged path spends about $130 to avoid both. Given the remaining unknowns are all in the camera and power path, that is the cheapest decision on the table.
+
+## 11. The community Wi-Fi idea
+
+A reasonable thought: if enough households offered Wi-Fi, the module could report as it travelled. It does not survive contact with the details.
+
+**Credentials.** A device can only join networks it holds keys for. Preloading volunteers' access points means storing their Wi-Fi passwords on the one object in the study designed to be stolen. The device must be able to decrypt them to connect, so whoever ends up with the module holds the keys to volunteers' home networks. That is a worse outcome than losing the box.
+
+**Range and dwell time.** A package in a passing car is inside an access point's usable range for a few seconds. Association, DHCP, and a TLS session inside that window is unreliable at best. Wi-Fi is built for devices that stay put.
+
+**Power.** Wi-Fi transmit draws hundreds of milliamps, and continuously scanning for an access point would flatten the cell in days. An LTE-M link sleeps between uploads and costs a fraction of that.
+
+**Geometry.** Volunteers are on porches; the package travels roads; access points sit in houses set back from them.
+
+**It solves a problem that is already solved.** Cellular is the roaming network — it hands over between towers as the box moves. Wi-Fi would only substitute where cellular fails, and the 1NCE SIM roams across carriers, so that fallback already exists.
+
+**If coverage is the real worry**, measure it rather than mesh it: test signal at three representative addresses — on a porch, indoors, and beside a parked car — before ordering anything. If it is marginal, a $3 external antenna is cheaper and simpler than a mesh of strangers' routers.
+
+The ESP32-S3 has Wi-Fi built in, so this costs nothing in hardware. That is precisely the temptation: zero cost to add, non-zero risk to carry.
