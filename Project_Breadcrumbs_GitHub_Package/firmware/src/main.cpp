@@ -34,7 +34,9 @@ RTC_DATA_ATTR static bool     s_clock_synced = false;
 RTC_DATA_ATTR static uint32_t s_boot_count = 0;
 
 static Adafruit_VEML7700 s_lux = Adafruit_VEML7700();
-static Adafruit_LIS3DH   s_accel = Adafruit_LIS3DH();
+// The accelerometer is used through its interrupt pin only. Motion magnitude is
+// not read yet, so kMotionThresholdMg is a placeholder until the part is
+// configured (README §2).
 
 enum class WakeCause { Light, Motion, Timer, ColdBoot };
 
@@ -324,6 +326,10 @@ void setup() {
 
     pinMode(PIN_CAM_POWER, OUTPUT);
     digitalWrite(PIN_CAM_POWER, LOW);   // camera stays unpowered between events
+
+    // The sensors hang off a shared I2C bus; without this the light read in the
+    // wake path returns nothing and every opening looks like a flicker.
+    Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
     pinMode(PIN_REED_SWITCH, INPUT_PULLDOWN);
     pinMode(PIN_LIGHT_INT, INPUT);
     pinMode(PIN_ACCEL_INT, INPUT);
