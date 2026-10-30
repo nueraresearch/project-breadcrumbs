@@ -96,6 +96,12 @@ static const int kBurstExposures[3][2] = {
 #define kUploadRetryBaseMs  5000UL
 #define kUploadRetryMaxMs   120000UL
 
+// Flush budget per wake. Each frame is tens of kilobytes over LTE-M, so the
+// flush is deliberately small: spending minutes awake to empty the queue costs
+// more battery than it saves.
+#define kMaxRecordsPerFlush 2
+#define kMaxFramesPerFlush  6
+
 // Telemetry endpoint. Not a command endpoint: it accepts POSTed records only,
 // and nothing in the response can start a capture (HW-30).
 #define kUploadHost         "ingest.example.invalid"

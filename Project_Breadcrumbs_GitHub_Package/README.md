@@ -90,6 +90,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.24 | 2026-10-30 | Firmware timebase replaced: monotonic RTC clock with drift discipline and per-record uncertainty |
 | 1.25 | 2026-10-30 | Added the ingest endpoint, with 20 passing tests against the data model |
 | 1.26 | 2026-10-30 | Added the bench harness and drift analyzer, so the clock constants can be measured |
+| 1.27 | 2026-10-30 | Firmware now uploads captured frames by streaming from flash, in order, with per-frame confirmation |
 
 ## Contribution and revision policy
 

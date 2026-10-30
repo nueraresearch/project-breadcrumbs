@@ -13,6 +13,7 @@
 #include <esp_camera.h>
 #include <esp_sleep.h>
 #include <Wire.h>
+#include <stdio.h>
 #include <Adafruit_VEML7700.h>
 #include <Adafruit_Sensor.h>
 
@@ -266,34 +267,108 @@ static void handle_timer() {
 
 // Uploads the queue, oldest first. Runs on the timer path only, so an event
 // never pays for a modem attach at the moment it happens.
+//
+// Order matters. The record JSON goes first, because the frame routes are
+// addressed under it. Frames then go 1..3 ascending, and the record is removed
+// only when every frame present on disk has been confirmed. A failure at any
+// point leaves the record in place with its per-frame markers intact, so the
+// next flush resumes rather than restarting.
+static bool post_record_json(const char* record_id) {
+    char body[512];
+    size_t len = store_read_record(record_id, body, sizeof(body) - 1);
+    if (len == 0) return false;
+    body[len] = '\0';
+
+    bool ok = false;
+    uint32_t backoff = kUploadRetryBaseMs;
+    for (uint8_t attempt = 0; attempt < kUploadAttempts && !ok; ++attempt) {
+        ok = modem_http_post(kUploadHost, kUploadPath,
+                             (const uint8_t*)body, len);
+        if (!ok) {
+            delay(backoff);
+            backoff = min(backoff * 2, kUploadRetryMaxMs);
+        }
+    }
+    return ok;
+}
+
+static bool upload_frame(const char* record_id, uint8_t frame,
+                         size_t size, uint32_t* budget) {
+    if (*budget == 0) return false;   // flush allowance spent
+
+    char path[96];
+    snprintf(path, sizeof(path), "/v1/records/%s/images/%u",
+             record_id, (unsigned)frame);
+
+    bool ok = false;
+    uint32_t backoff = kUploadRetryBaseMs;
+
+    for (uint8_t attempt = 0; attempt < kUploadAttempts && !ok; ++attempt) {
+        // Re-open for each attempt: a failed stream has already been consumed
+        // and cannot simply be retried from its current position.
+        void* src = store_open_image(record_id, frame);
+        if (!src) return false;
+
+        ok = modem_http_post_stream(kUploadHost, path, size,
+                                    store_read_image_chunk, src,
+                                    QHTTP_CT_BINARY);
+        store_close_image(src);
+
+        if (!ok) {
+            delay(backoff);
+            backoff = min(backoff * 2, kUploadRetryMaxMs);
+        }
+    }
+
+    if (ok) {
+        store_mark_image_uploaded(record_id, frame);
+        (*budget)--;
+    }
+    return ok;
+}
+
+static bool upload_frames(const char* record_id, uint32_t* budget) {
+    uint8_t present = store_image_mask(record_id);
+    uint8_t done    = store_uploaded_image_mask(record_id);
+    uint8_t todo    = (uint8_t)(present & ~done);
+
+    for (uint8_t frame = 1; frame <= 3; ++frame) {
+        if (!(todo & (uint8_t)(1u << (frame - 1)))) continue;
+
+        // Size is read before streaming so QHTTPPOST gets the exact length;
+        // the firmware refuses to send a body of the wrong size.
+        void* probe = store_open_image(record_id, frame);
+        if (!probe) continue;   // marker without a file; nothing to send
+        size_t size = store_image_size(probe);
+        store_close_image(probe);
+
+        if (size == 0) continue;
+        if (!upload_frame(record_id, frame, size, budget)) return false;
+    }
+    return true;
+}
+
 static void upload_pending() {
-    char ids[8][40];
-    size_t n = store_pending(ids, 8);
+    char ids[kMaxRecordsPerFlush][40];
+    size_t n = store_pending(ids, kMaxRecordsPerFlush);
     if (n == 0) return;
 
     if (!modem_power_on()) return;
 
+    uint32_t frame_budget = kMaxFramesPerFlush;
+
     for (size_t i = 0; i < n; ++i) {
-        char body[512];
-        size_t len = store_read_record(ids[i], body, sizeof(body) - 1);
-        if (len == 0) continue;
-        body[len] = '\0';
+        if (!post_record_json(ids[i])) continue;
 
-        bool ok = false;
-        uint32_t backoff = kUploadRetryBaseMs;
-        for (uint8_t attempt = 0; attempt < kUploadAttempts && !ok; ++attempt) {
-            ok = modem_http_post(kUploadHost, kUploadPath,
-                                 (const uint8_t*)body, len);
-            if (!ok) {
-                delay(backoff);
-                backoff = min(backoff * 2, kUploadRetryMaxMs);
-            }
-        }
+        // Frames are best-effort within the flush budget. If the budget runs
+        // out the record stays queued and the remainder goes next cycle.
+        if (!upload_frames(ids[i], &frame_budget)) continue;
 
-        if (ok) {
-            store_remove(ids[i]);
-        }
+        // Only now is the record complete: JSON stored and every frame on disk
+        // confirmed. Removing it earlier would orphan the images.
+        store_remove(ids[i]);
     }
+
     modem_power_off();
 }
 

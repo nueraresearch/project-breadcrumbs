@@ -15,6 +15,8 @@ It implements the decision set as code rather than prose:
 | HW-23 — motion never starts a burst | `main.cpp`, `handle_motion()` has no camera call; the only caller of `capture_burst()` is the light path |
 | HW-30 — no command path can initiate imaging | `capture_burst()` is `static` and reachable only from the deep-sleep wake path. There is no UART, BLE, or network handler in this build |
 | HW-32 — arming, so carriage is not recorded | `arming.cpp` logic in `main.cpp`; events are discarded until the reed switch is armed |
+| HW-08 — retain while offline, forward on reconnection | `store.cpp` queue; `main.cpp` `upload_pending()` |
+| HW-26 — transmit all records, images included | `modem_http_post_stream()` + `upload_frames()` in `main.cpp` |
 | D-64 — 0 / 0.5 / 1.5 s burst | `config.h` `kBurstOffsetsMs`, with exposure bracketing |
 | D-66 — explicit eviction, never silent overflow | `store.cpp` `store_evict_if_needed()` |
 | DATA_MODEL §3 — event taxonomy | `records.h` `EventType`, matching the documented names exactly |
@@ -60,6 +62,10 @@ firmware/
 **The camera is never powered outside a burst.** Camera power is a GPIO-controlled load switch. `capture_burst()` turns it on, waits for settle, captures, and turns it off. Leaving it powered between events is the fastest way to fail the power budget.
 
 **Eviction is logged, not silent.** When the buffer fills, `store_evict_if_needed()` deletes oldest-uploaded first. If nothing has been uploaded it deletes the oldest unsent record and increments a counter that is itself transmitted as a record. A silent drop would corrupt the denominator, which the analysis plan forbids.
+
+**Upload is two-phase, and the order is the correctness property.** The record JSON goes first, because the frame routes are addressed under it. Frames then go 1, 2, 3 ascending, each marked on success. The record is deleted only once every frame present on disk is confirmed — deleting it earlier would leave the JPEGs with nothing pointing at them, and they would sit in flash forever counting against the budget.
+
+**Frames are streamed, never buffered.** A three-frame SVGA burst is a few hundred kilobytes, which will not fit in RAM beside the camera buffers. `modem_http_post_stream()` pulls 512 bytes at a time straight from LittleFS into the UART. If the reader returns zero before the declared length is sent, the upload aborts rather than sending a short body, because a truncated JPEG is worse than a retry.
 
 **Time survives sleep, and carries its own error bar.** `millis()` and the ESP timer both restart on every wake, so neither can timestamp an event that happened while the CPU was asleep. The RTC timer keeps counting, so it is the monotonic base. It is also inaccurate, so `timebase.cpp` measures its rate at every network sync, smooths it, and applies the correction. Every record carries `clock_synced` and `clock_uncertainty_s` together; a record is flagged rather than discarded, and a wide bound tells the analysis it is ordering-only.
 

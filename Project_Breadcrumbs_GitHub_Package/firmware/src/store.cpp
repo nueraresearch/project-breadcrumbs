@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 namespace {
@@ -28,23 +29,28 @@ void marker_path(const char* id, char* out, size_t cap) {
     snprintf(out, cap, "%s/%s.up", kRecordDir, id);
 }
 
+void image_marker_path(const char* id, uint8_t frame, char* out, size_t cap) {
+    snprintf(out, cap, "%s/%s_%u.up", kRecordDir, id, (unsigned)frame);
+}
+
 bool is_uploaded(const char* id) {
     char p[64];
     marker_path(id, p, sizeof(p));
     return LittleFS.exists(p);
 }
 
-// Deletes the images that belong to a record. Missing files are fine.
 void drop_images(const char* id) {
     char p[64];
     for (uint8_t f = 1; f <= 3; ++f) {
         image_path(id, f, p, sizeof(p));
         if (LittleFS.exists(p)) LittleFS.remove(p);
+
+        image_marker_path(id, f, p, sizeof(p));
+        if (LittleFS.exists(p)) LittleFS.remove(p);
     }
 }
 
 // Finds the oldest record ID on disk, optionally skipping uploaded ones.
-// Returns false when there is nothing to find.
 bool oldest_id(char* out, size_t cap, bool prefer_uploaded) {
     File dir = LittleFS.open(kRecordDir);
     if (!dir) return false;
@@ -88,6 +94,11 @@ bool oldest_id(char* out, size_t cap, bool prefer_uploaded) {
     return true;
 }
 
+struct ImageHandle {
+    File file;
+    size_t size;
+};
+
 }  // namespace
 
 bool store_init() {
@@ -100,7 +111,6 @@ bool store_init() {
 uint32_t store_dropped_count() { return s_dropped; }
 
 size_t store_free_bytes() {
-    // LittleFS on ESP32 reports total and used; free is the difference.
     size_t total = LittleFS.totalBytes();
     size_t used  = LittleFS.usedBytes();
     return total > used ? total - used : 0;
@@ -123,7 +133,7 @@ bool store_evict_if_needed(size_t bytes_needed) {
             s_dropped++;
             continue;
         }
-        return false;   // nothing left to evict and still no room
+        return false;
     }
     return true;
 }
@@ -200,6 +210,77 @@ size_t store_read_image(const char* record_id, uint8_t frame_index,
     f.close();
     return n;
 }
+
+// -- image state ----------------------------------------------------------
+
+uint8_t store_image_mask(const char* record_id) {
+    uint8_t mask = 0;
+    char p[64];
+    for (uint8_t f = 1; f <= 3; ++f) {
+        image_path(record_id, f, p, sizeof(p));
+        if (LittleFS.exists(p)) mask |= (uint8_t)(1u << (f - 1));
+    }
+    return mask;
+}
+
+uint8_t store_uploaded_image_mask(const char* record_id) {
+    uint8_t mask = 0;
+    char p[64];
+    for (uint8_t f = 1; f <= 3; ++f) {
+        image_marker_path(record_id, f, p, sizeof(p));
+        if (LittleFS.exists(p)) mask |= (uint8_t)(1u << (f - 1));
+    }
+    return mask;
+}
+
+bool store_mark_image_uploaded(const char* record_id, uint8_t frame_index) {
+    if (frame_index < 1 || frame_index > 3) return false;
+    char p[64];
+    image_marker_path(record_id, frame_index, p, sizeof(p));
+    File f = LittleFS.open(p, FILE_WRITE);
+    if (!f) return false;
+    f.write((const uint8_t*)"1", 1);
+    f.close();
+    return true;
+}
+
+// -- streaming ------------------------------------------------------------
+
+void* store_open_image(const char* record_id, uint8_t frame_index) {
+    if (frame_index < 1 || frame_index > 3) return nullptr;
+
+    char p[64];
+    image_path(record_id, frame_index, p, sizeof(p));
+    File f = LittleFS.open(p, FILE_READ);
+    if (!f) return nullptr;
+
+    ImageHandle* h = new (std::nothrow) ImageHandle{f, (size_t)f.size()};
+    if (!h) {
+        f.close();
+        return nullptr;
+    }
+    return h;
+}
+
+size_t store_image_size(void* handle) {
+    return handle ? static_cast<ImageHandle*>(handle)->size : 0;
+}
+
+size_t store_read_image_chunk(void* handle, uint8_t* buf, size_t cap) {
+    if (!handle) return 0;
+    ImageHandle* h = static_cast<ImageHandle*>(handle);
+    if (!h->file) return 0;
+    return h->file.read(buf, cap);
+}
+
+void store_close_image(void* handle) {
+    if (!handle) return;
+    ImageHandle* h = static_cast<ImageHandle*>(handle);
+    h->file.close();
+    delete h;
+}
+
+// -- lifecycle ------------------------------------------------------------
 
 bool store_mark_uploaded(const char* record_id) {
     char p[64];
