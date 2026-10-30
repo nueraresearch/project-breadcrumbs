@@ -140,29 +140,29 @@ Adopt the sealed-box architecture in [`DATA_PROTECTION_CONTROLS.md`](../governan
 
 **Finding M-01.** The $600–$900 target is not achievable for the described scope. This is worth stating plainly now, because the alternative is discovering it during procurement.
 
-**Rough order of magnitude, per module, US, small batch, 2026:**
+**Rough order of magnitude, per module, US, small batch, 2026.** Part choices and the reasoning behind each line are in [`../hardware/COST_REDUCTION_PLAN.md`](../hardware/COST_REDUCTION_PLAN.md).
 
 | Item | Est. USD | Note |
 |---|---:|---|
-| MCU + camera module | 15 | Pre-certified module preferred |
-| Light sensor + accelerometer | 4 | — |
-| Storage | 6 | 16 GB class 10 |
-| Secure element | 2 | Optional if MCU provides protected key storage |
-| NB-IoT / LTE-M modem + antenna | 30 | Pre-certified module with integrated antenna |
-| Battery + protection | 12 | Rechargeable cell, holder, protection circuit |
-| Enclosure, mount, tamper seal | 18 | IP-rated, UV-stable |
-| PCB + small-batch assembly | 25 | Qty ~12 |
-| Harness, connectors, misc | 8 | — |
-| **Subtotal** | **~120** | |
-| Spares and attrition (+30%) | 36 | Devices are expected to be lost |
-| **Per deployable module** | **~156** | |
+| ESP32-S3 camera board | 11 | Dev board with OV2640 (D-57) |
+| Light sensor + accelerometer | 3 | VEML7700-class (D-60) |
+| Storage | 6 | 32 GB microSD (D-61) |
+| Modem + antennas | 34 | BG95-M3 with carrier, LTE and GNSS antennas (D-58) |
+| Battery + protection | 9 | 18650 LiFePO4, holder, protection (D-61) |
+| Enclosure and mount | 7 | Tray and foam insert plus retail box (D-62) |
+| PCB + assembly | 0 | None; dev boards arrive assembled (D-57) |
+| Reed switch and magnet | 1 | Arming (D-63) |
+| Harness, connectors, misc | 5 | — |
+| **Subtotal** | **~76** | |
+| Spares and attrition (+30%) | 23 | Devices are expected to be lost |
+| **Per deployable module** | **~99** | |
 
 **Programme level, 10 modules, 90 days:**
 
 | Item | Est. USD |
 |---|---:|
-| 10 modules at ~156 | 1,560 |
-| Connectivity, 10 devices × 3 months | 180 |
+| 10 modules at ~99 | 990 |
+| Connectivity, 10 × 1NCE lifetime SIM | 140 |
 | Reward inserts (~50% of 30 cycles, at documented replacement cost) | TBD |
 | Legal review — target, pro bono local counsel | 0 |
 | Legal review — fallback if pro bono falls through | 1,500–3,000 (excluded from the target total) |
@@ -170,11 +170,11 @@ Adopt the sealed-box architecture in [`DATA_PROTECTION_CONTROLS.md`](../governan
 | Shipping and insurance | 400 |
 | Participant materials, printing, ops kit | 150 |
 | Hosting and tooling | 200 |
-| Contingency (20%) | 600–900 |
-| **Indicative total, pro bono target** | **~3,000–5,400**, excluding the reward line |
-| **Indicative total, paid counsel** | **~4,800–9,000**, excluding the reward line |
+| Contingency (20%) | 380–780 |
+| **Indicative total, pro bono target** | **~2,300–4,700**, excluding the reward line |
+| **Indicative total, paid counsel** | **~4,100–8,300**, excluding the reward line |
 
-**Call it $3k–$5.5k on the pro bono assumption, and $4.8k–$9k if counsel has to be paid**, excluding labour and the reward line. Assumptions: US pricing, small batch, no GNSS, cellular telemetry with image transmission. Adding GNSS adds $15–25 per module. Image bursts are small — under 1 MB per event — and infrequent, so transmitting them adds a few megabytes per module per month rather than multiplying connectivity cost; the modem and the plan dominate. A design that streamed images continuously would multiply cost by roughly five to ten, and that is not this design. Shipping was priced for repeat visits to a few addresses; thirty distinct host households will cost more.
+**Call it $2.3k–$4.7k on the pro bono assumption, and $4.1k–$8.3k if counsel has to be paid**, excluding labour and the reward line. Assumptions: US pricing, small batch, no GNSS, cellular telemetry with image transmission. Adding GNSS adds $15–25 per module. Image bursts are small — under 1 MB per event — and infrequent, so transmitting them adds a few megabytes per module per month rather than multiplying connectivity cost; the modem and the plan dominate. A design that streamed images continuously would multiply cost by roughly five to ten, and that is not this design. Shipping was priced for repeat visits to a few addresses; thirty distinct host households will cost more.
 
 This is a planning ROM at roughly ±50%, not a quotation. Its purpose is to show the gap between the target and the design, and to identify the two line items that are not hardware at all: legal and ethics review together may exceed the hardware budget.
 

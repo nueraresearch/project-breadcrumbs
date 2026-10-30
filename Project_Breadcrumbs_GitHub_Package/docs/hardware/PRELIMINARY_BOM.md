@@ -7,22 +7,22 @@ This BOM identifies functional elements needed to develop a prototype. It is not
 
 | Subsystem | Item / category | Purpose | Selection status |
 |---|---|---|---|
-| Control | Low-power microcontroller or embedded controller | Sensor monitoring, event logic, image coordination | TBD |
-| Camera | Embedded still-image camera module | Three-frame capture | TBD |
+| Control | ESP32-S3 development board | Sensor monitoring, event logic, image coordination | Selected for prototype (D-57) |
+| Camera | OV2640-class camera on the ESP32-S3 board | Three-frame capture | Selected for prototype (D-57) |
 | Optics | Lens / camera aperture | Outward-facing field of view | TBD |
-| Trigger | Light-sensitive sensor | Detect illumination change associated with opening | TBD |
+| Trigger | VEML7700-class digital light sensor with interrupt | Detect illumination change associated with opening | Selected (D-60) |
 | Trigger optics | Internal light path | Admit light from the opening into the sealed cavity | TBD |
 | Motion | Accelerometer / inertial sensor | Movement logging and location-fix scheduling; never triggers imaging | Confirmed (D-31) |
-| Location | GNSS and/or cellular positioning | Movement and recovery telemetry; primary research output | Cellular fallback confirmed (D-32); GNSS TBD |
-| Communications | LTE-M or NB-IoT modem with nano-SIM or eSIM | Transmission of all records, including images | Confirmed (D-33) |
-| Storage | Nonvolatile memory | Event records and image storage | TBD |
-| Security | Secure element or equivalent key storage, if required | Device identity and cryptographic key protection | TBD |
-| Power | Rechargeable cell in a holder, charged off-device | Module power, swapped at each 30-day boundary | Chemistry confirmed (D-35); capacity TBD |
+| Location | GNSS integrated in the BG95-M3, cellular fallback | Movement and recovery telemetry; primary research output | Selected (D-58) |
+| Communications | Quectel BG95-M3 with a 1NCE SIM | Transmission of all records, including images | Selected (D-58, D-59) |
+| Storage | 32 GB microSD | Event records and image storage | Selected (D-61) |
+| Security | ESP32-S3 secure boot and flash encryption | Device identity and cryptographic key protection | Selected (D-57) |
+| Power | 18650 LiFePO4 cell, ~1500 mAh, in a holder | Module power, swapped at each 30-day boundary | Selected (D-61) |
 | Power | Protection and regulation circuitry | Safe power management with no charging port on the sealed unit | TBD |
 | Power | External charging dock | Charge cells outside the enclosure | TBD |
 | Feedback | Status LED(s) | Device state indication | TBD |
-| Enclosure | Reusable enclosure and mounting hardware | Protect and position components | TBD |
-| Assembly | PCB, connectors, wiring, fasteners | Integration | TBD |
+| Enclosure | Tray and foam insert inside the retail box | Protect and position components | Selected (D-62) |
+| Assembly | Hand-assembled dev boards, wiring, fasteners | Integration | Selected (D-57) |
 | Recovery | Return label / reward insert | Encourage hardware return | Program design TBD |
 | Consumable | Outer retail package, one per deployment | Presents as an ordinary shipment; not reused | TBD |
 
@@ -34,7 +34,9 @@ Connectivity is no longer a metadata-only line item. Every module transmits all 
 
 Thirty deployments at thirty different addresses also changes the logistics cost: every cycle boundary is a retrieval at one household and a redeployment at another, so travel and scheduling are three times the work of a single-address schedule. The outer retail package is consumed once per deployment and has no cost line above.
 
-No per-module price is approved. Build a supplier-backed costed BOM after selecting components and obtaining current quotes.
+Current small-quantity estimates put the parts at about **$76 per module** and about **$99 per deployable unit** with spares, against roughly $156 before. Part choices and the reasoning behind each line are in [`COST_REDUCTION_PLAN.md`](COST_REDUCTION_PLAN.md).
+
+No price is quoted or approved. Build a supplier-backed costed BOM before ordering ten of anything.
 
 ## Required next steps
 
