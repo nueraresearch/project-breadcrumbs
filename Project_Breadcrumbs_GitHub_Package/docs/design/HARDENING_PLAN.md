@@ -144,24 +144,24 @@ Adopt the sealed-box architecture in [`DATA_PROTECTION_CONTROLS.md`](../governan
 
 | Item | Est. USD | Note |
 |---|---:|---|
-| ESP32-S3 camera board | 11 | Dev board with OV2640 (D-57) |
+| ESP32-S3 camera board, 16 MB flash | 12 | Dev board with OV2640 (D-57, D-66) |
 | Light sensor + accelerometer | 3 | VEML7700-class (D-60) |
-| Storage | 6 | 32 GB microSD (D-61) |
-| Modem + antennas | 34 | BG95-M3 with carrier, LTE and GNSS antennas (D-58) |
+| Storage | 0 | On-board flash; no card slot (D-66) |
+| Modem + antenna | 32 | BG95-M3 with carrier and a combined antenna (D-58, D-67) |
 | Battery + protection | 9 | 18650 LiFePO4, holder, protection (D-61) |
-| Enclosure and mount | 7 | Tray and foam insert plus retail box (D-62) |
+| Enclosure and mount | 4 | Foam cutouts plus retail box (D-67) |
 | PCB + assembly | 0 | None; dev boards arrive assembled (D-57) |
 | Reed switch and magnet | 1 | Arming (D-63) |
 | Harness, connectors, misc | 5 | — |
-| **Subtotal** | **~76** | |
-| Spares and attrition (+30%) | 23 | Devices are expected to be lost |
-| **Per deployable module** | **~99** | |
+| **Subtotal** | **~66** | |
+| Spares and attrition (+30%) | 20 | Devices are expected to be lost |
+| **Per deployable module** | **~86** | |
 
 **Programme level, 10 modules, 90 days:**
 
 | Item | Est. USD |
 |---|---:|
-| 10 modules at ~99 | 990 |
+| 10 modules at ~86 | 860 |
 | Connectivity, 10 × 1NCE lifetime SIM | 140 |
 | Reward inserts (~50% of 30 cycles, at documented replacement cost) | TBD |
 | Legal review — target, pro bono local counsel | 0 |
@@ -170,11 +170,11 @@ Adopt the sealed-box architecture in [`DATA_PROTECTION_CONTROLS.md`](../governan
 | Shipping and insurance | 400 |
 | Participant materials, printing, ops kit | 150 |
 | Hosting and tooling | 200 |
-| Contingency (20%) | 380–780 |
-| **Indicative total, pro bono target** | **~2,300–4,700**, excluding the reward line |
-| **Indicative total, paid counsel** | **~4,100–8,300**, excluding the reward line |
+| Contingency (20%) | 350–750 |
+| **Indicative total, pro bono target** | **~2,100–4,500**, excluding the reward line |
+| **Indicative total, paid counsel** | **~3,900–8,100**, excluding the reward line |
 
-**Call it $2.3k–$4.7k on the pro bono assumption, and $4.1k–$8.3k if counsel has to be paid**, excluding labour and the reward line. Assumptions: US pricing, small batch, no GNSS, cellular telemetry with image transmission. Adding GNSS adds $15–25 per module. Image bursts are small — under 1 MB per event — and infrequent, so transmitting them adds a few megabytes per module per month rather than multiplying connectivity cost; the modem and the plan dominate. A design that streamed images continuously would multiply cost by roughly five to ten, and that is not this design. Shipping was priced for repeat visits to a few addresses; thirty distinct host households will cost more.
+**Call it $2.1k–$4.5k on the pro bono assumption, and $3.9k–$8.1k if counsel has to be paid**, excluding labour and the reward line. Assumptions: US pricing, small batch, no GNSS, cellular telemetry with image transmission. Adding GNSS adds $15–25 per module. Image bursts are small — under 1 MB per event — and infrequent, so transmitting them adds a few megabytes per module per month rather than multiplying connectivity cost; the modem and the plan dominate. A design that streamed images continuously would multiply cost by roughly five to ten, and that is not this design. Shipping was priced for repeat visits to a few addresses; thirty distinct host households will cost more.
 
 This is a planning ROM at roughly ±50%, not a quotation. Its purpose is to show the gap between the target and the design, and to identify the two line items that are not hardware at all: legal and ethics review together may exceed the hardware budget.
 

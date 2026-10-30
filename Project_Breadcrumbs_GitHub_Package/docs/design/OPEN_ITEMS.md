@@ -18,10 +18,10 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 | A-03 | Frame timing and exposure strategy | Third frame may photograph an empty porch; first may be blown out | **Decided** — 0 / 0.5 / 1.5 s (D-64), confirmed on bench |
 | A-04 | MCU and camera interface | Sets wake latency, power floor, and what the firmware can do | **Decided** — ESP32-S3 (D-57) |
 | A-05 | Cell capacity and chemistry specifics | 30-day cycle at four location fixes a day is assumed, not measured | **Decided** — 18650 LiFePO4, ~1500 mAh (D-61); runtime to be measured |
-| A-06 | Storage size | One cycle of events and images | **Decided** — 32 GB microSD (D-61) |
+| A-06 | Storage size | One cycle of events and images | **Decided** — 16 MB on-board flash, no card slot (D-66) |
 | A-07 | Location method: GNSS, cellular-only, or both | Accuracy inside a sealed package is unknown | **Decided** — integrated GNSS in the BG95-M3, cellular fallback (D-58) |
 | A-08 | Modem, SIM or eSIM, carrier, plan | Coverage at Monte Vista addresses is unknown | **Decided** — BG95-M3 and 1NCE lifetime SIM (D-58, D-59); coverage to be tested on site |
-| A-09 | Enclosure, mounting, thermal path | The 45 °C limit is a design input, not a test result | **Decided** — tray and foam insert in the retail box (D-62); thermal test outstanding |
+| A-09 | Enclosure, mounting, thermal path | The 45 °C limit is a design input, not a test result | **Decided** — foam cutouts in the retail box (D-67); thermal test outstanding |
 | A-10 | Arming mechanism (HW-32) | Carriage from the base must not register as a removal event | **Decided** — reed switch and magnet (D-63) |
 | A-11 | Key provisioning and firmware security | Sealed-box encryption and no-remote-capture are architectural claims until built | **Decided** — ESP32-S3 secure boot and flash encryption (D-57); provisioning procedure still to be written |
 | A-12 | Assembly and sealing procedure | Defines how a box is built, by whom, and how it stays sealed | **Decided in principle** — hand-assembled dev boards (D-57); step-by-step procedure to be written |

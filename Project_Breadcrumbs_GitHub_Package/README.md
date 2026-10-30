@@ -19,7 +19,7 @@ This repository contains the current concept definition, preliminary hardware re
 - [`docs/hardware/HARDWARE_REQUIREMENTS.md`](docs/hardware/HARDWARE_REQUIREMENTS.md) — preliminary module requirements and architecture
 - [`docs/hardware/CAMERA_SUBSYSTEM.md`](docs/hardware/CAMERA_SUBSYSTEM.md) — camera inside the sealed box, light-triggered three-frame capture, release standard
 - [`docs/hardware/PRELIMINARY_BOM.md`](docs/hardware/PRELIMINARY_BOM.md) — component categories, cost status, and unknowns
-- [`docs/hardware/COST_REDUCTION_PLAN.md`](docs/hardware/COST_REDUCTION_PLAN.md) — part selections and the route from ~$156 to ~$99 per module
+- [`docs/hardware/COST_REDUCTION_PLAN.md`](docs/hardware/COST_REDUCTION_PLAN.md) — part selections, the route from ~$156 to ~$86 per module, and the cost floor
 - [`docs/pilot/PILOT_PROTOCOL_DRAFT.md`](docs/pilot/PILOT_PROTOCOL_DRAFT.md) — proposed 90-day pilot framework built from 30-day deployment cycles
 - [`docs/pilot/PRE_REGISTRATION_ANALYSIS_PLAN.md`](docs/pilot/PRE_REGISTRATION_ANALYSIS_PLAN.md) — primary outcome, event definitions, exclusion rules, and analysis fixed before data collection
 - [`docs/pilot/POST_OFFICE_DATA_REQUEST.md`](docs/pilot/POST_OFFICE_DATA_REQUEST.md) — request letter and agreement terms for aggregate route volume
@@ -67,6 +67,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.7 | 2026-10-30 | Added the postal data request letter and agreement terms for aggregate route volume |
 | 1.8 | 2026-10-30 | Added the open items register; consolidated every undefined decision, task, and external dependency |
 | 1.9 | 2026-10-30 | Technical build items decided (D-57 to D-65); per-module cost reduced from ~$156 to ~$99 |
+| 1.10 | 2026-10-30 | Further trims adopted (D-66, D-67); per-module cost now ~$86, with the cost floor documented |
 
 ## Contribution and revision policy
 

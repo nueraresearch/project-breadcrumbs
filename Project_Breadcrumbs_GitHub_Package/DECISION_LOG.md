@@ -127,7 +127,9 @@ Recorded from the owner's answers to the open-question list. These supersede the
 | D-62 | Enclosure is a tray and foam insert inside the retail box, not a separate IP-rated enclosure | Saves about $11 and removes the problem of an enclosure that does not look like a parcel. The box is consumable and replaced every deployment |
 | D-63 | Arming uses a reed switch and a supplied magnet: armed at placement, disarmed at retrieval | Deterministic and about $1. Avoids inferring placement from motion or a timer, which would mis-register carriage from the base (HW-32) |
 | D-64 | Frame timing defaults to 0 / 0.5 / 1.5 s, with exposure bracketing if the sensor supports it | Better odds on the face than 0 / 1 / 2.5 s. Still to be confirmed against measured subject visibility |
-| D-65 | Build cost target is ~$76 in parts and ~$99 per deployable module, against the previous ~$156 | Achieved by the choices above; all figures small-quantity estimates pending supplier quotes |
+| D-65 | Build cost target is ~$66 in parts and ~$86 per deployable module, against the previous ~$156 | Achieved by the choices above and below; all figures small-quantity estimates pending supplier quotes |
+| D-66 | Storage is 16 MB of flash on the MCU board. No microSD card and no card slot | Saves $6, removes a connector and an opening in the sealed unit, and holds roughly twenty events. Trade-off: if uploads fail for a long stretch the buffer fills, so an eviction rule must be written rather than left to overflow |
+| D-67 | One combined LTE and GNSS antenna, and foam cutouts instead of a machined tray | Saves $6 with no loss of required function. The retail box already provides structure and weather protection; a tray only adds cost |
 
 ### Resolution of the section E proposals
 
