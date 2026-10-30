@@ -214,11 +214,14 @@ Three modules at this cap would leave most of $2,500 unspent on the only input t
 | Reserve floor | 200 |
 | **Committed** | **1,450** |
 | Replacements, up to nine at $72 | 648 |
-| Recovery fees, up to ten at $40 | 400 |
-| **Contingent** | **1,050** |
-| **Total** | **2,498** |
+| Recovery payments, up to ten at $20 | 200 |
+| **Contingent** | **848** |
+| **Total committed and contingent** | **2,298** |
+| Unspent against the $2,500 cap | 202 |
 
-Committed spend is $1,450. The other $1,050 is spent only if modules are lost or boxes come back — the logic of §9.3 at ten times the scale.
+Committed spend is $1,450. The other $848 is spent only if modules are lost or boxes come back — the logic of §9.3 at ten times the scale.
+
+The $202 left unspent is deliberate. Expected returns across thirty porch-months are 0.25 to 0.5, so ten recovery payments is already twenty to forty times the number likely to be paid; the money is far more likely to sit idle than to run out. Leaving it unallocated is cheaper than guessing which line will need it.
 
 ### 11.2 What $2,500 does not change
 
@@ -232,7 +235,7 @@ If the goal is a rate rather than a study, $2,500 is year one of a multi-year pr
 
 1. **Replacements** — protects the thirty-placement target through losses.
 2. **A second wave of placements** — if recruitment holds and nothing is lost, the same money buys more porch-months, the only thing that improves the estimate.
-3. **Recovery fees** — contingent by nature, paid only on return.
+3. **Recovery payments** — $20 each, contingent by nature, paid only on return.
 4. **Nothing else.** Paid legal or ethics review belongs outside this figure. It is a programme cost, not a pilot cost, and folding it in distorts comparison with any future run.
 
 ### 11.4 The condition

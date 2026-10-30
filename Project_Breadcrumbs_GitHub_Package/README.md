@@ -79,6 +79,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.16 | 2026-10-30 | Three-module run capped at a hard $1,000 (D-71); costed at nine modules with four recovery fees |
 | 1.17 | 2026-10-30 | Run ends when money or time runs out; no fixed sample size, with a reserve floor and censoring rule (D-72) |
 | 1.18 | 2026-10-30 | Pilot target raised to $2,500 for ten modules and thirty placements (D-73) |
+| 1.19 | 2026-10-30 | Recovery payment set at a flat $20, no questions asked (D-74); pilot build falls to $2,298 |
 
 ## Contribution and revision policy
 

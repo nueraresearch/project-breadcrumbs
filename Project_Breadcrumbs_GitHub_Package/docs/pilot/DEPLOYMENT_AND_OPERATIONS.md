@@ -55,7 +55,7 @@ A module can have multiple event records during one deployment. A deployment cyc
 
 ## 5. Recovery and return
 
-The package carries a reward insert to encourage return of the reusable module. The reward equals the documented replacement cost of the package contents (D-38), so it is set per deployment rather than as a fixed amount. The wording, funding, redemption method, and legal implications remain undecided.
+The package carries a reward insert to encourage return of the reusable module. The payment is a flat $20 to whoever returns it, no questions asked and no identity required (D-74, amending D-38). The flat amount replaces the earlier documented-replacement-cost basis: nothing has to be priced, and nothing has to be asked of the returner. The wording, funding, redemption method, and legal implications remain undecided. The amount must not appear in public material (THREAT_MODEL §8).
 
 The reward should be structured to recover hardware, not to solicit personal information or encourage confrontation. The project should not promise anonymity unless the redemption process and applicable law support that promise.
 
