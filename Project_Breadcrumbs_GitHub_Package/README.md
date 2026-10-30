@@ -80,6 +80,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.17 | 2026-10-30 | Run ends when money or time runs out; no fixed sample size, with a reserve floor and censoring rule (D-72) |
 | 1.18 | 2026-10-30 | Pilot target raised to $2,500 for ten modules and thirty placements (D-73) |
 | 1.19 | 2026-10-30 | Recovery payment set at a flat $20, no questions asked (D-74); pilot build falls to $2,298 |
+| 1.20 | 2026-10-30 | Labour valued in-kind at $6,000 over six months (D-75); fully loaded pilot cost $8,298 |
 
 ## Contribution and revision policy
 

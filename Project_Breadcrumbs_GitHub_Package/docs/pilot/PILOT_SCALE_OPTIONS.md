@@ -241,3 +241,23 @@ If the goal is a rate rather than a study, $2,500 is year one of a multi-year pr
 ### 11.4 The condition
 
 The same one as before, and it gets sharper as the budget grows, because the temptation does too: **legal and ethics review must be $0.** A $2,000 ethics review would consume 80% of $2,500 and leave a five-hundred-dollar field programme. If either has to be paid, the honest move is to say the pilot costs $4,000–5,500 and fund it at that level, rather than squeeze the field work to protect a headline figure.
+
+### 11.5 Labour and in-kind valuation (D-75)
+
+The cash budget covers materials only. The project's own time is recorded here at a deliberately conservative rate, so the true cost is visible without inflating it.
+
+| | |
+|---|---:|
+| Rate | $1,000 per month |
+| Horizon | 6 months — firmware and build, recruitment, field phase, analysis |
+| In-kind value | $6,000 |
+| Estimated hours | 350–700 |
+| **Implied hourly rate** | **$8.57–$17.14** |
+
+Unpaid. Nothing in the $2,298 is a wage, and the pilot cannot pay one: three months at this rate alone would exceed the entire cash budget.
+
+**Fully loaded cost:** $2,298 cash plus $6,000 in-kind is **$8,298**, or about **$277 per porch-month** across thirty placements. That is the figure to quote when someone asks whether the approach is cheap. The parts are cheap; the study is not.
+
+**Why six months and not three.** Firmware is written before the first deployment, recruitment overlaps it, and analysis follows the last retrieval. Counting only the ninety field days would understate the work by roughly half.
+
+**Why the rate is low.** Across 350–700 hours over six months the implied rate is $8.57–$17.14 an hour — at about the state minimum wage at the bottom of the range, and well below market for embedded work. That is a choice, not an error. An in-kind figure that looks generous invites scepticism; a conservative one is harder to argue with.
