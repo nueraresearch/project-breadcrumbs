@@ -76,6 +76,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.13 | 2026-10-30 | Added the radio, spectrum, and SIM analysis; pilot SIM moved to Hologram (D-69) |
 | 1.14 | 2026-10-30 | Added pilot scale options: what three modules cost and what they can prove |
 | 1.15 | 2026-10-30 | Deployment is rolling: all modules out on day one, recovered modules reset and redeployed at a new address (D-70) |
+| 1.16 | 2026-10-30 | Three-module run capped at a hard $1,000 (D-71); costed at nine modules with four recovery fees |
 
 ## Contribution and revision policy
 

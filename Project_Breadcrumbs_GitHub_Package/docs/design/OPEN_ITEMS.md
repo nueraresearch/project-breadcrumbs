@@ -67,7 +67,7 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 | D-01 | Pilot start date | Every consent, agreement, and schedule refers to it | Open |
 | D-02 | Budget approval | The $600–$900 target is not the estimated cost (D-51) | Open |
 | D-03 | Post office response | See [`../pilot/POST_OFFICE_DATA_REQUEST.md`](../pilot/POST_OFFICE_DATA_REQUEST.md) | Open |
-| D-04 | Initial scale: three-unit field trial before ten, or straight to ten | Sets spend before first data and whether the camera is validated before scaling | Open; costed in [`../pilot/PILOT_SCALE_OPTIONS.md`](../pilot/PILOT_SCALE_OPTIONS.md) |
+| D-04 | Initial scale: three-unit field trial before ten, or straight to ten | Sets spend before first data and whether the camera is validated before scaling | Open; costed in [`../pilot/PILOT_SCALE_OPTIONS.md`](../pilot/PILOT_SCALE_OPTIONS.md) §9, and capped at $1,000 (D-71) |
 
 ## What is *not* on this list
 
