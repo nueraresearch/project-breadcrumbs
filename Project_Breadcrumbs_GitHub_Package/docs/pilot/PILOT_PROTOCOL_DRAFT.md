@@ -60,6 +60,14 @@ Four residual cases are recorded rather than explained away. A household member 
 
 If a box is found open or damaged, the volunteer reports it and does not reseal, repair, or investigate it. Retrieval and inspection are the project's work.
 
+### 4.2 Who volunteers, and what that does to the sample
+
+Recruitment is voluntary and open. The protocol does not select households on the basis of prior victimisation, and recruitment materials must not suggest that hosting a module protects the porch.
+
+Self-selection is still likely to shape the sample. A household that has already had a package taken has a reason to volunteer that an untouched household does not, so the thirty porches will probably over-represent households with a prior removal. That direction cannot be quantified from this pilot, and it does not run only one way. It concentrates exposure where the risk may be higher, which raises the chance of observing an event. It may also select households that have since become more careful, and a theft that prompts someone to volunteer may belong to a cluster that has already passed, so the following thirty days are not necessarily a repeat of the previous thirty. Prior victimisation is treated as a plausible source of enrichment, not as a planning figure.
+
+The ethical consequence is plainer than the statistical one. The households most likely to volunteer are the ones already harmed, and they are the ones who carry the exposure. Participation is not a neutral favour to the research, and it must not be presented as one: the module observes an opening, it does not prevent one, and the $20 recovery payment is not compensation for the risk of a repeat. The briefing says this in those terms.
+
 ## 5. Study design
 
 A small, repeated-deployment observational feasibility study with 30-day cycles.
@@ -152,6 +160,7 @@ A light trigger is not proof that a theft occurred, and an opening is not proof 
 - Establish a lost-device and data-breach response procedure.
 - Suspend a deployment if the device behaves unexpectedly, creates a safety issue, or raises a privacy concern.
 - The project does not solicit identification of any person depicted in published material, and will not host or relay such attempts.
+- Participation must not be presented as protection. The module observes an opening; it does not prevent one, and the briefing must actively counter the false sense of security that hosting a device can create.
 
 ## 9. Analysis plan and publication
 
@@ -164,6 +173,8 @@ Use descriptive statistics:
 - qualitative summary of participant feedback.
 
 Households are not a probability sample and are not treated as independent draws from the town. Report every event count against its exposure, in deployment-days, and report household-level counts only for completeness. Do not compute confidence intervals as if Monte Vista had been sampled; with thirty deployments and a handful of expected events, the honest output is a case series with known denominators.
+
+**A zero-removal run is a result, not a failed one.** The planning figure is 0.25 to 0.5 expected removals across thirty porch-months, which puts the chance of observing none at roughly three in five or higher; zero is the most likely single outcome, not an unlucky edge ([`PILOT_SCALE_OPTIONS.md`](PILOT_SCALE_OPTIONS.md) §11.2). If it happens, the report states zero removal events over the exposure observed and reports the feasibility outcomes in full — uptime, capture completion, recovery, cost, participant burden. It does not present the absence of removals as evidence that the device prevents them, or as a theft rate of zero. A run in which every box stayed sealed is the best outcome for the households in it and an uninformative one for the primary outcome, and the report says both.
 
 **Publication.** Collected data, including images, is released publicly (D-40). Three limits apply and are not negotiable at the publication stage:
 

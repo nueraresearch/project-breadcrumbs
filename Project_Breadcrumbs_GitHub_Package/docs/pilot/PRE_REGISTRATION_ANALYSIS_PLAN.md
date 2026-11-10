@@ -86,7 +86,7 @@ Reviewers do not see images while adjudicating. The classification must rest on 
 
 ## 7. Analysis
 
-**Primary.** Kaplan–Meier curve of time to removal, with a 95% confidence band, a number-at-risk table, and the number of events. If fewer than five removal events occur, the median is reported as **not estimable** rather than computed from a handful of points. That is a finding about the sample, not a failure of the analysis.
+**Primary.** Kaplan–Meier curve of time to removal, with a 95% confidence band, a number-at-risk table, and the number of events. If fewer than five removal events occur, the median is reported as **not estimable** rather than computed from a handful of points. That is a finding about the sample, not a failure of the analysis. If no removal events occur, that is reported as zero events over the deployment-days observed, with no curve, no median, and no claim of effectiveness. The exposure and the number of placements are the finding.
 
 **Secondary.** Displacement: median, interquartile range, range; a scatter of distance against time-since-removal. No inferential test. With a handful of removed modules a test would manufacture significance from noise.
 
@@ -115,6 +115,8 @@ If daily figures are unavailable, weekly aggregates are acceptable and the compa
 ## 8. What this sample can and cannot conclude
 
 Thirty deployments yield thirty exposure windows of thirty days each, so the study can describe removal events against roughly 900 deployment-days. What it cannot do is estimate a theft rate for Monte Vista: the households were not randomly selected, and the post office comparison (D-56), if obtained, supplies delivery volume rather than a sampling frame.
+
+Volunteers are also likely to over-represent households that have already experienced a removal, which is a plausible source of enrichment for the event count and an unquantified one. It is reported as a limitation and is not used to adjust any estimate.
 
 As an illustration of precision rather than a prediction: a 10% proportion observed in 30 cycles carries a 95% interval of roughly 3% to 25%. That width is the reason the primary outcome is a time-to-event measure rather than a proportion.
 
