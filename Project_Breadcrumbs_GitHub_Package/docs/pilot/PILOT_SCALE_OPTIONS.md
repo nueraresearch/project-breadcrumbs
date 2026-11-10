@@ -225,7 +225,7 @@ The $202 left unspent is deliberate. Expected returns across thirty porch-months
 
 ### 11.2 What $2,500 does not change
 
-Thirty placements is still thirty porch-months, and expected removals are still **0.25 to 0.5**. The chance of observing at least one is **22–39%**. The chance of observing enough to draw a survival curve is negligible.
+Thirty placements is still thirty porch-months, and expected removals are still **0.25 to 0.5**. The chance of observing at least one is **22–39%**. The chance of observing enough to draw a survival curve is negligible. That is the unenriched base case. A 2× risk-enrichment sensitivity is **0.5 to 1.0** expected removals, with a **39–63%** chance of at least one; it is a planning stress case, not a revision ([`EXPECTED_REMOVALS_AND_ENRICHMENT.md`](EXPECTED_REMOVALS_AND_ENRICHMENT.md), D-80).
 
 The honest description of this budget is **a properly run feasibility study**, not a measurement of theft.
 

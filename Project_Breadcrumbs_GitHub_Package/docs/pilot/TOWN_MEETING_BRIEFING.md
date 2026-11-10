@@ -1,7 +1,7 @@
 # Town Meeting Briefing — Project Breadcrumbs
 
 **Status:** Draft for the Monte Vista town meeting. Not yet presented. Plain-language briefing; no participant data.
-**Version:** 0.1 (2026-11-10)
+**Version:** 0.2 (2026-11-10)
 **Purpose:** To ask the town for support in principle for a 90-day voluntary pilot, and for its view on publishing images of the person who opens the box.
 **Related:** [`PILOT_PROTOCOL_DRAFT.md`](PILOT_PROTOCOL_DRAFT.md), [`PRE_REGISTRATION_ANALYSIS_PLAN.md`](PRE_REGISTRATION_ANALYSIS_PLAN.md), [`../governance/DATA_PROTECTION_CONTROLS.md`](../governance/DATA_PROTECTION_CONTROLS.md), [`../governance/PRIVACY_SAFETY_AND_REVIEW.md`](../governance/PRIVACY_SAFETY_AND_REVIEW.md), [`../review/REIDENTIFICATION_REVIEW.md`](../review/REIDENTIFICATION_REVIEW.md), [`PARTICIPANT_BRIEFING_AND_CONSENT.md`](PARTICIPANT_BRIEFING_AND_CONSENT.md), [`../../DECISION_LOG.md`](../../DECISION_LOG.md).
 
@@ -44,6 +44,8 @@ We cannot tell you whether the box prevents theft. There is no comparison group 
 And we cannot promise that a removal is a theft. A neighbour may carry a box inside. A delivery person may move it. Someone may open it by mistake. The project treats a movement as a movement, not as proof of a crime.
 
 Our planning assumption is small: across thirty placements of thirty days each, we expect somewhere between a quarter and a half of one removal. If that is right, there is roughly a one-in-four to two-in-five chance of seeing even one. Which means there is a three-in-five to four-in-five chance of seeing none.
+
+People who have already lost a package may be more likely to volunteer, which could make the rate at these porches higher than the town rate. We have not changed the planning figure, because we cannot know how much higher. If it were twice as high, the chance of seeing at least one removal would be roughly two in five to three in five, not one in four to two in five. We will report the observed count against the exposure, not a town rate.
 
 That is not a prediction. It is a planning number. And it leads to the most important thing I can say tonight: a run where every box stays sealed would be the best possible result for the households in it, and the least useful result for the main question. We would report zero events over the exposure, not a zero theft rate, and not proof that the box works. We would still report what the pilot was built to test: whether the hardware, the process, and the privacy controls worked.
 
@@ -180,7 +182,7 @@ So the public can check the work. A study that asks for trust without showing it
 
 ## 6. Staff notes
 
-- The planning figure is 0.25 to 0.5 expected removals across thirty porch-months; the chance of at least one is 22 to 39 percent, and the chance of none is 61 to 78 percent. These are assumptions, not measurements. The exposure is about 900 deployment-days.
+- The planning figure is 0.25 to 0.5 expected removals across thirty porch-months; the chance of at least one is 22 to 39 percent, and the chance of none is 61 to 78 percent. These are assumptions, not measurements. The exposure is about 900 deployment-days. This is the unenriched base case. Risk-enriched recruitment is a 2× sensitivity: 0.5 to 1.0 expected removals, 39 to 63 percent chance of at least one, 37 to 61 percent chance of none. Do not present the sensitivity as the expected value.
 - The current image rule is D-40 with the D-52 limits. Options A, B, and C are illustrations for the meeting, not approved changes. Do not say the project has decided to blur or withhold images.
 - Do not state the recovery payment amount, the collection point address, or device construction details. The amount is kept out of public material (D-74), and device details are kept out to avoid helping someone recognise or defeat a box.
 - Town support is a condition of fielding (D-43). Legal, ethics, and insurance reviews are pending; this briefing is not a legal opinion.
@@ -191,3 +193,4 @@ So the public can check the work. A study that asks for trust without showing it
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-10 | First draft for the town meeting. No participant data. |
+| 0.2 | 2026-11-10 | Added the risk-enrichment sensitivity to the planning assumption; base case unchanged. |

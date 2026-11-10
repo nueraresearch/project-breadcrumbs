@@ -116,7 +116,7 @@ If daily figures are unavailable, weekly aggregates are acceptable and the compa
 
 Thirty deployments yield thirty exposure windows of thirty days each, so the study can describe removal events against roughly 900 deployment-days. What it cannot do is estimate a theft rate for Monte Vista: the households were not randomly selected, and the post office comparison (D-56), if obtained, supplies delivery volume rather than a sampling frame.
 
-Volunteers are also likely to over-represent households that have already experienced a removal, which is a plausible source of enrichment for the event count and an unquantified one. It is reported as a limitation and is not used to adjust any estimate.
+Volunteers are also likely to over-represent households that have already experienced a removal, which is a plausible source of enrichment for the event count and an unquantified one. It is reported as a limitation and is not used to adjust any estimate. The planning base case remains 0.25–0.5 expected removals across thirty porch-months; a 2× enrichment scenario (0.5–1.0) is tabulated for planning only and does not change the analysis ([`EXPECTED_REMOVALS_AND_ENRICHMENT.md`](EXPECTED_REMOVALS_AND_ENRICHMENT.md), D-80).
 
 As an illustration of precision rather than a prediction: a 10% proportion observed in 30 cycles carries a 95% interval of roughly 3% to 25%. That width is the reason the primary outcome is a time-to-event measure rather than a proportion.
 
