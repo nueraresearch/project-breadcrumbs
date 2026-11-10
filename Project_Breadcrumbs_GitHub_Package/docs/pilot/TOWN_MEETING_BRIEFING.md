@@ -1,7 +1,7 @@
 # Town Meeting Briefing — Project Breadcrumbs
 
 **Status:** Draft for the Monte Vista town meeting. Not yet presented. Plain-language briefing; no participant data.
-**Version:** 0.3 (2026-11-10)
+**Version:** 0.4 (2026-11-10)
 **Purpose:** To ask the town for support in principle for a 90-day voluntary pilot, and for its view on publishing images of the person who opens the box.
 **Related:** [`PILOT_PROTOCOL_DRAFT.md`](PILOT_PROTOCOL_DRAFT.md), [`PRE_REGISTRATION_ANALYSIS_PLAN.md`](PRE_REGISTRATION_ANALYSIS_PLAN.md), [`../governance/DATA_PROTECTION_CONTROLS.md`](../governance/DATA_PROTECTION_CONTROLS.md), [`../governance/PRIVACY_SAFETY_AND_REVIEW.md`](../governance/PRIVACY_SAFETY_AND_REVIEW.md), [`../review/REIDENTIFICATION_REVIEW.md`](../review/REIDENTIFICATION_REVIEW.md), [`PARTICIPANT_BRIEFING_AND_CONSENT.md`](PARTICIPANT_BRIEFING_AND_CONSENT.md), [`../../DECISION_LOG.md`](../../DECISION_LOG.md).
 
@@ -133,10 +133,13 @@ The image is withheld, access-restricted, and deleted after the adjudication rec
 Not proactively. We comply with valid legal process after legal review, and we tell the participant unless the law bars us. Published data is public.
 
 **Is there a recovery payment?**
-Only when a box that was taken from the porch is returned. A normal end-of-cycle return is not paid. The amount is not published, because a public offer could encourage someone to take a box in order to return it.
+Only when a box that was taken from the porch is returned. A normal end-of-cycle return is not paid. It is not compensation for a lost package, for taking part, or for the risk that the same porch is targeted again, and it does not cover the value of a package if one is taken. The amount is not published, because a public offer could encourage someone to take a box in order to return it.
 
 **Will this reduce package theft?**
 We do not know, and this pilot cannot answer that. There is no comparison group, and thirty volunteer households are not a town sample.
+
+**Will hosting a box protect my porch?**
+No. The box observes; it does not protect. It is not a security system or a police service, and the project does not claim that taking part makes another loss less likely. A box on the porch is still a package, and it may attract the same attention as any package. The project cannot promise that it reduces the chance of another loss.
 
 **Why not just ask people whether their packages were taken?**
 Self-report is part of the picture, but it misses openings that are not reported and cannot measure time-to-removal. The pilot observes events at a small number of porches; it is not a town survey.
@@ -170,6 +173,7 @@ So the public can check the work. A study that asks for trust without showing it
 | What does it publish? | Event records and images. No names or addresses. Location is a one-kilometre cell, delayed. Minors and uninvolved people are withheld. |
 | What can it tell us? | Whether the hardware works, what happened at thirty porches, how long a removal took, and how far a module travelled. |
 | What can it not tell us? | The town theft rate, who opened a box, or whether the box prevents theft. |
+| Will it protect my porch? | No. The box observes; it does not protect. The project does not claim that hosting makes another loss less likely. The recovery payment is not compensation for a loss or for the risk of a repeat. |
 | What is the face question? | The current rule publishes the adult who opens the box. The town's view is sought on whether to narrow that. |
 | What are we asking? | Support in principle, your view on the image rule, and volunteers after the meeting. No town money. |
 
@@ -199,3 +203,4 @@ So the public can check the work. A study that asks for trust without showing it
 | 0.1 | 2026-11-10 | First draft for the town meeting. No participant data. |
 | 0.2 | 2026-11-10 | Added the risk-enrichment sensitivity to the planning assumption; base case unchanged. |
 | 0.3 | 2026-11-10 | Limited the recovery payment to a box taken from the porch and returned; normal end-of-cycle returns are not paid (D-81). |
+| 0.4 | 2026-11-10 | Added the observe-not-protect and repeat-risk answers to the expected questions and the one-page handout. |
