@@ -116,6 +116,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.50 | 2026-11-10 | Made the no-open rule explicit: the host's name check does not permit opening the box, and the placement checklist records the instruction separately |
 | 1.51 | 2026-11-10 | Limited the recovery payment to a box taken from the porch and returned; normal end-of-cycle returns and porch openings without removal do not qualify (D-81) |
 | 1.52 | 2026-11-10 | Added the observe-not-protect and repeat-risk answers to the town-meeting questions and handout |
+| 1.53 | 2026-11-10 | Reconciled the town briefing's scope, budget, delay, and publication claims with the decision log and open items |
 
 ## Contribution and revision policy
 
