@@ -205,6 +205,7 @@ Avoid causal claims or generalisation beyond the small sample.
 - Resolve critical defects before field use.
 
 ### Phase 2 — Participant onboarding
+- Recruit against [`RECRUITMENT_PLAN.md`](RECRUITMENT_PLAN.md), including its no-protection message and its fallback if recruitment falls short.
 - Obtain written participation and property authorization.
 - Explain the device, data collected, publication, risks, withdrawal, and incident procedure.
 - Explain the addressing rule: the package carries a study name belonging to no real person, and neither the host nor the household may open it (D-77).
