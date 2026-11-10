@@ -91,22 +91,31 @@ The run writes `records.jsonl`, `images/` and a `manifest.json` recording the po
 
 Two reviews, kept apart on purpose.
 
-**Event classification** ([PRE_REGISTRATION_ANALYSIS_PLAN §6](../docs/pilot/PRE_REGISTRATION_ANALYSIS_PLAN.md)) — two reviewers independently call each movement event removal, handling or indeterminate, **from telemetry alone**. A disagreement goes to a third reviewer, whose verdict is applied; a disagreement without a third is retained as `indeterminate` rather than forced into a class. A reviewer who has already viewed that record's images is **refused**, which is the enforceable half of "reviewers do not see images while adjudicating". The reason is not tidiness: the classification has to remain available for modules whose images were never recovered, and that is the case the analysis actually turns on.
+### Sequences first
+
+§6 asks reviewers to classify a movement-event *sequence*, and §3 defines a removal in terms of movement events, but neither says where one episode ends. `sequences.py` supplies it: records from one module merge while consecutive movement-bearing records are within `GAP_S` (180 s) and the run stays inside `WINDOW_S` (900 s).
+
+Both figures are **this implementation's assumption**, not plan values. Every sequence row records the `rule_version` that produced it, so a published bundle states which rule it used, and they are expected to move once bench data shows how long a real opening takes. Membership freezes as soon as a reviewer votes: a verdict must not end up attached to records that reviewer never saw.
+
+Device records — battery, sync, reset — never join an episode, because an administrative alert must not reach a reviewer as evidence of a removal. A record whose clock has never synced is adjudicated alone: ±18 minutes cannot separate a thirty-minute handling window from a removal, and grouping on that clock would invent an ordering.
+
+**Event classification** ([PRE_REGISTRATION_ANALYSIS_PLAN §6](../docs/pilot/PRE_REGISTRATION_ANALYSIS_PLAN.md)) — two reviewers independently call each movement-event sequence removal, handling or indeterminate, **from telemetry alone**. A disagreement goes to a third reviewer, whose verdict is applied; a disagreement without a third is retained as `indeterminate` rather than forced into a class. A reviewer who has already viewed that record's images is **refused**, which is the enforceable half of "reviewers do not see images while adjudicating". The reason is not tidiness: the classification has to remain available for modules whose images were never recovered, and that is the case the analysis actually turns on.
 
 **Image adjudication** (D-52) — a named reviewer looks at the frames and records `publish`, or `withhold` with a fixed category (`minor` or `unconnected`). Withheld frames are deleted as soon as the adjudication record is written; what survives is the SHA-256 of each frame, the category, the reviewer and the date. Image rows stay as tombstones with an empty `secure_object_ref`, so the audit trail still records that a frame existed. A legal hold suspends deletion for that record only and must carry an expiry date, because an open-ended hold is how deletion quietly stops happening.
 
 ```bash
+INGEST_DATA=data python3 sequences.py          # group, then show episodes
 ADJUDICATORS=alice,bob INGEST_DATA=data python3 adjudicate.py pending
 ```
 
 | Command | Purpose |
 |---|---|
-| `pending` | Records with no event verdict, or with frames and no image decision |
-| `show ID` | Telemetry only; never touches a frame |
+| `pending` | Episodes with no verdict, then records with frames and no image decision |
+| `show ID` | Telemetry for one record, or a whole episode by `seq_…` id; never touches a frame |
 | `view-images ID --reviewer N` | Copies frames out for review and logs the access |
-| `decide-event ID --reviewer N --outcome ...` | Classification from telemetry |
+| `decide-event ID --reviewer N --outcome ...` | Classification from telemetry, on the sequence `ID` belongs to |
 | `decide-image ID --reviewer N --decision ...` | Publish or withhold the frames |
-| `status` | Counts by status, and withheld counts by category |
+| `status` | Counts by status, episodes open and decided, withheld by category |
 
 **Image access is restricted to a named list.** `ADJUDICATORS` must be set; without it, image viewing and image decisions are refused rather than allowed. Every view writes an `image_access` entry to the ingest log, which is what makes the blindness rule checkable rather than aspirational.
 

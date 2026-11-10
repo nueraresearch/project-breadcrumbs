@@ -271,6 +271,87 @@ class StatusTests(Base):
         self.assertTrue(self.adj.pending())
 
 
+class SequenceAdjudicationTests(Base):
+    """§6 classifies the sequence. One opening is not several questions."""
+
+    def add_at(self, record_id, offset, event_type="MOVEMENT_EVENT"):
+        rec = make_record(record_id, event_type=event_type)
+        rec["sensor_ts"] = 1793500000 + offset
+        self.store.insert_record(rec)
+        return record_id
+
+    def episode(self):
+        return [self.add_at("MOD000-g-000001", 0, "LIGHT_TRIGGER"),
+                self.add_at("MOD000-g-000002", 20, "IMAGE_CAPTURE_COMPLETE"),
+                self.add_at("MOD000-g-000003", 40)]
+
+    def test_one_episode_is_one_classification(self):
+        ids = self.episode()
+        self.adj.vote_event(ids[0], "alice", "removal")
+        # The second vote is cast on a different record of the same episode.
+        self.adj.vote_event(ids[2], "bob", "removal")
+        for rid in ids:
+            self.assertEqual(self.status_of(rid), "reviewed")
+
+    def test_episode_needs_one_reviewer_not_one_per_record(self):
+        ids = self.episode()
+        res = self.adj.vote_event(ids[0], "alice", "removal")
+        self.assertEqual(res["state"], "awaiting_second")
+        self.assertEqual(res["records"], ids)
+
+    def test_all_records_share_the_verdict(self):
+        ids = self.episode()
+        self.adj.vote_event(ids[1], "alice", "false_trigger")
+        self.adj.vote_event(ids[1], "bob", "false_trigger")
+        for rid in ids:
+            self.assertEqual(self.status_of(rid), "false_trigger")
+
+    def test_viewing_any_frame_disqualifies_the_reviewer(self):
+        ids = self.episode()
+        self.add_image(ids[2], 1)
+        self.adj.view_images(ids[2], "alice", os.path.join(self.tmp.name, "r"))
+        with self.assertRaises(adjudicate.AdjudicationError) as cm:
+            self.adj.vote_event(ids[0], "alice", "removal")
+        self.assertIn("blind", str(cm.exception))
+
+    def test_context_fix_is_shown_but_is_not_a_member(self):
+        ids = self.episode()
+        fix = self.add_at("MOD000-g-000010", 30, "LOCATION_FIX")
+        detail = self.adj.sequence_detail(self.adj.sequence_of(ids[0]))
+        self.assertEqual(len(detail["members"]), 3)
+        self.assertNotIn(fix, [m["record_id"] for m in detail["members"]])
+        self.assertEqual([f["record_id"] for f in detail["context_fixes"]],
+                         [fix])
+
+    def test_pending_lists_the_episode_once(self):
+        ids = self.episode()
+        rows = self.adj.pending()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["member_count"], 3)
+
+        self.adj.vote_event(ids[0], "alice", "removal")
+        self.adj.vote_event(ids[0], "bob", "removal")
+        self.assertEqual(self.adj.pending(), [])
+
+    def test_status_reports_episodes(self):
+        ids = self.episode()
+        self.adj.vote_event(ids[0], "alice", "removal")
+        self.adj.vote_event(ids[0], "bob", "removal")
+        s = self.adj.status()
+        self.assertEqual(s["episodes"]["total"], 1)
+        self.assertEqual(s["episodes"]["decided"], 1)
+        self.assertEqual(s["episodes"]["open"], 0)
+
+    def test_unsynced_record_is_classified_alone(self):
+        self.add_at("MOD000-h-000001", 0)
+        rec = make_record("MOD000-h-000002", event_type="MOVEMENT_EVENT")
+        rec["clock_synced"] = False
+        rec["clock_uncertainty_s"] = 1080
+        self.store.insert_record(rec)
+        self.assertNotEqual(self.adj.sequence_of("MOD000-h-000001"),
+                            self.adj.sequence_of("MOD000-h-000002"))
+
+
 class CliTests(unittest.TestCase):
     def test_missing_database_is_an_error(self):
         with tempfile.TemporaryDirectory() as tmp:

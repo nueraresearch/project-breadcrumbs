@@ -93,6 +93,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.27 | 2026-10-30 | Firmware now uploads captured frames by streaming from flash, in order, with per-frame confirmation |
 | 1.28 | 2026-10-30 | Added the publication step, so records are coarsened, delayed and captioned before release |
 | 1.29 | 2026-10-30 | Added adjudication, so a review decides what may be published and withheld frames are destroyed |
+| 1.30 | 2026-10-30 | Added sequence grouping, so adjudication classifies an episode rather than each record |
 
 ## Contribution and revision policy
 
