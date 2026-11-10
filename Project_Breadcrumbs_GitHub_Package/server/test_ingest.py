@@ -3,15 +3,18 @@
 
 import hashlib
 import json
+import os
 import tempfile
 import threading
 import unittest
 import urllib.error
 import urllib.request
 
+import imagecrypt
 import ingest
 
 TOKEN = "test-token"
+TEST_KEY = bytes.fromhex("ef" * 32)
 JPEG = b"\xff\xd8\xff\xe0" + b"\x00" * 200 + b"\xff\xd9"
 
 
@@ -37,7 +40,8 @@ class IngestTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.tmp = tempfile.TemporaryDirectory()
-        cls.httpd = ingest.create_server("127.0.0.1", 0, cls.tmp.name, TOKEN)
+        cls.httpd = ingest.create_server("127.0.0.1", 0, cls.tmp.name, TOKEN,
+                                         image_key=TEST_KEY)
         cls.port = cls.httpd.server_address[1]
         cls.thread = threading.Thread(target=cls.httpd.serve_forever, daemon=True)
         cls.thread.start()
@@ -179,6 +183,19 @@ class IngestTests(unittest.TestCase):
         status, stored = self.request("GET", f"/v1/records/{rid}")
         self.assertEqual(len(stored["images"]), 1)
         self.assertEqual(stored["images"][0]["frame_index"], 2)
+
+    def test_stored_frame_is_encrypted(self):
+        rid = "MOD000-1a2b3c4d-000406"
+        self.request("POST", f"/v1/records/{rid}/images/1", JPEG,
+                     headers={"Content-Type": "image/jpeg"})
+        files = [f for f in os.listdir(self.httpd.store.image_dir)
+                 if f.startswith(rid)]
+        self.assertEqual(len(files), 1)
+        raw = open(os.path.join(self.httpd.store.image_dir, files[0]),
+                   "rb").read()
+        self.assertTrue(imagecrypt.is_encrypted(raw))
+        self.assertNotIn(JPEG, raw)
+        self.assertEqual(self.httpd.store.read_image(files[0]), JPEG)
 
     def test_image_before_record_is_allowed(self):
         rid = "MOD000-1a2b3c4d-000402"

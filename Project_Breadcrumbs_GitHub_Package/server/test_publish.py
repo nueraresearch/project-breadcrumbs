@@ -15,6 +15,8 @@ import publish
 REVIEWERS = {"alice", "bob"}
 
 SALT = bytes.fromhex("00112233445566778899aabbccddeeff")
+TEST_KEY = bytes.fromhex("ab" * 32)
+OTHER_KEY = bytes.fromhex("cd" * 32)
 JPEG = b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00" \
        b"\xff\xda\x00\x08\x01\x01\x00\x00?\x00" + b"\x11" * 40 + b"\xff\xd9"
 # The same frame with an EXIF (APP1) segment carrying a GPS-ish payload.
@@ -27,7 +29,7 @@ JPEG_WITH_EXIF = (b"\xff\xd8"
 def make_db(tmp):
     data = os.path.join(tmp, "data")
     os.makedirs(os.path.join(data, "images"), exist_ok=True)
-    store = ingest.Store(data)
+    store = ingest.Store(data, image_key=TEST_KEY)
     return data, store
 
 
@@ -68,7 +70,7 @@ def add_image(store, record_id, frame=1, blob=JPEG):
 
 
 def adjudicate_image(data, record_id, decision, category=None):
-    adjudicate.Adjudicator(data, REVIEWERS).decide_image(
+    adjudicate.Adjudicator(data, REVIEWERS, image_key=TEST_KEY).decide_image(
         record_id, "alice", decision, category=category)
 
 
@@ -207,7 +209,8 @@ class PublishTests(unittest.TestCase):
         rid = "MOD000-aa-000011"
         insert(self.store, rid,
                received=datetime.now(timezone.utc) - timedelta(days=60))
-        adj = adjudicate.Adjudicator(self.data, REVIEWERS)
+        adj = adjudicate.Adjudicator(self.data, REVIEWERS,
+                                     image_key=TEST_KEY)
         adj.vote_event(rid, "alice", "false_trigger")
         adj.vote_event(rid, "bob", "false_trigger")
         self._run(delay_days=30)
@@ -232,10 +235,15 @@ class ImageReleaseTests(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
+    def _publish(self, **kw):
+        kw.setdefault("release_images", True)
+        kw.setdefault("image_key", TEST_KEY)
+        return publish.publish(self.data, self.out, SALT, **kw)
+
     def test_unadjudicated_image_is_not_released(self):
         insert(self.store, "MOD000-bb-000001", received=self.old)
         add_image(self.store, "MOD000-bb-000001")
-        m = publish.publish(self.data, self.out, SALT, release_images=True)
+        m = self._publish()
         self.assertEqual(m["counts"]["images_published"], 0)
         self.assertEqual(m["counts"]["images_withheld_unadjudicated"], 1)
 
@@ -243,7 +251,7 @@ class ImageReleaseTests(unittest.TestCase):
         insert(self.store, "MOD000-bb-000002", received=self.old)
         adjudicate_image(self.data, "MOD000-bb-000002", "publish")
         add_image(self.store, "MOD000-bb-000002", blob=JPEG_WITH_EXIF)
-        m = publish.publish(self.data, self.out, SALT, release_images=True)
+        m = self._publish()
         self.assertEqual(m["counts"]["images_published"], 1)
 
         path = os.path.join(self.out, "images", "MOD000-bb-000002_01.jpg")
@@ -255,14 +263,21 @@ class ImageReleaseTests(unittest.TestCase):
         insert(self.store, "MOD000-bb-000003", received=self.old)
         add_image(self.store, "MOD000-bb-000003")
         adjudicate_image(self.data, "MOD000-bb-000003", "withhold", "minor")
-        m = publish.publish(self.data, self.out, SALT, release_images=True)
+        m = self._publish()
         self.assertEqual(m["counts"]["images_published"], 0)
         self.assertEqual(m["counts"]["images_withheld_by_category"]["minor"], 1)
+
+    def test_wrong_key_refuses_to_publish(self):
+        insert(self.store, "MOD000-bb-000005", received=self.old)
+        adjudicate_image(self.data, "MOD000-bb-000005", "publish")
+        add_image(self.store, "MOD000-bb-000005")
+        with self.assertRaises(publish.PublishError):
+            self._publish(image_key=OTHER_KEY)
 
     def test_record_still_publishes_without_its_image(self):
         insert(self.store, "MOD000-bb-000004", received=self.old)
         add_image(self.store, "MOD000-bb-000004")
-        m = publish.publish(self.data, self.out, SALT, release_images=True)
+        m = self._publish()
         self.assertEqual(m["counts"]["records_published"], 1)
         self.assertEqual(m["counts"]["images_published"], 0)
 

@@ -122,3 +122,26 @@ ADJUDICATORS=alice,bob INGEST_DATA=data python3 adjudicate.py pending
 `validation_status` is written only here, and only with the documented vocabulary: `unreviewed`, `reviewed`, `false_trigger`, `indeterminate`.
 
 One consequence worth stating: a record adjudicated as a false trigger does not publish under the normal caption. `publish.py` gives it "A sensor trigger was recorded that review did not classify as an opening", because carrying the ordinary wording would publish a claim that the review directly contradicts.
+
+## Image encryption at rest
+
+Captured frames are the most sensitive thing the pilot holds, and they used to sit on the ingest machine as ordinary JPEGs. They are now encrypted before they reach the disk, under a key supplied by `IMAGE_KEY` in the environment.
+
+```bash
+python3 -c "import secrets; print(secrets.token_hex(32))"   # make a key
+export IMAGE_KEY=<64 hex characters>
+```
+
+The cipher is built from the standard library, because the server is dependency-free on purpose and `cryptography` is not available on a borrowed machine: SHA-256 in counter mode for the keystream, HMAC-SHA256 over header and ciphertext, encrypt-then-MAC, a fresh 16-byte nonce per frame. It is a well-understood construction, but it is not AES and nobody has reviewed it. If a dependency becomes acceptable, replace `imagecrypt.py` rather than extend it.
+
+**What this protects.** A copy of the data directory: a backup, a synced folder, a disk sent for repair, an old disk that was not wiped.
+
+**What it does not protect.** A stolen machine with the key on it. If `IMAGE_KEY` lives in the same checkout, on the same disk, or in a note beside the laptop, the thief has both halves and this achieves nothing. Whole-disk encryption covers theft; this covers the copies nobody remembers exist. The key belongs in the project's password manager.
+
+**Losing the key destroys the frames.** There is no recovery path, and that includes frames under legal hold. Keep a second copy wherever the deployment credentials live.
+
+**Fail closed.** With no `IMAGE_KEY`, image uploads return 503 and nothing is written. A frame that did get stored cannot be read without it either: `view-images`, `decide-image`, and `publish.py` all refuse rather than skip. A malformed key stops the server at startup instead of quietly disabling encryption. Stored files are named `.jpg.enc`, so an unencrypted frame cannot be mistaken for a stored one.
+
+Records and hashes are unaffected. `integrity_hash` is the SHA-256 of the *plaintext*, so every stored frame stays verifiable after decryption, and a file that decrypts to something else is refused rather than released.
+
+**Review copies are plaintext.** `view-images` writes decrypted JPEGs into the output folder, because a reviewer has to look at them. That folder is as sensitive as the originals: delete it when the review is written up, and do not leave it in a synced directory.

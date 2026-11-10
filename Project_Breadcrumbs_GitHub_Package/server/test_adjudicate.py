@@ -9,9 +9,11 @@ import unittest
 from datetime import date, timedelta
 
 import adjudicate
+import imagecrypt
 import ingest
 
 REVIEWERS = {"alice", "bob", "carol"}
+TEST_KEY = bytes.fromhex("cd" * 32)
 JPEG = b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00" \
        b"\xff\xda\x00\x08\x01\x01\x00\x00?\x00" + b"\x11" * 40 + b"\xff\xd9"
 
@@ -36,8 +38,9 @@ class Base(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.data = os.path.join(self.tmp.name, "data")
-        self.store = ingest.Store(self.data)
-        self.adj = adjudicate.Adjudicator(self.data, REVIEWERS)
+        self.store = ingest.Store(self.data, image_key=TEST_KEY)
+        self.adj = adjudicate.Adjudicator(self.data, REVIEWERS,
+                                          image_key=TEST_KEY)
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -156,7 +159,8 @@ class ImageAccessTests(Base):
     def test_no_allowlist_means_no_image_access(self):
         rid = self.add("MOD000-c-000002")
         self.add_image(rid)
-        open_adj = adjudicate.Adjudicator(self.data, allowed_reviewers=None)
+        open_adj = adjudicate.Adjudicator(self.data, allowed_reviewers=None,
+                                          image_key=TEST_KEY)
         with self.assertRaises(adjudicate.AdjudicationError):
             open_adj.view_images(rid, "alice", os.path.join(self.tmp.name, "r"))
 
@@ -269,6 +273,33 @@ class StatusTests(Base):
     def test_pending_lists_unreviewed(self):
         self.add("MOD000-e-000003")
         self.assertTrue(self.adj.pending())
+
+
+class EncryptionAtRestTests(Base):
+    def test_frame_on_disk_is_ciphertext(self):
+        rid = self.add("MOD000-i-000001")
+        self.add_image(rid)
+        files = [f for f in os.listdir(os.path.join(self.data, "images"))
+                 if f.startswith(rid)]
+        raw = open(os.path.join(self.data, "images", files[0]), "rb").read()
+        self.assertTrue(imagecrypt.is_encrypted(raw))
+        self.assertNotIn(JPEG, raw)
+
+    def test_view_decrypts_to_the_original_frame(self):
+        rid = self.add("MOD000-i-000002")
+        self.add_image(rid)
+        files = self.adj.view_images(rid, "alice",
+                                     os.path.join(self.tmp.name, "r"))
+        self.assertEqual(open(files[0], "rb").read(), JPEG)
+
+    def test_review_without_a_key_is_refused(self):
+        rid = self.add("MOD000-i-000003")
+        self.add_image(rid)
+        keyless = adjudicate.Adjudicator(self.data, REVIEWERS)
+        if keyless.image_key is not None:
+            self.skipTest("IMAGE_KEY is set in this environment")
+        with self.assertRaises(adjudicate.AdjudicationError):
+            keyless.view_images(rid, "alice", os.path.join(self.tmp.name, "r2"))
 
 
 class SequenceAdjudicationTests(Base):

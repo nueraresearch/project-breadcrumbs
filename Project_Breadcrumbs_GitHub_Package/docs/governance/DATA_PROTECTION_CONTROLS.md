@@ -60,6 +60,10 @@ The current documents require "local encrypted image storage" and "encrypted tra
 
 **What not to do:** device-side passwords, a single fleet-wide key, storing the study private key on the same machine as the vault, or "encryption" implemented as a file permission.
 
+**Implementation note (server side, rev 1.31).** The ingest vault now encrypts frames before they reach disk, under one study key supplied through `IMAGE_KEY`, using the standard library. This is the "Image vault" row and only that row. It covers a copy of the data directory — a backup, a synced folder, a disk sent out for repair — and it covers nothing else: a machine stolen with the key on it yields the frames, which is why the key belongs in the password manager rather than the checkout and why whole-disk encryption is still required rather than optional.
+
+The device-storage row is not built. A module in an attacker's hands still discloses whatever it buffered, and the sealed-box construction above remains A-11. Crypto-shred is also not what currently happens on withdrawal or on a withheld image: the object is deleted and its hash retained, which is verifiable deletion of that object but not of a copy someone took earlier. Both gaps should stay visible until they close.
+
 ## 5. Retention schedule (defaults)
 
 These are the defaults. They exist so that absence of a decision does not become indefinite retention.

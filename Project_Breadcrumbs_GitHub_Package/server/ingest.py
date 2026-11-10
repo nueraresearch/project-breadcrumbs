@@ -34,6 +34,8 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
+import imagecrypt
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -232,11 +234,16 @@ def validate_record(rec) -> list[str]:
 # ---------------------------------------------------------------------------
 
 class Store:
-    def __init__(self, data_dir: str):
+    def __init__(self, data_dir: str, image_key: bytes | None = None):
         self.data_dir = os.path.abspath(data_dir)
         self.image_dir = os.path.join(self.data_dir, "images")
         os.makedirs(self.image_dir, exist_ok=True)
         self.db_path = os.path.join(self.data_dir, "records.db")
+        # A caller that passes no key still gets the environment checked, so
+        # a running server cannot quietly fall back to storing frames in the
+        # clear just because nobody set an argument.
+        self.image_key = (image_key if image_key is not None
+                          else imagecrypt.key_from_env())
         with self._conn() as conn:
             conn.executescript(SCHEMA)
 
@@ -329,17 +336,27 @@ class Store:
     # -- images -----------------------------------------------------------
 
     def store_image(self, record_id: str, frame: int, blob: bytes) -> str:
-        """Writes the frame atomically and records its hash. Returns the hash."""
+        """Encrypts the frame, writes it atomically, records its hash.
+
+        Returns the SHA-256 of the plaintext, which is what the audit trail
+        refers to. The file on disk never holds the plaintext at all.
+        """
+        if self.image_key is None:
+            raise imagecrypt.MissingKey(
+                f"{imagecrypt.KEY_ENV} is not set; refusing to store captured "
+                f"frames unencrypted")
+
         digest = hashlib.sha256(blob).hexdigest()
-        name = f"{record_id}_{frame:02d}.jpg"
+        sealed = imagecrypt.encrypt(self.image_key, blob)
+        name = f"{record_id}_{frame:02d}.jpg.enc"
         final = os.path.join(self.image_dir, name)
 
         # Write to a temp file in the same directory, then rename: a crash
-        # mid-write must not leave a truncated JPEG that looks valid.
+        # mid-write must not leave a truncated file that looks valid.
         fd, tmp = tempfile.mkstemp(dir=self.image_dir, suffix=".part")
         try:
             with os.fdopen(fd, "wb") as fh:
-                fh.write(blob)
+                fh.write(sealed)
                 fh.flush()
                 os.fsync(fh.fileno())
             os.replace(tmp, final)
@@ -357,6 +374,27 @@ class Store:
                 (record_id, frame, f"{record_id}-{frame}", name, digest,
                  len(blob), utcnow()))
         return digest
+
+    def read_image(self, secure_object_ref: str,
+                   expected_hash: str | None = None) -> bytes:
+        """Decrypts a stored frame, checking it against its recorded hash.
+
+        The hash covers the plaintext, so a file that decrypts to something
+        else has been swapped or the key is wrong; either way there is no
+        output.
+        """
+        if self.image_key is None:
+            raise imagecrypt.MissingKey(
+                f"{imagecrypt.KEY_ENV} is not set; stored frames cannot be "
+                f"decrypted")
+        path = os.path.join(self.image_dir, secure_object_ref)
+        with open(path, "rb") as fh:
+            sealed = fh.read()
+        plain = imagecrypt.decrypt(self.image_key, sealed)
+        if expected_hash and hashlib.sha256(plain).hexdigest() != expected_hash:
+            raise imagecrypt.CryptoError(
+                "decrypted frame does not match its recorded hash")
+        return plain
 
     # -- health -----------------------------------------------------------
 
@@ -523,7 +561,12 @@ class Handler(BaseHTTPRequestHandler):
             # is better than storing a file that will not open later.
             return self._json(400, {"error": "JPEG appears truncated"})
 
-        digest = self.server.store.store_image(record_id, frame, body)
+        try:
+            digest = self.server.store.store_image(record_id, frame, body)
+        except imagecrypt.MissingKey as exc:
+            # Fail closed. An unconfigured key must never mean plaintext
+            # faces on disk; the device will retry until it sees a 2xx.
+            return self._json(503, {"error": str(exc)})
         return self._json(201, {
             "record_id": record_id,
             "frame_index": frame,
@@ -532,9 +575,10 @@ class Handler(BaseHTTPRequestHandler):
         })
 
 
-def create_server(host: str, port: int, data_dir: str, token=None):
+def create_server(host: str, port: int, data_dir: str, token=None,
+                  image_key=None):
     httpd = ThreadingHTTPServer((host, port), Handler)
-    httpd.store = Store(data_dir)
+    httpd.store = Store(data_dir, image_key=image_key)
     httpd.token = token
     return httpd
 
@@ -552,7 +596,11 @@ def main(argv=None) -> int:
         print("warning: INGEST_TOKEN is not set; the endpoint accepts "
               "unauthenticated writes", file=sys.stderr)
 
-    httpd = create_server(args.host, args.port, args.data_dir, token)
+    if imagecrypt.key_from_env() is None:
+        print("warning: IMAGE_KEY is not set; image uploads will be refused "
+              "rather than stored unencrypted")
+    httpd = create_server(args.host, args.port, args.data_dir, token,
+                          image_key=imagecrypt.key_from_env())
     host, port = httpd.server_address[:2]
     print(f"listening on http://{host}:{port}  "
           f"data={os.path.abspath(args.data_dir)}")

@@ -22,6 +22,8 @@ It also fails closed:
   - no raw coordinates are ever written, at any setting
   - an image is not released unless its record has been adjudicated, because
     D-52 requires a human to have looked at it first
+  - a stored frame is encrypted at rest, and is decrypted only in memory, so
+    a copy of the data directory holds no photographs
   - deployment identifiers are replaced by a keyed hash, so events can be
     grouped by deployment without naming a household
   - the run aborts if no salt is supplied, rather than falling back to plain
@@ -43,6 +45,8 @@ import os
 import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
+
+import imagecrypt
 
 # ---------------------------------------------------------------------------
 # Policy
@@ -260,10 +264,14 @@ def deployment_key(salt: bytes, deployment_id: str) -> str:
 def publish(data_dir: str, out_dir: str, salt: bytes, *,
             delay_days: int = DEFAULT_DELAY_DAYS,
             release_images: bool = False,
+            image_key: bytes | None = None,
             now: datetime | None = None) -> dict:
     db_path = os.path.join(data_dir, "records.db")
     if not os.path.exists(db_path):
         raise PublishError(f"no database at {db_path}")
+
+    if image_key is None:
+        image_key = imagecrypt.key_from_env()
 
     now = now or datetime.now(timezone.utc)
     cutoff = now - timedelta(days=delay_days)
@@ -329,7 +337,8 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
             counts["records_published"] += 1
 
             if release_images:
-                _publish_images(conn, row, data_dir, image_out, counts)
+                _publish_images(conn, row, data_dir, image_out, counts,
+                                image_key)
 
     manifest = {
         "policy_version": POLICY_VERSION,
@@ -369,7 +378,7 @@ def _image_decision(conn, record_id):
         return None
 
 
-def _publish_images(conn, row, data_dir, image_out, counts):
+def _publish_images(conn, row, data_dir, image_out, counts, image_key=None):
     decision = _image_decision(conn, row["record_id"])
 
     if decision is None:
@@ -386,7 +395,7 @@ def _publish_images(conn, row, data_dir, image_out, counts):
         return
 
     images = conn.execute(
-        "SELECT frame_index, secure_object_ref FROM images"
+        "SELECT frame_index, secure_object_ref, integrity_hash FROM images"
         " WHERE record_id=? ORDER BY frame_index",
         (row["record_id"],)).fetchall()
 
@@ -394,8 +403,23 @@ def _publish_images(conn, row, data_dir, image_out, counts):
         src = os.path.join(data_dir, "images", img["secure_object_ref"])
         if not os.path.exists(src):
             continue
+        if image_key is None:
+            # Fail closed rather than skip: a release that quietly drops the
+            # frames would under-report what was published.
+            raise PublishError(
+                f"{imagecrypt.KEY_ENV} is not set; stored frames cannot be "
+                f"decrypted for release")
         with open(src, "rb") as fh:
-            blob = fh.read()
+            sealed = fh.read()
+        try:
+            blob = imagecrypt.decrypt(image_key, sealed)
+        except imagecrypt.CryptoError as exc:
+            raise PublishError(f"{row['record_id']}: {exc}")
+        if hashlib.sha256(blob).hexdigest() != img["integrity_hash"]:
+            raise PublishError(
+                f"{row['record_id']}: decrypted frame does not match its "
+                f"recorded hash; refusing to publish it")
+
         cleaned = strip_jpeg_metadata(blob)
 
         name = f"{row['record_id']}_{img['frame_index']:02d}.jpg"

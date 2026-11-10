@@ -39,14 +39,15 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
-import shutil
 import sqlite3
 import sys
 from contextlib import contextmanager
 from datetime import date, datetime, timezone
 
+import imagecrypt
 import sequences
 
 # ---------------------------------------------------------------------------
@@ -153,7 +154,8 @@ class Adjudicator:
     no list saying who is permitted.
     """
 
-    def __init__(self, data_dir: str, allowed_reviewers=None):
+    def __init__(self, data_dir: str, allowed_reviewers=None,
+                 image_key: bytes | None = None):
         self.data_dir = os.path.abspath(data_dir)
         self.image_dir = os.path.join(self.data_dir, "images")
         self.db_path = os.path.join(self.data_dir, "records.db")
@@ -161,6 +163,8 @@ class Adjudicator:
             raise AdjudicationError(f"no database at {self.db_path}")
         self.allowed_reviewers = (
             None if allowed_reviewers is None else set(allowed_reviewers))
+        self.image_key = (image_key if image_key is not None
+                          else imagecrypt.key_from_env())
         with self._conn() as conn:
             conn.executescript(SCHEMA)
             sequences.ensure_schema(conn)
@@ -442,15 +446,34 @@ class Adjudicator:
                 "record_id": record_id, "reviewer": reviewer,
                 "frames": [r["frame_index"] for r in rows]})
 
+        if self.image_key is None:
+            raise AdjudicationError(
+                f"{imagecrypt.KEY_ENV} is not set; stored frames cannot be "
+                f"decrypted for review")
+
         os.makedirs(out_dir, exist_ok=True)
         written = []
         for r in rows:
-            src = os.path.join(self.image_dir, r["secure_object_ref"])
-            if not r["secure_object_ref"] or not os.path.exists(src):
+            if not r["secure_object_ref"]:
                 continue
+            src = os.path.join(self.image_dir, r["secure_object_ref"])
+            if not os.path.exists(src):
+                continue
+            with open(src, "rb") as fh:
+                sealed = fh.read()
+            try:
+                plain = imagecrypt.decrypt(self.image_key, sealed)
+            except imagecrypt.CryptoError as exc:
+                raise AdjudicationError(
+                    f"{r['secure_object_ref']}: {exc}")
+            if hashlib.sha256(plain).hexdigest() != r["integrity_hash"]:
+                raise AdjudicationError(
+                    f"{r['secure_object_ref']}: decrypted frame does not "
+                    f"match its recorded hash")
             dst = os.path.join(out_dir,
                                f"{record_id}_{r['frame_index']:02d}.jpg")
-            shutil.copyfile(src, dst)
+            with open(dst, "wb") as fh:
+                fh.write(plain)
             written.append(dst)
         return written
 
@@ -682,8 +705,8 @@ def main(argv=None) -> int:
         elif args.cmd == "view-images":
             files = adj.view_images(args.record_id, args.reviewer, args.out)
             print(f"wrote {len(files)} frame(s) to {args.out}")
-            print("access to this record is now logged against "
-                  f"{args.reviewer}; they can no longer adjudicate its event")
+            print("review copies are plaintext inside that folder; treat it "
+                  "as sensitive and delete it when the review is written up")
 
         elif args.cmd == "decide-event":
             if args.record_id.startswith("seq_"):

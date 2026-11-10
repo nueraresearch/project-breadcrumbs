@@ -94,6 +94,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.28 | 2026-10-30 | Added the publication step, so records are coarsened, delayed and captioned before release |
 | 1.29 | 2026-10-30 | Added adjudication, so a review decides what may be published and withheld frames are destroyed |
 | 1.30 | 2026-10-30 | Added sequence grouping, so adjudication classifies an episode rather than each record |
+| 1.31 | 2026-10-30 | Encrypted captured frames at rest, so a copied data directory holds no photographs |
 
 ## Contribution and revision policy
 
