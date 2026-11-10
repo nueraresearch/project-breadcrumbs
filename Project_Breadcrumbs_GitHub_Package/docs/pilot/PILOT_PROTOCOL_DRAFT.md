@@ -48,6 +48,18 @@ Each household hosts one deployment and no more (D-53). Ten modules rotate throu
 
 Before recruitment or deployment, the project must complete legal, privacy, safety, insurance, and ethics review appropriate to the actual locations and methods. Town-meeting approval is the gate to fielding (D-43).
 
+### 4.1 Addressing and the no-open instruction (D-77)
+
+Each package is addressed to a **study name**. A study name belongs to no real person: it is not the volunteer's name, not another household member's, and is not drawn from any list of local residents. If a volunteer knows the name is already in use by someone at that address, the name is changed before the package goes out.
+
+The volunteer is told in writing — in the participant materials, and again at placement — that the box is sealed research equipment, that they must not open it, adjust it, or aim it, and that it stays closed until the project retrieves it (D-27). The same instruction covers other members of the household as far as the volunteer can secure it, and the volunteer acknowledges it in the written authorization.
+
+This is what makes an opening interpretable. A package may be opened only by its addressee. The addressee is a study name belonging to no real person, so no one at the address is entitled to open it. A person who opens the box is opening mail not addressed to them. That is the factual premise behind the privacy position recorded in D-42; it is not a claim that the person keeps no privacy interest at all, and publication is still governed by D-41 and D-52.
+
+Four residual cases are recorded rather than explained away. A household member who was not told may open a box they take for a misdelivery; a neighbour may carry it inside; a study name may coincide with a real resident's; and a host may open it despite the instruction. The briefing covers the first and the last, the incident procedure covers the second, a name known to be in use at the address is changed, and a box opened by the host or household is logged as a protocol deviation and assessed under the deviation rules in the pre-registration plan.
+
+If a box is found open or damaged, the volunteer reports it and does not reseal, repair, or investigate it. Retrieval and inspection are the project's work.
+
 ## 5. Study design
 
 A small, repeated-deployment observational feasibility study with 30-day cycles.
@@ -180,6 +192,7 @@ Avoid causal claims or generalisation beyond the small sample.
 ### Phase 2 — Participant onboarding
 - Obtain written participation and property authorization.
 - Explain the device, data collected, publication, risks, withdrawal, and incident procedure.
+- Explain the addressing rule: the package carries a study name belonging to no real person, and neither the host nor the household may open it (D-77).
 - Assign participant and deployment codes.
 
 ### Phase 3 — Field deployments (90 days, three 30-day cycles per module)

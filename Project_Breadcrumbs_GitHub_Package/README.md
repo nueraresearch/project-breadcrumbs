@@ -102,6 +102,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.36 | 2026-11-10 | Added the migration that encrypts frames in a data directory written before encryption existed |
 | 1.37 | 2026-11-10 | Added image key rotation that re-encrypts stored frames and verifies the old key is no longer needed |
 | 1.38 | 2026-11-10 | Image decisions now require that reviewer to have opened every frame of the record |
+| 1.39 | 2026-11-10 | Packages carry study names belonging to no real person, and hosts are instructed not to open them (D-77) |
 
 ## Contribution and revision policy
 
