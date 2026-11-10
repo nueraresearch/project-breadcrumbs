@@ -383,6 +383,100 @@ class GridTests(unittest.TestCase):
         self.assertEqual(self._output()[0]["grid_size_m"], 1000)
 
 
+class EpisodeCountTests(unittest.TestCase):
+    """The removal figure is per episode; a record count would overstate it."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.data, self.store = make_db(self.tmp.name)
+        self.out = os.path.join(self.tmp.name, "published")
+        self.old = datetime.now(timezone.utc) - timedelta(days=60)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _run(self, **kw):
+        kw.setdefault("grid_m", 1000)
+        return publish.publish(self.data, self.out, SALT, **kw)
+
+    def _output(self):
+        with open(os.path.join(self.out, "records.jsonl"),
+                  encoding="utf-8") as fh:
+            return [json.loads(line) for line in fh if line.strip()]
+
+    def _opening(self, rid0, rid1, rid2, received):
+        insert(self.store, rid0, event_type="LIGHT_TRIGGER", ts=100,
+               received=received)
+        insert(self.store, rid1, ts=115, received=received)
+        insert(self.store, rid2, event_type="MOVEMENT_EVENT", ts=140,
+               received=received)
+
+    def test_three_records_are_one_episode(self):
+        self._opening("MOD000-hh-000001", "MOD000-hh-000002",
+                      "MOD000-hh-000003", self.old)
+        c = self._run()["counts"]
+        self.assertEqual(c["records_published"], 3)
+        self.assertEqual(c["episodes_total"], 1)
+        self.assertEqual(c["episodes_published"], 1)
+
+    def test_a_second_opening_is_a_second_episode(self):
+        self._opening("MOD000-hh-000011", "MOD000-hh-000012",
+                      "MOD000-hh-000013", self.old)
+        insert(self.store, "MOD000-hh-000020", event_type="LIGHT_TRIGGER",
+               ts=1000, received=self.old)
+        c = self._run()["counts"]
+        self.assertEqual(c["episodes_total"], 2)
+        self.assertEqual(c["episodes_published"], 2)
+
+    def test_removal_is_counted_once_for_the_analysis(self):
+        self._opening("MOD000-hh-000021", "MOD000-hh-000022",
+                      "MOD000-hh-000023", self.old)
+        adj = adjudicate.Adjudicator(self.data, REVIEWERS, image_key=TEST_KEY)
+        adj.vote_event("MOD000-hh-000021", "alice", "removal")
+        adj.vote_event("MOD000-hh-000021", "bob", "removal")
+
+        c = self._run()["counts"]
+        self.assertEqual(c["records_published"], 3)
+        self.assertEqual(c["removals_published"], 1)
+        self.assertEqual(c["episodes_by_outcome"]["removal"], 1)
+
+    def test_unadjudicated_episode_is_unresolved(self):
+        self._opening("MOD000-hh-000031", "MOD000-hh-000032",
+                      "MOD000-hh-000033", self.old)
+        c = self._run()["counts"]
+        self.assertEqual(c["episodes_by_outcome"]["unresolved"], 1)
+        self.assertEqual(c["removals_published"], 0)
+
+    def test_episode_straddling_the_delay_is_partial(self):
+        insert(self.store, "MOD000-hh-000041", event_type="LIGHT_TRIGGER",
+               ts=100, received=self.old)
+        insert(self.store, "MOD000-hh-000042", ts=115)      # too recent
+        c = self._run(delay_days=30)["counts"]
+        self.assertEqual(c["episodes_total"], 1)
+        self.assertEqual(c["episodes_published"], 0)
+        self.assertEqual(c["episodes_partial"], 1)
+
+    def test_fully_held_episode_is_not_published(self):
+        insert(self.store, "MOD000-hh-000051", event_type="LIGHT_TRIGGER",
+               ts=100)
+        c = self._run(delay_days=30)["counts"]
+        self.assertEqual(c["episodes_withheld_delay"], 1)
+        self.assertEqual(c["episodes_published"], 0)
+
+    def test_bundle_names_the_episode(self):
+        self._opening("MOD000-hh-000061", "MOD000-hh-000062",
+                      "MOD000-hh-000063", self.old)
+        insert(self.store, "MOD000-hh-000070", event_type="LOW_BATTERY",
+               ts=200, received=self.old)
+        self._run()
+        recs = {r["record_id"]: r for r in self._output()}
+        keys = {recs[f"MOD000-hh-00006{i}"]["episode_key"] for i in (1, 2, 3)}
+        self.assertEqual(len(keys), 1)
+        self.assertNotIn(None, keys)
+        # A device record is not part of an opening and carries no key.
+        self.assertIsNone(recs["MOD000-hh-000070"]["episode_key"])
+
+
 class ManifestTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()

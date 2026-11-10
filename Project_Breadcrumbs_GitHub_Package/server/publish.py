@@ -49,7 +49,9 @@ import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
 
+import adjudicate
 import imagecrypt
+import sequences
 
 # ---------------------------------------------------------------------------
 # Policy
@@ -96,6 +98,7 @@ OUTPUT_FIELDS = (
     "displacement_km",
     "grid_cell",
     "grid_size_m",
+    "episode_key",
 )
 
 # D-42: the wording is fixed, not generated. A caption that describes a theft
@@ -286,6 +289,83 @@ def deployment_key(salt: bytes, deployment_id: str) -> str:
     return hmac.new(salt, deployment_id.encode(), hashlib.sha256).hexdigest()[:16]
 
 
+def _episode_index(conn) -> dict:
+    """record_id -> (sequence_id, is_episode)."""
+    rows = conn.execute(
+        "SELECT s.sequence_id, s.is_episode, m.record_id"
+        " FROM sequences s"
+        " JOIN sequence_members m ON m.sequence_id = s.sequence_id").fetchall()
+    return {r["record_id"]: (r["sequence_id"], bool(r["is_episode"]))
+            for r in rows}
+
+
+def _episode_votes(conn) -> dict:
+    """Verdicts per sequence, in the order they were cast."""
+    try:
+        rows = conn.execute(
+            "SELECT sequence_id, outcome FROM sequence_adjudications"
+            " ORDER BY id").fetchall()
+    except sqlite3.OperationalError:
+        # Nobody has adjudicated yet; every episode is unresolved.
+        return {}
+    votes = {}
+    for r in rows:
+        votes.setdefault(r["sequence_id"], []).append(r["outcome"])
+    return votes
+
+
+def _episode_counts(conn, published_ids) -> dict:
+    """The bundle counted by episode, because that is the analysed unit.
+
+    One opening produces a light trigger, a capture record and several movement
+    events, all of which publish. A record count therefore overstates removals
+    by however many movement events each opening generated, which is why the
+    removal figure has to come from here.
+
+    An episode counts as published only when every one of its records is in
+    this bundle. Splitting an episode across two runs would otherwise count the
+    same removal twice, and a bundle that straddles the delay cutoff is reported
+    as partial rather than silently counted.
+    """
+    votes = _episode_votes(conn)
+
+    members = {}
+    for r in conn.execute(
+            "SELECT s.sequence_id, m.record_id FROM sequences s"
+            " JOIN sequence_members m ON m.sequence_id = s.sequence_id"
+            " WHERE s.is_episode = 1"):
+        members.setdefault(r["sequence_id"], []).append(r["record_id"])
+
+    out = {
+        "episodes_total": 0,
+        "episodes_published": 0,
+        "episodes_partial": 0,
+        "episodes_withheld_delay": 0,
+        "episodes_by_outcome": {},
+        "removals_published": 0,
+    }
+
+    for seq_id, record_ids in members.items():
+        out["episodes_total"] += 1
+
+        state, _, decided = adjudicate.resolve_outcomes(votes.get(seq_id, []))
+        label = decided or "unresolved"
+        out["episodes_by_outcome"][label] = (
+            out["episodes_by_outcome"].get(label, 0) + 1)
+
+        published = [r for r in record_ids if r in published_ids]
+        if len(published) == len(record_ids):
+            out["episodes_published"] += 1
+            if label == "removal":
+                out["removals_published"] += 1
+        elif published:
+            out["episodes_partial"] += 1
+        else:
+            out["episodes_withheld_delay"] += 1
+
+    return out
+
+
 def publish(data_dir: str, out_dir: str, salt: bytes, *,
             delay_days: int = DEFAULT_DELAY_DAYS,
             release_images: bool = False,
@@ -324,6 +404,13 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
         "images_withheld_by_category": {},
     }
 
+    # Grouped with the same rule and the same frozen memberships adjudication
+    # used, so a manifest cannot disagree with the reviews behind it.
+    sequences.sync(conn)
+    conn.commit()
+    episode_index = _episode_index(conn)
+    published_ids = set()
+
     os.makedirs(out_dir, exist_ok=True)
     image_out = os.path.join(out_dir, "images")
     if release_images:
@@ -348,6 +435,9 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
             distance, bucket = deployment_displacement(
                 conn, row["deployment_id"])
 
+            grouped = episode_index.get(row["record_id"])
+            episode_key = grouped[0] if grouped and grouped[1] else None
+
             out = {
                 "record_id": row["record_id"],
                 "event_type": row["event_type"],
@@ -364,6 +454,7 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
                 "grid_cell": (grid_cell(row["lat"], row["lon"], grid_m)
                               if row["location_valid"] else None),
                 "grid_size_m": grid_m,
+                "episode_key": episode_key,
             }
 
             # Belt and braces: the record is built from a whitelist, but assert
@@ -374,10 +465,13 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
 
             fh.write(json.dumps(out, sort_keys=True) + "\n")
             counts["records_published"] += 1
+            published_ids.add(row["record_id"])
 
             if release_images:
                 _publish_images(conn, row, data_dir, image_out, counts,
                                 image_key)
+
+    counts.update(_episode_counts(conn, published_ids))
 
     manifest = {
         "policy_version": POLICY_VERSION,
@@ -392,6 +486,9 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
             "coordinate (D-41, D-76).",
             "The grid resolution is recorded rather than defaulted, so a "
             "bundle states the precision that produced it.",
+            "Records are not removals: one opening produces several records, "
+            "so the removal figure is removals_published, which counts "
+            "episodes whose every record is in this bundle.",
             "Deployment identifiers are replaced by a keyed hash (D-41).",
             "Captions describe an opening, not a theft (D-42).",
             "Images are released only when adjudicated (D-52).",
@@ -544,6 +641,12 @@ def main(argv=None) -> int:
     print(f"published {c['records_published']} of {c['records_total']} records "
           f"to {args.out}")
     print(f"  held for delay        {c['records_withheld_delay']}")
+    print(f"episodes              {c['episodes_published']} of "
+          f"{c['episodes_total']} whole, {c['episodes_partial']} partial, "
+          f"{c['episodes_withheld_delay']} held")
+    print(f"  removals published    {c['removals_published']}")
+    for label, n in sorted(c["episodes_by_outcome"].items()):
+        print(f"  episode {label:<14} {n}")
     if manifest["images_released"]:
         print(f"  images published      {c['images_published']}")
         print(f"  images unadjudicated  {c['images_withheld_unadjudicated']}")

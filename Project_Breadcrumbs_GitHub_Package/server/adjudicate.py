@@ -123,7 +123,7 @@ def utcnow() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _resolution(outcomes: list) -> tuple:
+def resolve_outcomes(outcomes: list) -> tuple:
     """§6 applied to the verdicts on one sequence, in the order cast.
 
     Pure, because the queue and the decision have to agree about what counts
@@ -238,7 +238,7 @@ class Adjudicator:
             item["members"] = sorted((item["members"] or "").split(","))
             seq_votes = votes.get(item["sequence_id"], [])
             item["votes"] = len(seq_votes)
-            state, status, decided = _resolution(seq_votes)
+            state, status, decided = resolve_outcomes(seq_votes)
             item["state"], item["status"] = state, status
             item["decided_outcome"] = decided
             if state not in ("resolved", "resolved_by_third"):
@@ -376,7 +376,7 @@ class Adjudicator:
         votes = [dict(v) for v in conn.execute(
             "SELECT reviewer, outcome FROM sequence_adjudications"
             " WHERE sequence_id=? ORDER BY id", (sequence_id,)).fetchall()]
-        state, status, decided = _resolution([v["outcome"] for v in votes])
+        state, status, decided = resolve_outcomes([v["outcome"] for v in votes])
         return {"state": state, "status": status, "votes": votes,
                 "decided_outcome": decided}
 
@@ -421,7 +421,7 @@ class Adjudicator:
                 " FROM sequence_adjudications WHERE sequence_id=?"
                 " ORDER BY id", (sequence_id,)).fetchall()]
 
-        state, status, decided = _resolution([v["outcome"] for v in votes])
+        state, status, decided = resolve_outcomes([v["outcome"] for v in votes])
         return {"sequence_id": sequence_id, "module_id": seq["module_id"],
                 "deployment_id": seq["deployment_id"],
                 "started_ts": seq["started_ts"],
@@ -612,7 +612,7 @@ class Adjudicator:
 
         episodes = {"total": len(episode_rows), "decided": 0, "open": 0}
         for row in episode_rows:
-            state, _, _ = _resolution(votes.get(row["sequence_id"], []))
+            state, _, _ = resolve_outcomes(votes.get(row["sequence_id"], []))
             if state in ("resolved", "resolved_by_third"):
                 episodes["decided"] += 1
             else:
