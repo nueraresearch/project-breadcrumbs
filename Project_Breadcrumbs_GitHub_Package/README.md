@@ -108,6 +108,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.42 | 2026-11-10 | Added a field-by-field re-identification review of the published bundle |
 | 1.43 | 2026-11-10 | Drafted the participant briefing and consent packet, including the no-open acknowledgement and withdrawal procedure |
 | 1.44 | 2026-11-10 | Drafted the town-meeting briefing on what the pilot can conclude and the face-publication trade-off |
+| 1.45 | 2026-11-10 | Added reviewer recusal and a second reviewer for frames containing a bystander (D-79) |
 
 ## Contribution and revision policy
 

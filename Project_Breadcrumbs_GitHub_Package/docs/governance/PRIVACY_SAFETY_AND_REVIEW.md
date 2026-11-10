@@ -33,6 +33,8 @@ Proposed system constraints:
 - The package is addressed to a screened study name belonging to no one connected to the address or the project, with a written no-open instruction to the host and the host's confirmation that the name is not in use at the address (D-77, D-78).
 - No published field identifies the participant or the volunteer's property: no name, no address, no precise coordinate (D-41).
 - Images that appear to depict a minor, or someone with no connection to the opening, are never published. They are flagged at adjudication, access-restricted, and deleted once the adjudication record is written (D-52). The number withheld is published by category.
+- Image reviewers recuse themselves if they know the participant, the household, or the deployment address, or if they recognize anyone in a frame (D-79). A reviewer who recognizes someone after viewing stops and records no decision; the record goes to another reviewer.
+- A frame that appears to contain a bystander is reviewed by two reviewers, each of whom has opened every frame. If either withholds, the decisions differ, or no second reviewer is available, the image is withheld (D-79).
 
 Whether participant notice or additional disclosure is required or appropriate must be determined through legal review and documented project policy. Do not assume property ownership alone resolves all privacy or recording issues.
 
@@ -44,7 +46,7 @@ Before participation, explain:
 - the addressing rule, how the study name is checked with the host, and that the box must not be opened by the host or the household (D-77, D-78);
 - the types of data collected;
 - possible incidental capture of people;
-- who can access data before release;
+- who can access data before release, including the recusal rule and the second reviewer required when a bystander appears in a frame (D-79);
 - what is published, and that publication is permanent;
 - how to request suspension or withdrawal;
 - what happens to data already collected;

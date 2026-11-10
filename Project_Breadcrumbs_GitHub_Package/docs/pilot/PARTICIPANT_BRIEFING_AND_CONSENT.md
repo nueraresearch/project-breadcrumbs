@@ -3,7 +3,7 @@
 **Status:** Draft for legal and ethics review. Not approved for use. Do not ask anyone to sign until §6 is closed.
 **Version:** 0.1 (2026-11-10)
 **Covers:** open items B-01 (consent and withdrawal) and B-10 (participant briefing).
-**Related:** [`../../DECISION_LOG.md`](../../DECISION_LOG.md) D-27, D-34, D-39, D-40, D-41, D-42, D-52, D-53, D-55, D-74, D-76, D-77, D-78; [`PILOT_PROTOCOL_DRAFT.md`](PILOT_PROTOCOL_DRAFT.md) §4; [`../governance/PRIVACY_SAFETY_AND_REVIEW.md`](../governance/PRIVACY_SAFETY_AND_REVIEW.md) §4; [`../governance/DATA_PROTECTION_CONTROLS.md`](../governance/DATA_PROTECTION_CONTROLS.md) §10.
+**Related:** [`../../DECISION_LOG.md`](../../DECISION_LOG.md) D-27, D-34, D-39, D-40, D-41, D-42, D-52, D-53, D-55, D-74, D-76, D-77, D-78, D-79; [`PILOT_PROTOCOL_DRAFT.md`](PILOT_PROTOCOL_DRAFT.md) §4; [`../governance/PRIVACY_SAFETY_AND_REVIEW.md`](../governance/PRIVACY_SAFETY_AND_REVIEW.md) §4; [`../governance/DATA_PROTECTION_CONTROLS.md`](../governance/DATA_PROTECTION_CONTROLS.md) §10.
 
 ## 1. How to use this document
 
@@ -36,7 +36,7 @@ If you find the box open or damaged, do not reseal, repair, or investigate it. R
 
 The box contains a small camera and sensors. The camera is blind while the lid is closed. When the box is opened, a light trigger takes up to three still images. There is no audio, no video, and no continuous recording, and the project does not use facial recognition.
 
-The camera looks out at whoever opens the box. A photograph may show the person and what is behind them, including part of your porch. The box also records event times, device health, and location fixes. Images are encrypted at rest, and before release they are seen only by named reviewers; access is logged.
+The camera looks out at whoever opens the box. A photograph may show the person and what is behind them, including part of your porch. The box also records event times, device health, and location fixes. Images are encrypted at rest, and before release they are seen only by named reviewers; access is logged. A reviewer who knows you or your household does not review your images. If another person appears in a frame, a second reviewer must agree before any image is published.
 
 ### 2.5 What is published
 
@@ -105,7 +105,7 @@ Complete in the presence of the project representative. Initial every statement.
 | 5 | If I find the box open or damaged, I will not reseal, repair, or investigate it. I will report it and let the project collect it. | |
 | 6 | If mail arrives for the study name, I will not open it. I will return it to the carrier or mark it return to sender. | |
 | 7 | I understand the project cannot prevent the box from being opened or taken. It is not a security service or a police response. I will not confront, follow, or try to identify anyone. If there is immediate danger, I will contact emergency services. | |
-| 8 | I understand a photograph may show me or the person opening the box and part of the porch or background. The project reviews images before release, does not publish images of minors or people unconnected to the opening, and publishes the number withheld by category. | |
+| 8 | I understand a photograph may show me or the person opening the box and part of the porch or background. The project reviews images before release, does not publish images of minors or people unconnected to the opening, and publishes the number withheld by category. A reviewer who knows me or my household will not review my images, and a frame with a bystander needs a second reviewer before publication. | |
 | 9 | I understand published records do not include my name, address, or a precise coordinate. Location is a grid cell of 1 km or coarser. Publication is delayed (currently 30 days), public, and permanent; anything released cannot be recalled. | |
 | 10 | I understand the $20 payment is for the return of the module, paid to whoever returns it, with no questions asked. It is not payment for taking part and not compensation for a loss. | |
 | 11 | I understand taking part is voluntary. I can withdraw at any time without giving a reason. Withdrawal stops future deployment, and I can ask for my event and image records to be deleted. Deletion is honoured unless a legal hold applies; anything already published cannot be recalled. | |

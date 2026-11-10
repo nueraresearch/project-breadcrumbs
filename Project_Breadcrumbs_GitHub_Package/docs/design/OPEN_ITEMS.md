@@ -51,7 +51,7 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 | ID | Item | Why it blocks | Status |
 |---|---|---|---|
 | C-01 | Data platform: ingest, vault, publication pipeline | Nothing exists. Images arrive by cellular and have nowhere to go | Open |
-| C-02 | Adjudication reviewers named, rubric written | Two reviewers plus a tiebreak are required by the analysis plan | Open |
+| C-02 | Adjudication reviewers named, rubric written, recusal declarations recorded, bystander second review implemented | Two reviewers plus a tiebreak are required by the analysis plan; D-79 adds recusal and a second reviewer for bystander frames, which the tool does not yet enforce | Open — roster, declarations, and two-reviewer support |
 | C-03 | Pre-registration dated, signed, committed | Must precede the first deployment | Open |
 | C-04 | Publication venue and format | Determines captions, tables, and what can be shown | Open |
 | C-05 | Caption templates implementing D-42 | "Package opened", no names, no identification requests | **Implemented 2026-10-30** in `server/publish.py` |
