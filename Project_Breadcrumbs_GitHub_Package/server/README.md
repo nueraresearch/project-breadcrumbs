@@ -151,3 +151,18 @@ The cipher is built from the standard library, because the server is dependency-
 Records and hashes are unaffected. `integrity_hash` is the SHA-256 of the *plaintext*, so every stored frame stays verifiable after decryption, and a file that decrypts to something else is refused rather than released.
 
 **Review copies are plaintext.** `view-images` writes decrypted JPEGs into the output folder, because a reviewer has to look at them. That folder is as sensitive as the originals: delete it when the review is written up, and do not leave it in a synced directory.
+
+### Migrating a directory written before encryption
+
+An older data directory holds ordinary `.jpg` files and `images` rows that point at them, so every read now fails with a message naming `migrate_images.py`. That tool converts the directory in place: it reads each frame the row points at, checks its SHA-256 against the `integrity_hash` already recorded, encrypts it, writes and re-reads the result, repoints the row, commits, and only then removes the plaintext.
+
+```bash
+INGEST_DATA=data IMAGE_KEY=... python3 migrate_images.py --data-dir data --dry-run
+INGEST_DATA=data IMAGE_KEY=... python3 migrate_images.py --data-dir data
+```
+
+**Stop the ingest server first.** The migration rewrites files and rows a running server would be reading, and a re-upload arriving mid-run could replace a `(record_id, frame_index)` between the read and the update.
+
+**The hash check is the point.** `integrity_hash` is the only fact in the directory that predates the migration, so a frame whose bytes no longer match it is refused and left on disk rather than sealed with a verified-looking provenance. A plaintext file with no `images` row is reported and left alone for the same reason: there is no hash to check it against. Both make the run exit non-zero.
+
+**Re-running is safe, and useful.** A frame that is already encrypted is decrypted and checked against its hash rather than skipped, so a second run doubles as proof that the key opens everything in the directory. `--keep-plaintext` leaves the originals in place for a cautious first pass; the tool says so at the end rather than letting the copies be forgotten.

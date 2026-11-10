@@ -134,10 +134,14 @@ def encrypt(key: bytes, plaintext: bytes) -> bytes:
 
 
 def decrypt(key: bytes, blob: bytes) -> bytes:
+    # Checked before the length, so a plaintext frame from an older data
+    # directory gets the actionable message rather than "truncated".
+    if not is_encrypted(blob):
+        raise CryptoError(
+            "not an encrypted frame; a data directory written before "
+            "encryption was enabled needs migrate_images.py")
     if len(blob) < len(MAGIC) + NONCE_BYTES + MAC_BYTES:
         raise CryptoError("ciphertext is truncated")
-    if not is_encrypted(blob):
-        raise CryptoError("not an encrypted frame")
 
     body, tag = blob[:-MAC_BYTES], blob[-MAC_BYTES:]
     enc_key, mac_key = _subkeys(key)

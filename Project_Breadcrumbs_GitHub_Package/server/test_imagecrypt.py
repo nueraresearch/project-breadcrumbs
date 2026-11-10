@@ -68,8 +68,11 @@ class RejectionTests(unittest.TestCase):
             imagecrypt.decrypt(KEY, sealed[:20])
 
     def test_plain_jpeg_is_not_accepted_as_ciphertext(self):
-        with self.assertRaises(imagecrypt.CryptoError):
+        with self.assertRaises(imagecrypt.CryptoError) as ctx:
             imagecrypt.decrypt(KEY, JPEG)
+        # A pre-encryption directory is the likely cause, so the error says
+        # what to run instead of only that the frame is unreadable.
+        self.assertIn("migrate_images.py", str(ctx.exception))
 
 
 class KeyTests(unittest.TestCase):
