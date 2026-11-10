@@ -136,6 +136,7 @@ class PublishTests(unittest.TestCase):
 
     def _run(self, **kw):
         kw.setdefault("release_images", False)
+        kw.setdefault("grid_m", 1000)
         return publish.publish(self.data, self.out, SALT, **kw)
 
     def _output(self):
@@ -238,6 +239,7 @@ class ImageReleaseTests(unittest.TestCase):
     def _publish(self, **kw):
         kw.setdefault("release_images", True)
         kw.setdefault("image_key", TEST_KEY)
+        kw.setdefault("grid_m", 1000)
         return publish.publish(self.data, self.out, SALT, **kw)
 
     def test_unadjudicated_image_is_not_released(self):
@@ -308,6 +310,79 @@ class ImageReleaseTests(unittest.TestCase):
         self.assertEqual(m["counts"]["images_published"], 0)
 
 
+class GridTests(unittest.TestCase):
+    """D-76: a cell, never a point, at a resolution somebody stated."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.data, self.store = make_db(self.tmp.name)
+        self.out = os.path.join(self.tmp.name, "published")
+        self.old = datetime.now(timezone.utc) - timedelta(days=60)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _run(self, **kw):
+        kw.setdefault("grid_m", 1000)
+        return publish.publish(self.data, self.out, SALT, **kw)
+
+    def _output(self):
+        with open(os.path.join(self.out, "records.jsonl"),
+                  encoding="utf-8") as fh:
+            return [json.loads(line) for line in fh if line.strip()]
+
+    def test_location_becomes_a_cell_not_a_point(self):
+        insert(self.store, "MOD000-gg-000001", received=self.old,
+               lat=37.5792, lon=-106.1453)
+        self._run()
+        rec = self._output()[0]
+        self.assertIn("grid_cell", rec)
+        self.assertEqual(rec["grid_size_m"], 1000)
+        self.assertNotIn("lat", rec)
+        self.assertNotIn("lon", rec)
+
+    def test_nearby_fixes_share_a_cell(self):
+        insert(self.store, "MOD000-gg-000002", received=self.old,
+               lat=37.5792, lon=-106.1453, ts=1)
+        insert(self.store, "MOD000-gg-000003", received=self.old,
+               lat=37.5795, lon=-106.1450, ts=2)
+        self._run()
+        self.assertEqual(len({r["grid_cell"] for r in self._output()}), 1)
+
+    def test_distant_fixes_differ(self):
+        insert(self.store, "MOD000-gg-000004", received=self.old,
+               lat=37.5792, lon=-106.1453, ts=1)
+        insert(self.store, "MOD000-gg-000005", received=self.old,
+               lat=37.6250, lon=-106.1453, ts=2)
+        self._run()
+        self.assertEqual(len({r["grid_cell"] for r in self._output()}), 2)
+
+    def test_a_finer_grid_is_refused(self):
+        insert(self.store, "MOD000-gg-000006", received=self.old,
+               lat=37.5792, lon=-106.1453)
+        with self.assertRaises(publish.PublishError):
+            self._run(grid_m=250)
+
+    def test_resolution_must_be_stated(self):
+        insert(self.store, "MOD000-gg-000007", received=self.old,
+               lat=37.5792, lon=-106.1453)
+        with self.assertRaises(publish.PublishError):
+            publish.publish(self.data, self.out, SALT)
+
+    def test_manifest_records_the_resolution(self):
+        insert(self.store, "MOD000-gg-000008", received=self.old)
+        self._run(grid_m=2000)
+        with open(os.path.join(self.out, "manifest.json"),
+                  encoding="utf-8") as fh:
+            self.assertEqual(json.load(fh)["grid_m"], 2000)
+
+    def test_records_without_a_fix_have_no_cell(self):
+        insert(self.store, "MOD000-gg-000009", received=self.old)
+        self._run()
+        self.assertIsNone(self._output()[0]["grid_cell"])
+        self.assertEqual(self._output()[0]["grid_size_m"], 1000)
+
+
 class ManifestTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -320,10 +395,12 @@ class ManifestTests(unittest.TestCase):
     def test_manifest_records_policy(self):
         insert(self.store, "MOD000-cc-000001",
                received=datetime.now(timezone.utc) - timedelta(days=60))
-        publish.publish(self.data, self.out, SALT, delay_days=45)
+        publish.publish(self.data, self.out, SALT, delay_days=45, grid_m=1000)
         with open(os.path.join(self.out, "manifest.json"), encoding="utf-8") as fh:
             m = json.load(fh)
         self.assertEqual(m["delay_days"], 45)
+        self.assertEqual(m["grid_m"], 1000)
+        self.assertEqual(m["grid_floor_m"], publish.MIN_GRID_M)
         self.assertEqual(m["policy_version"], publish.POLICY_VERSION)
         self.assertFalse(m["images_released"])
 
@@ -334,12 +411,32 @@ class ManifestTests(unittest.TestCase):
 
 
 class CliTests(unittest.TestCase):
+    def test_cli_refuses_a_grid_below_the_floor(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            data = os.path.join(tmp, "data")
+            store = ingest.Store(data, image_key=TEST_KEY)
+            insert(store, "MOD000-ee-000001",
+                   received=datetime.now(timezone.utc) - timedelta(days=60))
+            old = os.environ.get("PUBLISH_SALT")
+            os.environ["PUBLISH_SALT"] = SALT.hex()
+            try:
+                code = publish.main(["--data-dir", data,
+                                     "--out", os.path.join(tmp, "out"),
+                                     "--grid-m", "250", "--no-images"])
+            finally:
+                if old is None:
+                    os.environ.pop("PUBLISH_SALT", None)
+                else:
+                    os.environ["PUBLISH_SALT"] = old
+            self.assertEqual(code, 1)
+
     def test_refuses_without_salt(self):
         import subprocess
         here = os.path.dirname(os.path.abspath(__file__))
         env = {k: v for k, v in os.environ.items() if k != "PUBLISH_SALT"}
         out = subprocess.run(
-            ["python3", os.path.join(here, "publish.py")],
+            ["python3", os.path.join(here, "publish.py"),
+             "--grid-m", "1000"],
             capture_output=True, text=True, env=env)
         self.assertEqual(out.returncode, 2)
         self.assertIn("PUBLISH_SALT", out.stderr)

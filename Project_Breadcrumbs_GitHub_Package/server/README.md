@@ -50,13 +50,13 @@ python3 -m unittest test_ingest.py -v
 
 ## 5. What is stored
 
-`data/records.db` holds `modules`, `deployments`, `events`, `images` and `ingest_log`. `data/images/` holds the frames as `{record_id}_{frame}.jpg`, written to a temp file and renamed, so a crash cannot leave a truncated JPEG that looks valid.
+`data/records.db` holds `modules`, `deployments`, `events`, `images` and `ingest_log`. `data/images/` holds the frames encrypted as `{record_id}_{frame}.jpg.enc`, written to a temp file and renamed, so a crash cannot leave a truncated file that looks valid.
 
 `data/` is gitignored. It must never be committed: this repository is public.
 
 ## 6. What this does not do
 
-- **No publication pipeline.** Records are stored raw with full location precision. Reducing precision and delaying release (D-41) is a separate step that has not been written, and the stored data must not be published as-is.
+- **No precision of its own.** The service stores what the device reports, at full precision. Coarsening happens only in `publish.py`, which will not run without a stated grid resolution and a delay (D-41, D-76). The stored data must not be published as-is.
 - **No adjudication in the service.** `validation_status` defaults to `unreviewed` and only `adjudicate.py` writes it, by design: review is a separate act from receipt.
 - **No recovery records.** The recovery entity in the data model has no ingest path yet.
 - **No TLS.** Put it behind a reverse proxy that terminates TLS; the firmware's `QHTTPPOST` assumes HTTPS.
@@ -68,12 +68,14 @@ python3 -m unittest test_ingest.py -v
 
 ```
 PUBLISH_SALT=$(python3 -c 'import os;print(os.urandom(16).hex())') \
-  python3 publish.py --data-dir data --out published
+  python3 publish.py --data-dir data --out published --grid-m 1000
 ```
 
 **Nothing is published unless it is on the whitelist.** `OUTPUT_FIELDS` in `publish.py` is the complete set of fields that may leave the building. A column added to the database later cannot leak, because it is never copied.
 
-- **No coordinates, at any setting.** Displacement is published as a coarse bucket (`under 250 m` through `over 5 km`) plus a distance rounded to 100 m. That answers the displacement question without saying where a volunteer lives (D-41).
+- **Location is a grid cell, never a point.** A record with a valid fix carries `grid_cell` at the resolution given by `--grid-m`, plus `grid_size_m`. Displacement is still published as a bucket (`under 250 m` through `over 5 km`) and a distance rounded to 100 m (D-41).
+- **The resolution has no default.** `--grid-m` is required and the run refuses anything below 1 km (D-76). A precision nobody chose is how a coarsening rule quietly turns back into a precise trace, and the manifest records the figure so a bundle states the precision that produced it.
+- **What a cell still gives away.** At 1 km a cell covers a large share of a town of about 4,000 people, so the deployment cell places a volunteer's neighbourhood. That is the accepted trade rather than an oversight: without a position, the headline secondary outcome cannot be mapped at all.
 - **Delay.** Records newer than `--delay-days` are held and publish on a later run (D-41). The figure is a placeholder: D-41 requires a delay but does not set one, so the manifest records whichever value produced a bundle.
 - **Deployment keys.** `deployment_id` is replaced by a keyed hash, so events can be grouped by deployment without naming a household. The salt is never written to the output. Losing it means published keys can no longer be linked back, so keep it with the project records and not with the data.
 - **Captions** come from a fixed table keyed by event type, and each is checked against `BANNED_TERMS` before writing (D-42). An event type with no approved caption fails the run rather than receiving an invented one.
@@ -81,7 +83,7 @@ PUBLISH_SALT=$(python3 -c 'import os;print(os.urandom(16).hex())') \
 
 Every released frame has its metadata stripped by walking the JPEG markers and dropping APP1 to APP15 and comments; the result is re-checked for the JFIF start and EOI end markers. A frame that does not parse is refused rather than published as-is.
 
-The run writes `records.jsonl`, `images/` and a `manifest.json` recording the policy version, delay and counts, so a published bundle always states the rules that produced it.
+The run writes `records.jsonl`, `images/` and a `manifest.json` recording the policy version, delay, grid resolution and counts, so a published bundle always states the rules that produced it.
 
 `validation_status` is not the image signal. Publication asks the `adjudications` table directly, so a record reviewed as an event without anyone having looked at its frames still publishes no frames. That is the fail-closed behaviour rather than a bug.
 

@@ -6,7 +6,8 @@ here exists to honour three decisions:
 
   D-41  published location is reduced in precision and delayed, because a
         precise coordinate identifies the volunteer's home rather than the
-        subject.
+        subject. D-76 fixes what the reduction is: a published grid cell at a
+        resolution stated at release, never a point.
   D-42  captions say the package was opened, never that a theft occurred; no
         names, no identification requests, no guilt framing.
   D-52  images that appear to depict a minor, or a person with no connection
@@ -19,7 +20,8 @@ database later cannot leak by default.
 
 It also fails closed:
 
-  - no raw coordinates are ever written, at any setting
+  - location is written as a grid cell at a stated resolution, never as a
+    coordinate, and the run refuses a resolution finer than the floor
   - an image is not released unless its record has been adjudicated, because
     D-52 requires a human to have looked at it first
   - a stored frame is encrypted at rest, and is decrypted only in memory, so
@@ -30,7 +32,8 @@ It also fails closed:
     identifiers
 
 Usage:
-    PUBLISH_SALT=... python3 publish.py --data-dir data --out published
+    PUBLISH_SALT=... python3 publish.py --data-dir data --out published \\
+        --grid-m 1000
     python3 publish.py --help
 """
 
@@ -59,9 +62,16 @@ POLICY_VERSION = "1.0"
 # states which delay produced it.
 DEFAULT_DELAY_DAYS = 30
 
-# No latitude or longitude is published, ever. Distance is published as a
-# coarse bucket instead, which answers the displacement question without
-# saying where a volunteer lives.
+# D-76: the coarsening is a grid cell, and the resolution is stated at release
+# rather than defaulted. "Unspecified precision" is how a coarsening rule
+# quietly turns back into a precise trace, so the value has to be chosen and it
+# cannot be chosen below this floor.
+MIN_GRID_M = 1000
+
+# Used only to size longitude cells, which narrow with latitude. At the pilot
+# town's latitude a metre of longitude is about 0.79 m of ground.
+GRID_REFERENCE_LAT = 37.58
+
 DISPLACEMENT_BUCKETS = [
     (0.25, "under 250 m"),
     (1.0, "250 m to 1 km"),
@@ -84,6 +94,8 @@ OUTPUT_FIELDS = (
     "deployment_key",
     "displacement_bucket",
     "displacement_km",
+    "grid_cell",
+    "grid_size_m",
 )
 
 # D-42: the wording is fixed, not generated. A caption that describes a theft
@@ -227,6 +239,19 @@ def bucket_for(distance_km: float) -> str:
     return DISPLACEMENT_BUCKETS[-1][1]
 
 
+def grid_cell(lat: float, lon: float, grid_m: int) -> str:
+    """The cell containing a point, as two integer indices.
+
+    Two fixes in the same cell are indistinguishable in the output. That is the
+    whole of the protection: a cell, never a point. The resolution is published
+    beside the index, so the cell can be placed on a map by design — otherwise
+    displacement could not be mapped at all, which is what D-76 exists to allow.
+    """
+    lat_step = grid_m / 111_320.0
+    lon_step = grid_m / (111_320.0 * math.cos(math.radians(GRID_REFERENCE_LAT)))
+    return f"{math.floor(lat / lat_step)}:{math.floor(lon / lon_step)}"
+
+
 def deployment_displacement(conn, deployment_id: str):
     """Distance between the first and last fix in a deployment.
 
@@ -265,10 +290,20 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
             delay_days: int = DEFAULT_DELAY_DAYS,
             release_images: bool = False,
             image_key: bytes | None = None,
+            grid_m: int | None = None,
             now: datetime | None = None) -> dict:
     db_path = os.path.join(data_dir, "records.db")
     if not os.path.exists(db_path):
         raise PublishError(f"no database at {db_path}")
+
+    if grid_m is None:
+        raise PublishError(
+            "grid resolution is not set; D-76 requires a release to state the "
+            "resolution it used")
+    if not isinstance(grid_m, int) or grid_m < MIN_GRID_M:
+        raise PublishError(
+            f"grid resolution must be a whole number of metres, at least "
+            f"{MIN_GRID_M}; {grid_m!r} is finer than D-76 permits")
 
     if image_key is None:
         image_key = imagecrypt.key_from_env()
@@ -326,6 +361,9 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
                 "deployment_key": deployment_key(salt, row["deployment_id"] or ""),
                 "displacement_bucket": bucket,
                 "displacement_km": distance,
+                "grid_cell": (grid_cell(row["lat"], row["lon"], grid_m)
+                              if row["location_valid"] else None),
+                "grid_size_m": grid_m,
             }
 
             # Belt and braces: the record is built from a whitelist, but assert
@@ -345,10 +383,15 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
         "policy_version": POLICY_VERSION,
         "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "delay_days": delay_days,
+        "grid_m": grid_m,
+        "grid_floor_m": MIN_GRID_M,
         "images_released": release_images,
         "counts": counts,
         "notes": [
-            "No latitude or longitude is published at any setting (D-41).",
+            "Location is a grid cell at the stated resolution, never a "
+            "coordinate (D-41, D-76).",
+            "The grid resolution is recorded rather than defaulted, so a "
+            "bundle states the precision that produced it.",
             "Deployment identifiers are replaced by a keyed hash (D-41).",
             "Captions describe an opening, not a theft (D-42).",
             "Images are released only when adjudicated (D-52).",
@@ -468,6 +511,10 @@ def main(argv=None) -> int:
                     help=f"hold records newer than this many days "
                          f"(default {DEFAULT_DELAY_DAYS}; D-41 requires a delay "
                          f"but does not fix the figure)")
+    ap.add_argument("--grid-m", type=int, required=True,
+                    help=f"published grid cell size in metres "
+                         f"(minimum {MIN_GRID_M}; D-76 requires a release to "
+                         f"state its resolution)")
     ap.add_argument("--no-images", action="store_true",
                     help="publish event metadata only")
     args = ap.parse_args(argv)
@@ -487,6 +534,7 @@ def main(argv=None) -> int:
     try:
         manifest = publish(args.data_dir, args.out, salt,
                            delay_days=args.delay_days,
+                           grid_m=args.grid_m,
                            release_images=not args.no_images)
     except PublishError as exc:
         print(f"error: {exc}", file=sys.stderr)

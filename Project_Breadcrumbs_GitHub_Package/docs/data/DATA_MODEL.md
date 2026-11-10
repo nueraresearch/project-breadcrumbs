@@ -134,7 +134,7 @@ Use explicit flags for:
 
 Collected data, including images, is published (D-40). The limits below protect the volunteer and the person depicted, and are applied before release rather than on request afterwards:
 
-- No participant name, home address, or precise private-location trace (D-41). Location is reduced in precision and delayed.
+- No participant name, home address, or precise private-location trace (D-41). Location is reduced to a grid cell at a stated resolution and delayed (D-76).
 - Captions state that a package was opened, never that a theft occurred; no names, no identification requests, no guilt framing (D-42).
 - Event-level data may be published rather than aggregated, but site-level statistics must not permit re-identification of a volunteer's property.
 - Images may be published as captured, with embedded metadata stripped.
