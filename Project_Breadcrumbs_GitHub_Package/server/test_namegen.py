@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Tests for the study-name generator (D-78)."""
 
+import contextlib
+import io
 import os
 import random
 import stat
 import tempfile
+import types
 import unittest
 
 import namegen
@@ -210,6 +213,44 @@ class CheckTests(unittest.TestCase):
         pool.state["assignments"]["DEP-001"]["status"] = "confirmed"
         with self.assertRaises(namegen.NameGenError):
             pool.check(BLOCKLIST)
+
+
+class CliMessageTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.path = os.path.join(self.tmp.name, "study_names.json")
+        make_pool().save(self.path)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_issue_output_includes_the_no_open_rule(self):
+        args = types.SimpleNamespace(
+            state=self.path, deployment_id="DEP-001"
+        )
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            namegen._cmd_issue(args)
+        text = out.getvalue()
+        self.assertIn("Name check (D-78)", text)
+        self.assertIn("No-open rule (D-77)", text)
+        self.assertIn("No one at the address may open", text)
+
+    def test_confirm_output_keeps_the_no_open_rule_visible(self):
+        issue_args = types.SimpleNamespace(
+            state=self.path, deployment_id="DEP-001"
+        )
+        with contextlib.redirect_stdout(io.StringIO()):
+            namegen._cmd_issue(issue_args)
+        args = types.SimpleNamespace(
+            state=self.path, deployment_id="DEP-001", passed=True
+        )
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            namegen._cmd_confirm(args)
+        text = out.getvalue()
+        self.assertIn("Name check passed", text)
+        self.assertIn("The box stays sealed", text)
 
 
 if __name__ == "__main__":

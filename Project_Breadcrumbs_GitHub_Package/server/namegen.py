@@ -13,10 +13,14 @@ tool implements the mechanical rules:
   * retirement after use, including cancellation and a failed host check;
   * a private deployment-to-name mapping.
 
-It cannot know who lives at an address. The host's yes/no check remains
-manual: show the name in writing, ask whether it is in use at the address, and
-record the answer with `confirm`. A yes or any uncertainty retires the name and
+It cannot know who lives at an address. The host's name check remains manual:
+show the name in writing, ask whether it is in use at the address, and record
+the answer with `confirm`. A yes or any uncertainty retires the name and
 requires a replacement.
+
+The name check is not a no-open check. The name is a placeholder, not a
+recipient; no one at the address may open, adjust, or aim the box, and it stays
+sealed until retrieval (D-77). Passing the name check does not change that.
 
 The state file contains study names and deployment ids. Keep it in the private
 operational annex and never commit it. The default path is under
@@ -604,7 +608,10 @@ def _cmd_issue(args) -> None:
     name = pool.issue(args.deployment_id)
     pool.save(args.state)
     print(f"{args.deployment_id} -> {name}")
-    print("Host check: show the name in writing and ask the one yes/no question.")
+    print(
+        "Name check (D-78): show the name in writing and ask the one yes/no "
+        "question."
+    )
     print(
         f"  passed: python3 {sys.argv[0]} confirm {args.deployment_id} --passed"
     )
@@ -612,6 +619,11 @@ def _cmd_issue(args) -> None:
         f"  failed: python3 {sys.argv[0]} confirm {args.deployment_id} --failed"
     )
     print("A failed check retires the name; run issue again for a replacement.")
+    print(
+        "No-open rule (D-77): the name is a placeholder, not a recipient. "
+        "No one at the address may open, adjust, or aim the box; it stays "
+        "sealed until retrieval. The name check does not change that."
+    )
 
 
 def _cmd_confirm(args) -> None:
@@ -620,14 +632,16 @@ def _cmd_confirm(args) -> None:
     pool.save(args.state)
     if result["status"] == "confirmed":
         print(
-            f"Host check passed for {args.deployment_id} ({result['name']})."
+            f"Name check passed for {args.deployment_id} ({result['name']})."
         )
+        print("The box stays sealed: no one at the address may open it (D-77).")
     else:
         print(
-            f"Host check failed for {args.deployment_id}; "
+            f"Name check failed for {args.deployment_id}; "
             f"retired {result['retired']}."
         )
         print("Run issue again for a replacement name.")
+        print("The no-open rule still applies to the replacement (D-77).")
 
 
 def _cmd_retire(args) -> None:

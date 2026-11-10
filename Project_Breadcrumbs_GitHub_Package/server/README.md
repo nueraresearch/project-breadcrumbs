@@ -197,7 +197,7 @@ unset IMAGE_KEY_PREVIOUS
 
 ## Study names (D-78)
 
-`namegen.py` builds the screened study-name pool and keeps the deployment-to-name mapping. It cannot prove that a name belongs to no one locally; the host's yes/no check is still the control.
+`namegen.py` builds the screened study-name pool and keeps the deployment-to-name mapping. It cannot prove that a name belongs to no one locally; the host's name check is still the control.
 
 The mechanical rules are enforced: a pool at least twice the placement count, unique ASCII names, a project-wide blocklist, one random name per deployment, retirement after use, and a private mapping. A name is not derived from the deployment id.
 
@@ -214,7 +214,9 @@ python3 server/namegen.py check
 
 The default state and blocklist paths are under `private-data/`, which the repository ignores. Keep them private if you move them. `show` prints the mapping; do not paste its output into public material. `status` prints counts without names.
 
-The host check: show the name in writing and ask the one yes/no question. `confirm --passed` records the check with the date; the placement checklist still records the check at placement. `confirm --failed` retires the name and marks the deployment for a replacement; run `issue` again. A retired name is never reused. Retire a cancelled deployment once a name has been issued, because the label may have been printed or seen. If a failed check is found after placement, retrieve the box and log the deviation before reissuing.
+The host's name check: show the name in writing and ask the one yes/no question. `confirm --passed` records the check with the date; the placement checklist still records the check at placement. `confirm --failed` retires the name and marks the deployment for a replacement; run `issue` again. A retired name is never reused. Retire a cancelled deployment once a name has been issued, because the label may have been printed or seen. If a failed check is found after placement, retrieve the box and log the deviation before reissuing.
+
+**The name check is not a no-open check.** The name is a placeholder, not a recipient. No one at the address may open, adjust, or aim the box, and it stays sealed until retrieval (D-77). Passing the name check does not change that. The placement checklist records the no-open instruction separately.
 
 `check` validates the pool count, uniqueness, statuses, and the current blocklist. If the blocklist changes and a name now matches, retire it and reissue. If the pool is exhausted, do not add names ad hoc; build a new screened pool under D-78.
 

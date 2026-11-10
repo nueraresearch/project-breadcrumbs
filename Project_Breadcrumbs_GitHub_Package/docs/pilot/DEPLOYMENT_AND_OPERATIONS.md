@@ -11,7 +11,8 @@ No device may be placed on another person's property without that person's autho
 ## 2. Pre-deployment checklist
 
 - Confirm participant has authority over the deployment location.
-- Issue the study name from [`../../server/namegen.py`](../../server/namegen.py); confirm the host has checked it against the address, and record the confirmation with the date (D-78). A failed check retires the name and requires a reissue.
+- Issue the study name from [`../../server/namegen.py`](../../server/namegen.py); confirm the host has checked the name against the address, and record the confirmation with the date (D-78). A failed check retires the name and requires a reissue.
+- Confirm the host and household were instructed in writing not to open, adjust, or aim the box, and that it stays sealed until retrieval (D-77). The name check does not replace this instruction.
 - Confirm the label carries the assigned study name and no project mark (D-39, D-78).
 - Complete written participant agreement and required notices/consents.
 - Confirm the specific deployment complies with legal and project review.

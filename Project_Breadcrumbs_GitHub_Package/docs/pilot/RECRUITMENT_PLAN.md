@@ -30,7 +30,7 @@ The sample is self-selected. The protocol does not select households on the basi
 - Has authority over the deployment location: owner, or renter with the owner's permission.
 - Has a porch or other controlled location where a package can sit for thirty days without blocking access or creating a hazard.
 - Willing to collect the box at the collection point and return it at the end of the cycle (D-55).
-- Willing to keep the box sealed and not open, adjust, or aim it (D-77).
+- Willing to keep the box sealed and not open, adjust, or aim it, whether or not the name check passes (D-77).
 - Willing to complete the briefing and consent, including the study-name check (D-78).
 - Able to communicate with the project during the deployment, by phone or email.
 - One host per household; no second deployment at the same address (D-53).
