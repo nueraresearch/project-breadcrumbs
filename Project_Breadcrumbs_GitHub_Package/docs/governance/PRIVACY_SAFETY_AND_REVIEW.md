@@ -6,7 +6,7 @@
 
 Project Breadcrumbs proposes voluntary porch deployments of packages containing event-monitoring modules. The camera is mounted inside the sealed package, aimed at the opening, and occluded by the lid until the package is opened (D-27). It captures three still images after a light-sensitive trigger (D-09). Its field of view therefore exists only while the box is open, which excludes the street, neighbours, and passers-by, but it will capture the face and upper body of whoever opens the package. Those images are published (D-40), subject to the limits in §3.
 
-The package is addressed to a study name that belongs to no real person, and the host is instructed in writing not to open it (D-77). The person the camera captures is therefore not a recipient opening their own mail; they are opening a package addressed to someone else. That is the factual premise for the position recorded in D-42. It is not a claim that the person has no privacy interest: the limits in §3 still apply, and an image of anyone who appears unconnected to the opening is never published.
+The package is addressed to a screened study name that belongs to no one with a connection to the address or the project, and the host is instructed in writing not to open it (D-77, D-78). The person the camera captures is therefore not a recipient opening their own mail; they are opening a package addressed to someone else. That is the factual premise for the position recorded in D-42. It is not a claim that the person has no privacy interest: the limits in §3 still apply, and an image of anyone who appears unconnected to the opening is never published.
 
 The project must address these risks before field deployment.
 
@@ -30,7 +30,7 @@ Proposed system constraints:
 - Camera field of view physically limited to the package-opening area by fixed mounting and a fixed-focus lens.
 - Collected images are published (D-40). Captions state that a package was opened rather than that a theft occurred, and carry no names, identification requests, or guilt framing (D-42).
 - No exterior notice is used; the package is presented as an ordinary shipment (D-39).
-- The package is addressed to a study name belonging to no real person, with a written no-open instruction to the host (D-77).
+- The package is addressed to a screened study name belonging to no one connected to the address or the project, with a written no-open instruction to the host and the host's confirmation that the name is not in use at the address (D-77, D-78).
 - No published field identifies the participant or the volunteer's property: no name, no address, no precise coordinate (D-41).
 - Images that appear to depict a minor, or someone with no connection to the opening, are never published. They are flagged at adjudication, access-restricted, and deleted once the adjudication record is written (D-52). The number withheld is published by category.
 
@@ -41,7 +41,7 @@ Whether participant notice or additional disclosure is required or appropriate m
 Before participation, explain:
 - the research purpose;
 - the camera orientation and trigger behavior;
-- the addressing rule, and that the box must not be opened by the host or the household (D-77);
+- the addressing rule, how the study name is checked with the host, and that the box must not be opened by the host or the household (D-77, D-78);
 - the types of data collected;
 - possible incidental capture of people;
 - who can access data before release;
@@ -90,6 +90,7 @@ Before field use, obtain qualified review of:
 - property and trespass issues;
 - data protection and breach notification obligations;
 - reward/incentive program terms;
+- postal rules and consumer-protection law bearing on a parcel addressed to a fictitious addressee;
 - insurance and liability;
 - whether institutional or independent research ethics review is appropriate;
 - any rules governing sharing information with law enforcement or third parties.

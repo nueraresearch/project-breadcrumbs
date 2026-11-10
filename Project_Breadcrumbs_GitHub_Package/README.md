@@ -104,6 +104,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.38 | 2026-11-10 | Image decisions now require that reviewer to have opened every frame of the record |
 | 1.39 | 2026-11-10 | Packages carry study names belonging to no real person, and hosts are instructed not to open them (D-77) |
 | 1.40 | 2026-11-10 | Documented that volunteers probably over-represent prior victims, and that a zero-removal run is a reportable result |
+| 1.41 | 2026-11-10 | Defined how study names are generated, retired, recorded, and checked with the host (D-78) |
 
 ## Contribution and revision policy
 

@@ -11,6 +11,8 @@ No device may be placed on another person's property without that person's autho
 ## 2. Pre-deployment checklist
 
 - Confirm participant has authority over the deployment location.
+- Confirm the host has checked the study name against the address and that the confirmation is recorded with the date (D-78).
+- Confirm the label carries the assigned study name and no project mark (D-39, D-78).
 - Complete written participant agreement and required notices/consents.
 - Confirm the specific deployment complies with legal and project review.
 - Inspect enclosure, camera aperture, light sensor, battery, and status indicators.
