@@ -35,7 +35,7 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 |---|---|---|---|
 | B-01 | Consent form text and withdrawal mechanics | Required before any household is recruited | **Drafted 2026-11-10** — [`../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md`](../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md); pending legal review (B-04) |
 | B-02 | Recruitment plan for 30 hosts, and the fallback if short | Thirty households is the largest logistical risk in the design | Open |
-| B-03 | Town meeting approval | The stated gate to fielding (D-43) | Open |
+| B-03 | Town meeting approval | The stated gate to fielding (D-43) | **Briefing drafted 2026-11-10** — [`../pilot/TOWN_MEETING_BRIEFING.md`](../pilot/TOWN_MEETING_BRIEFING.md); approval pending |
 | B-04 | Legal review engagement and scope confirmation | Pro bono is the target; scope must be agreed in writing first (D-54) | Open |
 | B-05 | Ethics review determination | Unknown whether it applies; budgeted at $0–2,000 | Open |
 | B-06 | Insurance | Required before deployment on private property | Open |

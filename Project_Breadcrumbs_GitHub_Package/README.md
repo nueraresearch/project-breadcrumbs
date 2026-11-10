@@ -107,6 +107,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.41 | 2026-11-10 | Defined how study names are generated, retired, recorded, and checked with the host (D-78) |
 | 1.42 | 2026-11-10 | Added a field-by-field re-identification review of the published bundle |
 | 1.43 | 2026-11-10 | Drafted the participant briefing and consent packet, including the no-open acknowledgement and withdrawal procedure |
+| 1.44 | 2026-11-10 | Drafted the town-meeting briefing on what the pilot can conclude and the face-publication trade-off |
 
 ## Contribution and revision policy
 
