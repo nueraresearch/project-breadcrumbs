@@ -285,6 +285,7 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
         "records_withheld_delay": 0,
         "images_published": 0,
         "images_withheld_unadjudicated": 0,
+        "images_withheld_unreviewed": 0,
         "images_withheld_by_category": {},
     }
 
@@ -351,6 +352,8 @@ def publish(data_dir: str, out_dir: str, salt: bytes, *,
             "Deployment identifiers are replaced by a keyed hash (D-41).",
             "Captions describe an opening, not a theft (D-42).",
             "Images are released only when adjudicated (D-52).",
+            "Only the frames a decision covered are released, so a frame that "
+            "arrived later is not published unreviewed.",
         ],
     }
     with open(os.path.join(out_dir, "manifest.json"), "w",
@@ -370,7 +373,7 @@ def _image_decision(conn, record_id):
     """
     try:
         return conn.execute(
-            "SELECT decision, category FROM adjudications"
+            "SELECT decision, category, image_hashes FROM adjudications"
             " WHERE record_id=? AND kind='image'"
             " ORDER BY decided_at DESC, id DESC LIMIT 1",
             (record_id,)).fetchone()
@@ -378,21 +381,42 @@ def _image_decision(conn, record_id):
         return None
 
 
+def _frame_count(conn, row) -> int:
+    """Frames held for this record.
+
+    The manifest is a count of images, so it counts images. Counting records
+    here would overstate it by every record that has no frames at all.
+    """
+    return conn.execute(
+        "SELECT COUNT(*) c FROM images WHERE record_id=?",
+        (row["record_id"],)).fetchone()["c"]
+
+
 def _publish_images(conn, row, data_dir, image_out, counts, image_key=None):
     decision = _image_decision(conn, row["record_id"])
 
     if decision is None:
         # D-52 cannot be honoured without a human decision, so an unadjudicated
-        # image is never published. This is the fail-closed branch.
-        counts["images_withheld_unadjudicated"] += 1
+        # frame is never published. This is the fail-closed branch.
+        counts["images_withheld_unadjudicated"] += _frame_count(conn, row)
         return
 
     if decision["decision"] == "withhold":
         # D-52 wants the count by category, and never the image.
         category = decision["category"] or "unspecified"
         counts["images_withheld_by_category"][category] = (
-            counts["images_withheld_by_category"].get(category, 0) + 1)
+            counts["images_withheld_by_category"].get(category, 0)
+            + _frame_count(conn, row))
         return
+
+    # A publish decision covers the frames that existed when it was made; the
+    # adjudication stored their hashes. A frame that arrived, or was replaced,
+    # afterwards has not been looked at by anybody, so it is not released on
+    # the strength of a review that never saw it.
+    try:
+        reviewed = set(json.loads(decision["image_hashes"] or "[]"))
+    except (TypeError, ValueError):
+        reviewed = set()
 
     images = conn.execute(
         "SELECT frame_index, secure_object_ref, integrity_hash FROM images"
@@ -400,6 +424,9 @@ def _publish_images(conn, row, data_dir, image_out, counts, image_key=None):
         (row["record_id"],)).fetchall()
 
     for img in images:
+        if img["integrity_hash"] not in reviewed:
+            counts["images_withheld_unreviewed"] += 1
+            continue
         src = os.path.join(data_dir, "images", img["secure_object_ref"])
         if not os.path.exists(src):
             continue
@@ -472,6 +499,7 @@ def main(argv=None) -> int:
     if manifest["images_released"]:
         print(f"  images published      {c['images_published']}")
         print(f"  images unadjudicated  {c['images_withheld_unadjudicated']}")
+        print(f"  images unreviewed     {c['images_withheld_unreviewed']}")
         for cat, n in sorted(c["images_withheld_by_category"].items()):
             print(f"  withheld ({cat}){' ' * max(0, 9 - len(cat))} {n}")
     return 0

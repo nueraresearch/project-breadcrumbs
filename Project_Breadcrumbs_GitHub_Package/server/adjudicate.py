@@ -503,6 +503,15 @@ class Adjudicator:
             hashes = [r["integrity_hash"] for r in conn.execute(
                 "SELECT integrity_hash FROM images WHERE record_id=?",
                 (record_id,)).fetchall()]
+            if not hashes:
+                # A decision recorded over no frames approves nothing while
+                # looking as though it approved something. Frames upload after
+                # their record, so this is the ordinary mistake rather than an
+                # exotic one, and publication would have honoured the empty
+                # decision by releasing nothing at all.
+                raise AdjudicationError(
+                    f"{record_id} holds no frames; there is nothing to "
+                    f"adjudicate")
 
             conn.execute(
                 """INSERT INTO adjudications

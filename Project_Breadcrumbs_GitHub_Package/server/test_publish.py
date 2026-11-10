@@ -249,8 +249,8 @@ class ImageReleaseTests(unittest.TestCase):
 
     def test_reviewed_image_is_released_and_stripped(self):
         insert(self.store, "MOD000-bb-000002", received=self.old)
-        adjudicate_image(self.data, "MOD000-bb-000002", "publish")
         add_image(self.store, "MOD000-bb-000002", blob=JPEG_WITH_EXIF)
+        adjudicate_image(self.data, "MOD000-bb-000002", "publish")
         m = self._publish()
         self.assertEqual(m["counts"]["images_published"], 1)
 
@@ -267,10 +267,36 @@ class ImageReleaseTests(unittest.TestCase):
         self.assertEqual(m["counts"]["images_published"], 0)
         self.assertEqual(m["counts"]["images_withheld_by_category"]["minor"], 1)
 
+    def test_frame_arriving_after_the_decision_is_not_published(self):
+        rid = "MOD000-bb-000006"
+        insert(self.store, rid, received=self.old)
+        add_image(self.store, rid, 1)
+        adjudicate_image(self.data, rid, "publish")
+        # A second frame arrives after the reviewer wrote the decision.
+        add_image(self.store, rid, 2, blob=JPEG_WITH_EXIF)
+
+        m = self._publish()
+        self.assertEqual(m["counts"]["images_published"], 1)
+        self.assertEqual(m["counts"]["images_withheld_unreviewed"], 1)
+        self.assertFalse(os.path.exists(
+            os.path.join(self.out, "images", f"{rid}_02.jpg")))
+
+    def test_replaced_frame_is_not_published(self):
+        rid = "MOD000-bb-000007"
+        insert(self.store, rid, received=self.old)
+        add_image(self.store, rid, 1)
+        adjudicate_image(self.data, rid, "publish")
+        # Same slot, different bytes: the reviewer saw the first version.
+        add_image(self.store, rid, 1, blob=JPEG_WITH_EXIF)
+
+        m = self._publish()
+        self.assertEqual(m["counts"]["images_published"], 0)
+        self.assertEqual(m["counts"]["images_withheld_unreviewed"], 1)
+
     def test_wrong_key_refuses_to_publish(self):
         insert(self.store, "MOD000-bb-000005", received=self.old)
-        adjudicate_image(self.data, "MOD000-bb-000005", "publish")
         add_image(self.store, "MOD000-bb-000005")
+        adjudicate_image(self.data, "MOD000-bb-000005", "publish")
         with self.assertRaises(publish.PublishError):
             self._publish(image_key=OTHER_KEY)
 

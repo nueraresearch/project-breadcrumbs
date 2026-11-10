@@ -246,6 +246,11 @@ class ImageDecisionTests(Base):
             self.adj.decide_image(self.rid, "alice", "withhold",
                                   category="minor", legal_hold_until="forever")
 
+    def test_decision_with_no_frames_is_refused(self):
+        bare = self.add("MOD000-d-000009")
+        with self.assertRaises(adjudicate.AdjudicationError):
+            self.adj.decide_image(bare, "alice", "publish")
+
     def test_publish_keeps_the_frames(self):
         res = self.adj.decide_image(self.rid, "alice", "publish")
         self.assertEqual(res["images_destroyed"], 0)

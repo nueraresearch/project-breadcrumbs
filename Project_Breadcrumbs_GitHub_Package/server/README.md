@@ -103,6 +103,8 @@ Device records — battery, sync, reset — never join an episode, because an ad
 
 **Image adjudication** (D-52) — a named reviewer looks at the frames and records `publish`, or `withhold` with a fixed category (`minor` or `unconnected`). Withheld frames are deleted as soon as the adjudication record is written; what survives is the SHA-256 of each frame, the category, the reviewer and the date. Image rows stay as tombstones with an empty `secure_object_ref`, so the audit trail still records that a frame existed. A legal hold suspends deletion for that record only and must carry an expiry date, because an open-ended hold is how deletion quietly stops happening.
 
+A `publish` decision covers the frames that existed when it was written. Their hashes are stored with the decision, and publication releases only a frame whose hash is in that set: a frame that arrived afterwards, or one re-uploaded under the same index with different bytes, has not been looked at and is counted as unreviewed instead. Without that, a late upload would be published on the strength of a review that never saw it.
+
 ```bash
 INGEST_DATA=data python3 sequences.py          # group, then show episodes
 ADJUDICATORS=alice,bob INGEST_DATA=data python3 adjudicate.py pending
