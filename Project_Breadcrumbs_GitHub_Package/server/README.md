@@ -166,3 +166,29 @@ INGEST_DATA=data IMAGE_KEY=... python3 migrate_images.py --data-dir data
 **The hash check is the point.** `integrity_hash` is the only fact in the directory that predates the migration, so a frame whose bytes no longer match it is refused and left on disk rather than sealed with a verified-looking provenance. A plaintext file with no `images` row is reported and left alone for the same reason: there is no hash to check it against. Both make the run exit non-zero.
 
 **Re-running is safe, and useful.** A frame that is already encrypted is decrypted and checked against its hash rather than skipped, so a second run doubles as proof that the key opens everything in the directory. `--keep-plaintext` leaves the originals in place for a cautious first pass; the tool says so at the end rather than letting the copies be forgotten.
+
+### Rotating the image key
+
+Changing `IMAGE_KEY` on its own makes every stored frame unreadable. Rotation is a re-encryption job: each frame is decrypted with whatever key currently opens it, checked against the `integrity_hash` already recorded, sealed under the new key, and renamed over the old file. Nothing else changes — the same file name, the same hash, the same `images` row — because the plaintext is the same.
+
+```bash
+export IMAGE_KEY=<new 64 hex>            # what the server will run with
+export IMAGE_KEY_PREVIOUS=<old 64 hex>   # only for the rotation run
+
+python3 rotate_key.py --data-dir data --dry-run
+python3 rotate_key.py --data-dir data
+
+# prove the old key is no longer needed, then remove it
+python3 rotate_key.py --data-dir data --verify-only
+unset IMAGE_KEY_PREVIOUS
+```
+
+**Stop ingest first.** The rotation rewrites files the server would be reading, and a frame uploaded mid-run would be sealed under whichever key the server was started with.
+
+**Why not let the server accept a previous key.** Teaching the read path to try a retired key would keep that key valid for as long as it stayed in the environment, with nothing forcing its removal. A rotation that has to finish, followed by a check that the new key alone opens every frame, makes retiring the old key an explicit step with evidence rather than a configuration edit someone may forget.
+
+**Every frame is proven before it is replaced.** The new ciphertext is written to a temporary file beside the original, read back, decrypted and compared with the recorded hash, and only then renamed over it. An interrupted run leaves that frame under the old key — never half-written, never under a key nobody holds — and re-running finishes the job. A frame already on the new key is verified and left alone, so a partially rotated directory needs one command rather than a repair.
+
+**Refusals.** A frame whose plaintext no longer matches its recorded hash is left under the key it already has, because re-sealing it would give a swapped frame a verified-looking provenance. A frame that opens with neither key is reported, never deleted. A plaintext frame points at `migrate_images.py`.
+
+**Backups taken before the rotation still need the old key.** Once `--verify-only` passes, the live directory no longer uses it, but a backup made beforehand is still sealed under it. Keep the retired key wherever those backups are kept, or destroy the backups as well.

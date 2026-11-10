@@ -64,17 +64,19 @@ class MissingKey(CryptoError):
     pass
 
 
-def parse_key(text: str) -> bytes:
+def parse_key(text: str, name: str = KEY_ENV) -> bytes:
+    # `name` lets rotation report a bad IMAGE_KEY_PREVIOUS as itself rather
+    # than blaming IMAGE_KEY.
     text = (text or "").strip()
     if not text:
-        raise MissingKey(f"{KEY_ENV} is not set")
+        raise MissingKey(f"{name} is not set")
     try:
         key = bytes.fromhex(text)
     except ValueError:
-        raise CryptoError(f"{KEY_ENV} must be hexadecimal")
+        raise CryptoError(f"{name} must be hexadecimal")
     if len(key) != KEY_BYTES:
         raise CryptoError(
-            f"{KEY_ENV} must be {KEY_BYTES} bytes "
+            f"{name} must be {KEY_BYTES} bytes "
             f"({KEY_BYTES * 2} hex characters), got {len(key)}")
     return key
 

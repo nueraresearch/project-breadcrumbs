@@ -100,6 +100,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.34 | 2026-11-10 | Publication counts episodes as well as records, so the removal figure matches the analysis plan |
 | 1.35 | 2026-11-10 | Added the sequence-window analyzer; the grouping constants remain unmeasured until trials exist |
 | 1.36 | 2026-11-10 | Added the migration that encrypts frames in a data directory written before encryption existed |
+| 1.37 | 2026-11-10 | Added image key rotation that re-encrypts stored frames and verifies the old key is no longer needed |
 
 ## Contribution and revision policy
 
