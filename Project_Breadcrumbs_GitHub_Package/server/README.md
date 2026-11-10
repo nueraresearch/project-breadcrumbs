@@ -99,7 +99,7 @@ Two reviews, kept apart on purpose.
 
 §6 asks reviewers to classify a movement-event *sequence*, and §3 defines a removal in terms of movement events, but neither says where one episode ends. `sequences.py` supplies it: records from one module merge while consecutive movement-bearing records are within `GAP_S` (180 s) and the run stays inside `WINDOW_S` (900 s).
 
-Both figures are **this implementation's assumption**, not plan values. Every sequence row records the `rule_version` that produced it, so a published bundle states which rule it used, and they are expected to move once bench data shows how long a real opening takes. Membership freezes as soon as a reviewer votes: a verdict must not end up attached to records that reviewer never saw.
+Both figures are **this implementation's assumption**, not plan values. `firmware/bench/analyze_sequences.py` derives them from scripted openings — twice the largest observed internal pause, one and a half times the longest span — and prints them for pasting here. It has not been run against a real opening, because none has been recorded, so the values above remain reasoning rather than measurement. Every sequence row records the `rule_version` that produced it, so a published bundle states which rule it used. Membership freezes as soon as a reviewer votes: a verdict must not end up attached to records that reviewer never saw.
 
 Device records — battery, sync, reset — never join an episode, because an administrative alert must not reach a reviewer as evidence of a removal. A record whose clock has never synced is adjudicated alone: ±18 minutes cannot separate a thirty-minute handling window from a removal, and grouping on that clock would invent an ordering.
 

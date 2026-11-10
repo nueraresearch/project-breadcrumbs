@@ -86,3 +86,28 @@ python3 -m unittest test_analyze_drift.py -v
 - **Temperature dominates.** The internal sensor is accurate to a few degrees, which is enough to show correlation but not to model it. Expect the residual to be larger in a real deployment where the box sees sun.
 - **The modem round trip biases each sample** by its own latency. It is small against a 6-hour interval and roughly constant, so it moves the intercept rather than the slope — but it is not zero.
 - **This measures the board, not the enclosure.** A deployed module runs hotter and colder than a bench one.
+
+## Measuring the opening and carry window
+
+The server groups records into episodes with two constants in `server/sequences.py`: `GAP_S` (180 s) and `WINDOW_S` (900 s). Both were chosen before any opening had been observed, and both are marked as assumptions wherever they are described. `analyze_sequences.py` replaces them with numbers, the same way `analyze_drift.py` replaces the RTC residual.
+
+**Procedure.**
+
+1. Flash a module with production firmware, arm it at placement, and run scripted trials. One trial is: open the lid, lift the package, carry it about ten metres, set it down.
+2. Leave at least five minutes between trials, so the tool can tell one trial from the next.
+3. Collect the records as JSONL — one record per line, the same shape the device uploads — or point the tool straight at an ingest database.
+4. Run the analyzer, then paste the two constants into `server/sequences.py` and bump `RULE_VERSION`.
+
+```bash
+python3 analyze_sequences.py trials.jsonl
+python3 analyze_sequences.py --db ../../server/data/records.db
+python3 analyze_sequences.py trials.jsonl --check 60 120
+```
+
+**What it computes.** Within each trial, the span from the first record to the last and the largest pause between consecutive records. The recommendation is twice the largest observed pause and one and a half times the longest observed span, both rounded up to 30 s. Those margins are a judgement, not a confidence bound, and the report prints the observed maximum next to each recommendation so the margin stays visible.
+
+**It refuses to guess.** Fewer than five trials is an error rather than a number. Records whose clock never synced are skipped and counted, because a trial measured on an unsynced clock is bounded by ±18 minutes rather than ±43 seconds. If the recommended gap would merge two trials, the tool says so instead of returning a figure that cannot distinguish them. `--check` tests a proposed pair against the log and exits non-zero on any mismatch.
+
+**Thirty trials is the AT-03 figure.** Five produces a figure; fewer than thirty deserves to be quoted with its sample size attached, and the tool says so.
+
+**Until this has run, the server's constants stay as they are.** A figure fitted to a handful of synthetic trials would be worse than an assumption, because it would look measured.

@@ -34,6 +34,7 @@ It implements the decision set as code rather than prose:
 - GNSS fix time and accuracy on a porch, indoors, and in a moving vehicle.
 - Energy per fix and per upload, and the resulting 30-day projection.
 - RTC oscillator drift, and therefore how often the device must sync to keep timestamps inside the analysis tolerance. The residual ppm in `config.h` is an assumption, not a measurement.
+- Opening and carry duration, which sets how the server groups records into episodes. [`bench/analyze_sequences.py`](bench/analyze_sequences.py) derives both constants from scripted trials; until it has run, the server's 180 s gap and 900 s window are assumptions.
 
 ## 3. Structure
 

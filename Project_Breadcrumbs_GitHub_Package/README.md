@@ -98,6 +98,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.32 | 2026-10-30 | Publication releases only the frames a decision covered, so a late upload cannot ride on an earlier review |
 | 1.33 | 2026-11-10 | Published location is a grid cell at a stated resolution, replacing the ban on coordinates (D-76) |
 | 1.34 | 2026-11-10 | Publication counts episodes as well as records, so the removal figure matches the analysis plan |
+| 1.35 | 2026-11-10 | Added the sequence-window analyzer; the grouping constants remain unmeasured until trials exist |
 
 ## Contribution and revision policy
 

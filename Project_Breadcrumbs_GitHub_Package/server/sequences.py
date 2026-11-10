@@ -18,11 +18,13 @@ more than `GAP_S` apart and the sequence as a whole spans no more than
 
 **Those two figures are this implementation's assumption, not values taken from
 the plan.** They are recorded in every row as `rule_version` so a bundle can
-say which rule produced it, and they are expected to move once a bench run
-shows how long a real opening takes. Changing them does not rewrite existing
-sequences: membership is frozen as soon as a reviewer votes, because a
-classification must not end up attached to a different set of events than the
-one it was made about.
+say which rule produced it. `firmware/bench/analyze_sequences.py` derives both
+from scripted openings and prints them for pasting here; **it has not been run
+against a real opening, because none has been recorded**, so the numbers below
+are reasoning rather than measurement and should be read as such. Changing them
+does not rewrite existing sequences: membership is frozen as soon as a reviewer
+votes, because a classification must not end up attached to a different set of
+events than the one it was made about.
 
 **What never joins an episode.** Battery, sync and reset records describe the
 device rather than the opening. Folding a low-battery alert into an episode
