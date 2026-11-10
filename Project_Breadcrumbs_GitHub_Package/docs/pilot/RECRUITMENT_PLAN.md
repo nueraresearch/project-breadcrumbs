@@ -17,7 +17,7 @@ The sample is self-selected. The protocol does not select households on the basi
 
 - **The box observes; it does not protect.** Every recruitment conversation says this, not only the consent form.
 - **Taking part is not a way to make another loss less likely.** The project does not claim that hosting a box reduces the chance of a repeat.
-- **The recovery payment is for the hardware, not for risk.** It is not payment for taking part, not compensation for a lost package, and not compensation for the risk of a repeat (D-74).
+- **The recovery payment is only for a box taken from the porch and returned.** It is not paid for a normal end-of-cycle return, and it is not payment for taking part, not compensation for a lost package, and not compensation for the risk of a repeat (D-74, D-81).
 - **No pressure.** A person can decline or withdraw at any time, without a reason. A first conversation is not a signing appointment.
 - **No victim targeting.** Do not ask whether someone has had a package taken, and do not recruit from victim lists, crime reports, or social-media threads about a specific theft. If someone volunteers that they were a victim, do not record the details.
 - **No protection promise in the materials.** No "protect," "secure," "deter," "stop theft," "catch," "guard," "watch," or "peace of mind" in the name, flyer, web page, social post, or script.
@@ -67,7 +67,7 @@ Public materials carry the one-sentence pitch, the no-protection line, the time 
 | "The box observes; it does not protect." | "Stop porch theft." |
 | "Taking part is not a way to make another loss less likely." | "Peace of mind." |
 | "The box may be opened or taken." | "Catch a thief." |
-| "The recovery payment is for the hardware, not for risk." | "Get paid for hosting." |
+| "The recovery payment is only for a box taken from the porch and returned; it is not for hosting or risk." | "Get paid for hosting." |
 | "Voluntary; you can withdraw at any time." | "Guaranteed." |
 | "We cannot promise anonymity from neighbours." | "Anonymous." |
 | "The briefing explains what is published." | "Your face will never be published." |
@@ -77,7 +77,7 @@ Do not use holiday theft headlines or "tis the season" framing. It implies the b
 ## 6. Answering the hard questions
 
 **"Will this protect my porch?"**
-"No. The box is a research instrument. It observes an opening; it does not prevent one, and we cannot promise it reduces the chance of another loss. The recovery payment is for the hardware, not compensation for that risk. If protection is your reason for joining, this is not the right study for you."
+"No. The box is a research instrument. It observes an opening; it does not prevent one, and we cannot promise it reduces the chance of another loss. The recovery payment is only for a box taken from the porch and returned; it is not compensation for that risk. If protection is your reason for joining, this is not the right study for you."
 
 **"Why should I do it?"**
 "To help the town learn what happens to packages left on porches. It is not a security service, and it will not protect your porch."
@@ -86,7 +86,7 @@ Do not use holiday theft headlines or "tis the season" framing. It implies the b
 "Keep one sealed box on your porch for thirty days. Do not open it, adjust it, or aim it. Collect it from the project's collection point and return it at the end. Report it if it is opened or damaged. Do not confront or follow anyone."
 
 **"What about the payment?"**
-"There is a recovery payment for returning the hardware, with no questions asked. It is not payment for taking part, and it is not compensation for a lost package or for the risk of a repeat. The amount is in the briefing, not in public materials."
+"There is a recovery payment only when a box taken from the porch is returned. It is not paid for a normal end-of-cycle return, and it is not payment for taking part or compensation for a lost package or for the risk of a repeat. The amount is in the briefing, not in public materials."
 
 **"Will you publish my face?"**
 "The project publishes images under its rules. Images of minors and people unconnected to the opening are withheld. The adult who opens the box may be published. We cannot promise anonymity from neighbours. The briefing explains this before you sign."

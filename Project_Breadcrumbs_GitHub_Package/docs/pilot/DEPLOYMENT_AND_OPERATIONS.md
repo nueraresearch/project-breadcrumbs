@@ -58,7 +58,7 @@ A module can have multiple event records during one deployment. A deployment cyc
 
 ## 5. Recovery and return
 
-The package carries a reward insert to encourage return of the reusable module. The payment is a flat $20 to whoever returns it, no questions asked and no identity required (D-74, amending D-38). The flat amount replaces the earlier documented-replacement-cost basis: nothing has to be priced, and nothing has to be asked of the returner. The wording, funding, redemption method, and legal implications remain undecided. The amount must not appear in public material (THREAT_MODEL §8).
+The package carries a reward insert to encourage return of a module that was taken from the porch. The payment is a flat $20 to whoever returns it, no questions asked about who took it or why and no identity required (D-74, amended by D-81). It is paid only when the box was taken from the porch and is returned; a normal end-of-cycle return, a box opened or damaged but not taken, and a box lost away from the porch are not paid. The project confirms removal from its record; it does not determine whether a crime occurred. The flat amount replaces the earlier documented-replacement-cost basis: nothing has to be priced, and nothing has to be asked of the returner. The wording, funding, redemption method, and legal implications remain undecided. The amount must not appear in public material (THREAT_MODEL §8).
 
 The reward should be structured to recover hardware, not to solicit personal information or encourage confrontation. The project should not promise anonymity unless the redemption process and applicable law support that promise.
 

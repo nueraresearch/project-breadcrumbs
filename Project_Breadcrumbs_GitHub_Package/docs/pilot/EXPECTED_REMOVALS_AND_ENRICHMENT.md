@@ -50,7 +50,7 @@ Notes:
 - **Scale options §11.2:** keeps 0.25–0.5 and adds the 2× range.
 - **Pre-registration §8:** keeps the limitation and adds the planning-only sensitivity; the analysis is unchanged.
 - **Town briefing:** gives the base case and the 2× range in plain language.
-- **Budget:** no change. Ten recovery payments are budgeted; at 2× expected returns are 0.5–1.0, so the line still covers well over the expected number. At 3× it covers 0.75–1.5.
+- **Budget:** no change. Ten recovery payments are budgeted for boxes taken from the porch and returned; at 2× expected returns are 0.5–1.0, so the line still covers well over the expected number. At 3× it covers 0.75–1.5.
 
 ## 6. What this does not change
 

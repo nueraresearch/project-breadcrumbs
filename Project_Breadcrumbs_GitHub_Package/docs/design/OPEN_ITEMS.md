@@ -43,8 +43,8 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 | B-08 | Chain of custody at collection and return | Sealed box changes hands three times per cycle | Open |
 | B-09 | Incident response contacts and who can invoke stop rules | Stop rules without an authority are decoration | Open |
 | B-10 | Participant briefing materials | Volunteers must know what the box does and what to do if approached | **Drafted 2026-11-10** — [`../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md`](../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md); pending legal review (B-04) |
-| B-11 | Documented replacement cost per package type | The reward is no longer tied to contents value, so nothing needs documenting | Closed — flat payment (D-74) |
-| B-12 | Lost-device procedure | Defines the recovery window and what counts as unrecovered | Open |
+| B-11 | Documented replacement cost per package type | The reward is no longer tied to contents value, so nothing needs documenting | Closed — flat payment (D-74), trigger limited to a box taken from the porch and returned (D-81) |
+| B-12 | Lost-device procedure | Defines the recovery window, what counts as unrecovered, and how a porch removal is confirmed for the recovery payment (D-81) | Open |
 
 ## C. Blocks publication
 

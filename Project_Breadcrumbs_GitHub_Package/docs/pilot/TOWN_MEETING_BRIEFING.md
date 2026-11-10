@@ -1,7 +1,7 @@
 # Town Meeting Briefing — Project Breadcrumbs
 
 **Status:** Draft for the Monte Vista town meeting. Not yet presented. Plain-language briefing; no participant data.
-**Version:** 0.2 (2026-11-10)
+**Version:** 0.3 (2026-11-10)
 **Purpose:** To ask the town for support in principle for a 90-day voluntary pilot, and for its view on publishing images of the person who opens the box.
 **Related:** [`PILOT_PROTOCOL_DRAFT.md`](PILOT_PROTOCOL_DRAFT.md), [`PRE_REGISTRATION_ANALYSIS_PLAN.md`](PRE_REGISTRATION_ANALYSIS_PLAN.md), [`../governance/DATA_PROTECTION_CONTROLS.md`](../governance/DATA_PROTECTION_CONTROLS.md), [`../governance/PRIVACY_SAFETY_AND_REVIEW.md`](../governance/PRIVACY_SAFETY_AND_REVIEW.md), [`../review/REIDENTIFICATION_REVIEW.md`](../review/REIDENTIFICATION_REVIEW.md), [`PARTICIPANT_BRIEFING_AND_CONSENT.md`](PARTICIPANT_BRIEFING_AND_CONSENT.md), [`../../DECISION_LOG.md`](../../DECISION_LOG.md).
 
@@ -96,7 +96,7 @@ The rest of the controls are less controversial, but they matter.
 - Participants can withdraw at any time, without a reason. The box is collected, future deployment stops, and they can ask for their records to be deleted. Anything already published cannot be recalled.
 - We ask participants never to confront, follow, or identify anyone. If there is immediate danger, call the police, not the project.
 - We do not ask anyone to retrieve a box from an unsafe place.
-- The study does not pay for information, and it does not pay for a lost package. There is a small recovery payment for returned hardware, with no questions asked. The amount is not published, because a public offer could encourage someone to take a box in order to return it.
+- The study does not pay for information, and it does not pay for a lost package. There is a small recovery payment only when a box that was taken from the porch is returned; a normal end-of-cycle return is not paid. The amount is not published, because a public offer could encourage someone to take a box in order to return it. The project does not decide whether a crime occurred; it uses its own record that the box left the porch.
 
 ### 2.6 What we are asking of the town
 
@@ -131,6 +131,9 @@ The image is withheld, access-restricted, and deleted after the adjudication rec
 
 **Will you give data to the police?**
 Not proactively. We comply with valid legal process after legal review, and we tell the participant unless the law bars us. Published data is public.
+
+**Is there a recovery payment?**
+Only when a box that was taken from the porch is returned. A normal end-of-cycle return is not paid. The amount is not published, because a public offer could encourage someone to take a box in order to return it.
 
 **Will this reduce package theft?**
 We do not know, and this pilot cannot answer that. There is no comparison group, and thirty volunteer households are not a town sample.
@@ -185,6 +188,7 @@ So the public can check the work. A study that asks for trust without showing it
 - The planning figure is 0.25 to 0.5 expected removals across thirty porch-months; the chance of at least one is 22 to 39 percent, and the chance of none is 61 to 78 percent. These are assumptions, not measurements. The exposure is about 900 deployment-days. This is the unenriched base case. Risk-enriched recruitment is a 2× sensitivity: 0.5 to 1.0 expected removals, 39 to 63 percent chance of at least one, 37 to 61 percent chance of none. Do not present the sensitivity as the expected value.
 - The current image rule is D-40 with the D-52 limits. Options A, B, and C are illustrations for the meeting, not approved changes. Do not say the project has decided to blur or withhold images.
 - Do not state the recovery payment amount, the collection point address, or device construction details. The amount is kept out of public material (D-74), and device details are kept out to avoid helping someone recognise or defeat a box.
+- The recovery payment is only for a box taken from the porch and returned. Do not describe it as payment for hosting or for a normal return.
 - Town support is a condition of fielding (D-43). Legal, ethics, and insurance reviews are pending; this briefing is not a legal opinion.
 - If the town advises a narrower image rule, record the advice and answer it in writing before any deployment.
 
@@ -194,3 +198,4 @@ So the public can check the work. A study that asks for trust without showing it
 |---|---|---|
 | 0.1 | 2026-11-10 | First draft for the town meeting. No participant data. |
 | 0.2 | 2026-11-10 | Added the risk-enrichment sensitivity to the planning assumption; base case unchanged. |
+| 0.3 | 2026-11-10 | Limited the recovery payment to a box taken from the porch and returned; normal end-of-cycle returns are not paid (D-81). |
