@@ -153,6 +153,7 @@ A small pilot's most likely public failure mode is not a data breach — it is a
 - On withdrawal, the participant may request deletion of their event and image records. Deletion is honoured except where a legal hold applies, and the exception is explained in writing.
 - Withdrawal does not require a reason, and the project does not ask for one in a form that creates a record of refusal.
 - The participant is told, in one sentence, what happens to data already collected. Not "it depends on the retention policy" — the actual sentence, quoted from this document.
+- **The sentence to use:** "Your event and image records are kept under the project's retention schedule; you may ask for them to be deleted, deletion is honoured unless a legal hold applies, and anything already published cannot be recalled."
 
 ## 11. Minors and bystanders
 

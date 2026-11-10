@@ -51,6 +51,8 @@ Before participation, explain:
 - safety instructions and contact details;
 - that the project is not a law-enforcement response service and does not encourage confrontation.
 
+The draft materials are in [`../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md`](../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md).
+
 ## 5. Data minimization and security
 
 - Collect only fields needed for the approved research questions.

@@ -33,7 +33,7 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 
 | ID | Item | Why it blocks | Status |
 |---|---|---|---|
-| B-01 | Consent form text and withdrawal mechanics | Required before any household is recruited | Open |
+| B-01 | Consent form text and withdrawal mechanics | Required before any household is recruited | **Drafted 2026-11-10** — [`../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md`](../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md); pending legal review (B-04) |
 | B-02 | Recruitment plan for 30 hosts, and the fallback if short | Thirty households is the largest logistical risk in the design | Open |
 | B-03 | Town meeting approval | The stated gate to fielding (D-43) | Open |
 | B-04 | Legal review engagement and scope confirmation | Pro bono is the target; scope must be agreed in writing first (D-54) | Open |
@@ -42,7 +42,7 @@ Items are grouped by what they block. Nothing in group A can be worked around by
 | B-07 | Base security and appointment process | The operating base is a single point of failure (T-18) | Open |
 | B-08 | Chain of custody at collection and return | Sealed box changes hands three times per cycle | Open |
 | B-09 | Incident response contacts and who can invoke stop rules | Stop rules without an authority are decoration | Open |
-| B-10 | Participant briefing materials | Volunteers must know what the box does and what to do if approached | Open |
+| B-10 | Participant briefing materials | Volunteers must know what the box does and what to do if approached | **Drafted 2026-11-10** — [`../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md`](../pilot/PARTICIPANT_BRIEFING_AND_CONSENT.md); pending legal review (B-04) |
 | B-11 | Documented replacement cost per package type | The reward is no longer tied to contents value, so nothing needs documenting | Closed — flat payment (D-74) |
 | B-12 | Lost-device procedure | Defines the recovery window and what counts as unrecovered | Open |
 
