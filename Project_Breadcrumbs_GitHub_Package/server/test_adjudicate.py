@@ -7,6 +7,7 @@ import sqlite3
 import tempfile
 import unittest
 from datetime import date, timedelta
+from unittest import mock
 
 import adjudicate
 import imagecrypt
@@ -193,6 +194,9 @@ class ImageDecisionTests(Base):
         self.rid = self.add("MOD000-d-000001")
         self.add_image(self.rid, 1)
         self.add_image(self.rid, 2)
+        # D-52: a decision has to follow a look at the frames it covers.
+        self.review_dir = os.path.join(self.tmp.name, "review")
+        self.adj.view_images(self.rid, "alice", self.review_dir)
 
     def test_withhold_requires_a_category(self):
         with self.assertRaises(adjudicate.AdjudicationError):
@@ -262,6 +266,78 @@ class ImageDecisionTests(Base):
         with self.assertRaises(adjudicate.AdjudicationError):
             self.adj.decide_image(self.rid, "mallory", "publish")
 
+    def test_the_allowlist_is_checked_before_the_look(self):
+        # An unlisted reviewer is refused for who they are, not for what they
+        # have or have not opened.
+        with self.assertRaises(adjudicate.AdjudicationError) as cm:
+            self.adj.decide_image(self.rid, "mallory", "publish")
+        self.assertIn("allowlist", str(cm.exception))
+
+
+class ImageDecisionRequiresLookTests(Base):
+    """D-52: nobody decides about a frame they have not opened."""
+
+    def setUp(self):
+        super().setUp()
+        self.rid = self.add("MOD000-j-000001")
+        self.add_image(self.rid, 1)
+        self.add_image(self.rid, 2)
+        self.review_dir = os.path.join(self.tmp.name, "review")
+
+    def view(self, reviewer="alice", rid=None, out=None):
+        return self.adj.view_images(rid or self.rid, reviewer,
+                                    out or self.review_dir)
+
+    def test_decision_without_a_look_is_refused(self):
+        with self.assertRaises(adjudicate.AdjudicationError) as cm:
+            self.adj.decide_image(self.rid, "alice", "publish")
+        self.assertIn("has not opened the frames", str(cm.exception))
+
+    def test_decision_after_a_look_is_accepted(self):
+        self.view()
+        res = self.adj.decide_image(self.rid, "alice", "publish")
+        self.assertEqual(res["decision"], "publish")
+
+    def test_another_reviewers_look_does_not_count(self):
+        self.view("bob")
+        with self.assertRaises(adjudicate.AdjudicationError):
+            self.adj.decide_image(self.rid, "alice", "publish")
+
+    def test_a_different_records_look_does_not_count(self):
+        other = self.add("MOD000-j-000002")
+        self.add_image(other, 1)
+        self.view(rid=other, out=os.path.join(self.tmp.name, "other"))
+        with self.assertRaises(adjudicate.AdjudicationError):
+            self.adj.decide_image(self.rid, "alice", "publish")
+
+    def test_a_frame_that_arrived_after_the_look_must_be_opened(self):
+        self.view()
+        self.add_image(self.rid, 3)
+        with self.assertRaises(adjudicate.AdjudicationError) as cm:
+            self.adj.decide_image(self.rid, "alice", "publish")
+        self.assertIn("frame(s) 3", str(cm.exception))
+
+        self.view()
+        self.assertEqual(
+            self.adj.decide_image(self.rid, "alice", "publish")["decision"],
+            "publish")
+
+    def test_a_look_that_produced_nothing_does_not_count(self):
+        # Fail closed: a refused view must not authorise a decision.
+        with mock.patch.dict(os.environ, {"IMAGE_KEY": ""}):
+            keyless = adjudicate.Adjudicator(self.data, REVIEWERS)
+            self.assertIsNone(keyless.image_key)
+            with self.assertRaises(adjudicate.AdjudicationError):
+                keyless.view_images(self.rid, "alice", self.review_dir)
+        with self.assertRaises(adjudicate.AdjudicationError):
+            self.adj.decide_image(self.rid, "alice", "publish")
+
+    def test_withhold_after_a_look_still_destroys(self):
+        self.view()
+        res = self.adj.decide_image(self.rid, "alice", "withhold",
+                                    category="minor")
+        self.assertEqual(res["images_destroyed"], 2)
+
 
 class StatusTests(Base):
     def test_status_counts_withheld_by_category(self):
@@ -269,6 +345,9 @@ class StatusTests(Base):
         b = self.add("MOD000-e-000002")
         self.add_image(a)
         self.add_image(b)
+        for rid in (a, b):
+            self.adj.view_images(rid, "alice",
+                                 os.path.join(self.tmp.name, "r"))
         self.adj.decide_image(a, "alice", "withhold", category="minor")
         self.adj.decide_image(b, "alice", "withhold", category="unconnected")
         s = self.adj.status()

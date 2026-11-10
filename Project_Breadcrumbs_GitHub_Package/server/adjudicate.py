@@ -442,9 +442,6 @@ class Adjudicator:
                 " FROM images WHERE record_id=? ORDER BY frame_index",
                 (record_id,)).fetchall()
             rows = [dict(r) for r in rows]
-            self._log(conn, "image_access", {
-                "record_id": record_id, "reviewer": reviewer,
-                "frames": [r["frame_index"] for r in rows]})
 
         if self.image_key is None:
             raise AdjudicationError(
@@ -453,6 +450,7 @@ class Adjudicator:
 
         os.makedirs(out_dir, exist_ok=True)
         written = []
+        opened = []
         for r in rows:
             if not r["secure_object_ref"]:
                 continue
@@ -475,7 +473,38 @@ class Adjudicator:
             with open(dst, "wb") as fh:
                 fh.write(plain)
             written.append(dst)
+            opened.append(r["frame_index"])
+
+        # Logged after the copies exist, so the entry means the frames were
+        # actually opened rather than merely requested. Two rules read this
+        # table: an event reviewer is disqualified by having seen the frames,
+        # and an image decision is refused without having seen them.
+        with self._conn() as conn:
+            self._log(conn, "image_access", {
+                "record_id": record_id, "reviewer": reviewer,
+                "frames": opened})
         return written
+
+    def _frames_viewed(self, conn, record_id: str, reviewer: str) -> set:
+        """Frame indices this reviewer has opened for this record.
+
+        Read from the audit log rather than a flag on the row, because the log
+        is what `view_images` writes and a decision has to rest on what
+        happened rather than on what a caller says happened.
+        """
+        seen = set()
+        for row in conn.execute(
+                "SELECT detail FROM ingest_log WHERE kind='image_access'"
+                " ORDER BY id"):
+            try:
+                detail = json.loads(row["detail"] or "{}")
+            except (TypeError, ValueError):
+                continue
+            if (detail.get("record_id") == record_id
+                    and detail.get("reviewer") == reviewer):
+                seen.update(int(f) for f in detail.get("frames") or []
+                            if isinstance(f, int) and not isinstance(f, bool))
+        return seen
 
     def decide_image(self, record_id: str, reviewer: str, decision: str,
                      category: str | None = None,
@@ -512,6 +541,28 @@ class Adjudicator:
                 raise AdjudicationError(
                     f"{record_id} holds no frames; there is nothing to "
                     f"adjudicate")
+
+            # D-52 asks a person to look before deciding. Only frames still
+            # on disk can be looked at; a tombstone's hash is retained but its
+            # pixels are gone, so it imposes no look of its own.
+            frames = [r["frame_index"] for r in conn.execute(
+                "SELECT frame_index FROM images"
+                " WHERE record_id=? AND secure_object_ref != ''"
+                " ORDER BY frame_index", (record_id,)).fetchall()]
+
+            viewed = self._frames_viewed(conn, record_id, reviewer)
+            if frames and not viewed:
+                raise AdjudicationError(
+                    f"{reviewer!r} has not opened the frames for {record_id}; "
+                    f"a publish or withhold decision has to follow a look at "
+                    f"what it covers, so run view-images first")
+            unseen = [f for f in frames if f not in viewed]
+            if unseen:
+                raise AdjudicationError(
+                    f"{reviewer!r} has not opened frame(s) "
+                    f"{', '.join(str(f) for f in unseen)} of {record_id}; "
+                    f"run view-images again, because a frame that arrived "
+                    f"after the last look has not been seen")
 
             conn.execute(
                 """INSERT INTO adjudications

@@ -70,8 +70,11 @@ def add_image(store, record_id, frame=1, blob=JPEG):
 
 
 def adjudicate_image(data, record_id, decision, category=None):
-    adjudicate.Adjudicator(data, REVIEWERS, image_key=TEST_KEY).decide_image(
-        record_id, "alice", decision, category=category)
+    adj = adjudicate.Adjudicator(data, REVIEWERS, image_key=TEST_KEY)
+    # D-52: the decision must follow a look at the frames it covers.
+    adj.view_images(record_id, "alice",
+                    os.path.join(os.path.dirname(data), "review"))
+    adj.decide_image(record_id, "alice", decision, category=category)
 
 
 class CaptionTests(unittest.TestCase):
