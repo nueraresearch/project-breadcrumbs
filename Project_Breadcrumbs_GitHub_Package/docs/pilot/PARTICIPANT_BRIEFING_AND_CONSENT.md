@@ -1,9 +1,9 @@
 # Participant Briefing and Consent — Draft
 
 **Status:** Draft for legal and ethics review. Not approved for use. Do not ask anyone to sign until §6 is closed.
-**Version:** 0.1 (2026-11-10)
+**Version:** 0.2 (2026-11-10)
 **Covers:** open items B-01 (consent and withdrawal) and B-10 (participant briefing).
-**Related:** [`../../DECISION_LOG.md`](../../DECISION_LOG.md) D-27, D-34, D-39, D-40, D-41, D-42, D-52, D-53, D-55, D-74, D-76, D-77, D-78, D-79; [`PILOT_PROTOCOL_DRAFT.md`](PILOT_PROTOCOL_DRAFT.md) §4; [`../governance/PRIVACY_SAFETY_AND_REVIEW.md`](../governance/PRIVACY_SAFETY_AND_REVIEW.md) §4; [`../governance/DATA_PROTECTION_CONTROLS.md`](../governance/DATA_PROTECTION_CONTROLS.md) §10.
+**Related:** [`../../DECISION_LOG.md`](../../DECISION_LOG.md) D-27, D-34, D-39, D-40, D-41, D-42, D-52, D-53, D-55, D-74, D-76, D-77, D-78, D-79, D-80; [`PILOT_PROTOCOL_DRAFT.md`](PILOT_PROTOCOL_DRAFT.md) §4; [`../governance/PRIVACY_SAFETY_AND_REVIEW.md`](../governance/PRIVACY_SAFETY_AND_REVIEW.md) §4; [`../governance/DATA_PROTECTION_CONTROLS.md`](../governance/DATA_PROTECTION_CONTROLS.md) §10.
 
 ## 1. How to use this document
 
@@ -54,11 +54,14 @@ The project does not proactively give your data to police. If police or a court 
 
 ### 2.7 What participation does not do
 
-The box observes an opening; it does not prevent one. It is not a security system, a police service, or a guarantee that a package will not be taken. The project does not ask you to confront, follow, detain, or identify anyone. If you believe there is immediate danger, call 911 or your local emergency number. Do not retrieve the box from an unsafe place.
+> **Say it plainly:** the box observes; it does not protect. The project does not claim that taking part makes another loss less likely, and the $20 recovery payment is not compensation for that risk.
+
+The box observes an opening; it does not prevent one. It is not a security system, a police service, or a guarantee that a package will not be taken. Hosting a box is not a way to protect your porch, and the project cannot promise that it reduces the chance of another loss. A box on the porch is still a package, and it may attract the same attention as any package. The project does not ask you to confront, follow, detain, or identify anyone. If you believe there is immediate danger, call 911 or your local emergency number. Do not retrieve the box from an unsafe place.
 
 ### 2.8 Risks
 
 - The box may be opened or taken. Leaving a package on a porch can attract the same attention as any package.
+- The project does not claim that hosting a box makes another loss less likely, and it cannot promise that the box will not attract attention. If you have already had a package taken, please do not take part for protection.
 - You may feel anxious or exposed, or neighbours may ask questions.
 - A photograph may show you, the person who opened the box, or part of your porch, and may be published.
 - A neighbour who moves the box, or a delivery person, may be recorded. The project does not treat a movement as proof of theft, and it does not identify anyone.
@@ -67,7 +70,7 @@ The box observes an opening; it does not prevent one. It is not a security syste
 
 ### 2.9 Payment
 
-The project pays a flat $20 to whoever returns the module, with no questions asked and no identity required. This is a recovery payment for the hardware. It is not payment for taking part, not compensation for a lost package, and not payment for information. If the module is never returned, no payment is made. Please do not publicise the amount; a public offer could encourage someone to take a box in order to return it.
+The project pays a flat $20 to whoever returns the module, with no questions asked and no identity required. This is a recovery payment for the hardware. It is not payment for taking part, not compensation for a lost package, not compensation for the risk that the same porch is targeted again, and not payment for information. The payment is for the hardware's return, not for accepting that risk, and it does not cover the value of a package if one is taken. If the module is never returned, no payment is made. Please do not publicise the amount; a public offer could encourage someone to take a box in order to return it.
 
 ### 2.10 Your choices and withdrawal
 
@@ -90,7 +93,7 @@ Complete in the presence of the project representative. Initial every statement.
 | Participant code (project use) | |
 | Deployment ID | |
 | Study name on the label | |
-| Consent version | 0.1 |
+| Consent version | 0.2 |
 | Date | |
 | Participant name (kept in the participant record, not published) | |
 | Address (kept private, not published) | |
@@ -104,10 +107,10 @@ Complete in the presence of the project representative. Initial every statement.
 | 4 | I have checked the study name on the label: it is not in use at this address, by anyone in my household, by a former tenant whose mail still arrives, or in any other way I know of. | |
 | 5 | If I find the box open or damaged, I will not reseal, repair, or investigate it. I will report it and let the project collect it. | |
 | 6 | If mail arrives for the study name, I will not open it. I will return it to the carrier or mark it return to sender. | |
-| 7 | I understand the project cannot prevent the box from being opened or taken. It is not a security service or a police response. I will not confront, follow, or try to identify anyone. If there is immediate danger, I will contact emergency services. | |
+| 7 | I understand the project cannot prevent the box from being opened or taken. It is not a security service or a police response, and hosting the box is not a way to protect my porch; the project does not claim that it makes another loss less likely. I will not confront, follow, or try to identify anyone. If there is immediate danger, I will contact emergency services. | |
 | 8 | I understand a photograph may show me or the person opening the box and part of the porch or background. The project reviews images before release, does not publish images of minors or people unconnected to the opening, and publishes the number withheld by category. A reviewer who knows me or my household will not review my images, and a frame with a bystander needs a second reviewer before publication. | |
 | 9 | I understand published records do not include my name, address, or a precise coordinate. Location is a grid cell of 1 km or coarser. Publication is delayed (currently 30 days), public, and permanent; anything released cannot be recalled. | |
-| 10 | I understand the $20 payment is for the return of the module, paid to whoever returns it, with no questions asked. It is not payment for taking part and not compensation for a loss. | |
+| 10 | I understand the $20 payment is for the return of the module, paid to whoever returns it, with no questions asked. It is not payment for taking part and not compensation for a loss or for the risk of a repeat. | |
 | 11 | I understand taking part is voluntary. I can withdraw at any time without giving a reason. Withdrawal stops future deployment, and I can ask for my event and image records to be deleted. Deletion is honoured unless a legal hold applies; anything already published cannot be recalled. | |
 | 12 | I understand the project does not proactively give my data to police. It complies with valid legal process after review by counsel and will tell me unless the law prevents it. Published data is already public. | |
 | 13 | I understand my contact details are kept separately from device records and are not published, and that my participant code is used in project records. | |
@@ -151,7 +154,7 @@ A spoken request is enough. The participant does not need a reason, and the proj
 - If the study name is reissued after the check, use a new form; do not alter a signed one.
 - Confirm the collection point and the collection date.
 - Confirm the box is sealed, labeled with the study name, and carries no project mark (D-39).
-- Do not promise protection, a specific result, or a payment beyond the $20 recovery payment.
+- Do not promise protection, a specific result, or a payment beyond the $20 recovery payment. State plainly that the box observes rather than protects, and that the $20 is a recovery payment, not compensation for repeat risk.
 - Ask about anything on the porch the participant does not want photographed; adjust placement if possible.
 - Store the consent form and contact details separately from device data.
 - Do not publish the participant's address or the $20 amount.
@@ -179,3 +182,4 @@ These are blocking. The form is a draft until each has an answer.
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-10 | First draft: briefing, initialled consent, withdrawal procedure, staff checklist, blocking items. No participant data. Pending legal and ethics review. |
+| 0.2 | 2026-11-10 | Added the observe-not-protect and no-compensation-for-repeat-risk language to the briefing, risks, consent, and staff checklist. |
