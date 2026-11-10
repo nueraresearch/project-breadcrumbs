@@ -194,3 +194,28 @@ unset IMAGE_KEY_PREVIOUS
 **Refusals.** A frame whose plaintext no longer matches its recorded hash is left under the key it already has, because re-sealing it would give a swapped frame a verified-looking provenance. A frame that opens with neither key is reported, never deleted. A plaintext frame points at `migrate_images.py`.
 
 **Backups taken before the rotation still need the old key.** Once `--verify-only` passes, the live directory no longer uses it, but a backup made beforehand is still sealed under it. Keep the retired key wherever those backups are kept, or destroy the backups as well.
+
+## Study names (D-78)
+
+`namegen.py` builds the screened study-name pool and keeps the deployment-to-name mapping. It cannot prove that a name belongs to no one locally; the host's yes/no check is still the control.
+
+The mechanical rules are enforced: a pool at least twice the placement count, unique ASCII names, a project-wide blocklist, one random name per deployment, retirement after use, and a private mapping. A name is not derived from the deployment id.
+
+```bash
+# from the repository root
+python3 server/namegen.py init --blocklist private-data/name_blocklist.txt
+python3 server/namegen.py issue DEP-001
+python3 server/namegen.py confirm DEP-001 --passed
+python3 server/namegen.py show
+python3 server/namegen.py check
+```
+
+`init` requires a non-empty blocklist of full names of people connected to the project — staff, reviewers, volunteers, prior hosts. Do not use a voter roll, directory, or neighbour list; D-78 forbids drawing study names from a local resident list. The blocklist is whole-name and case-insensitive.
+
+The default state and blocklist paths are under `private-data/`, which the repository ignores. Keep them private if you move them. `show` prints the mapping; do not paste its output into public material. `status` prints counts without names.
+
+The host check: show the name in writing and ask the one yes/no question. `confirm --passed` records the check with the date; the placement checklist still records the check at placement. `confirm --failed` retires the name and marks the deployment for a replacement; run `issue` again. A retired name is never reused. Retire a cancelled deployment once a name has been issued, because the label may have been printed or seen. If a failed check is found after placement, retrieve the box and log the deviation before reissuing.
+
+`check` validates the pool count, uniqueness, statuses, and the current blocklist. If the blocklist changes and a name now matches, retire it and reissue. If the pool is exhausted, do not add names ad hoc; build a new screened pool under D-78.
+
+Tests: `python3 -m unittest test_namegen.py`.

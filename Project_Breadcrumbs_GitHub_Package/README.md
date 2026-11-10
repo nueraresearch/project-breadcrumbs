@@ -112,6 +112,7 @@ An independent desk review of the Revision 1.0 package is recorded in [`docs/rev
 | 1.46 | 2026-11-10 | Kept the 0.25–0.5 expected-removal base case and added a 2× risk-enrichment sensitivity (D-80) |
 | 1.47 | 2026-11-10 | Added participant language that the module observes rather than protects and that the recovery payment is not compensation for repeat risk |
 | 1.48 | 2026-11-10 | Added the 30-host recruitment plan, including the no-protection message and the fallback if recruitment falls short |
+| 1.49 | 2026-11-10 | Added a private study-name generator that enforces the D-78 pool, assignment, retirement, and host-check workflow |
 
 ## Contribution and revision policy
 
